@@ -47,6 +47,23 @@ class SnakeySdkTests(unittest.TestCase):
         with redirect_stderr(io.StringIO()):
             self.assertEqual(snakey.command_boot_plan(args), 2)
 
+    def test_create_nes_nrom_project(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "nes-demo"
+            args = type("Args", (), {
+                "directory": project, "target": "nes", "name": "SnakeyNES"
+            })()
+            self.assertEqual(snakey.command_new(args), 0)
+            manifest = json.loads((project / snakey.MANIFEST).read_text())
+            self.assertEqual(manifest["entry"], "src/main.s")
+            self.assertTrue((project / "cfg/nes.cfg").is_file())
+            source = (project / "src/main.s").read_text()
+            self.assertIn('.byte "NES", $1A', source)
+            self.assertIn('.segment "VECTORS"', source)
+            self.assertEqual(snakey.command_validate(
+                type("Args", (), {"directory": project})()
+            ), 0)
+
     def test_refuses_unknown_target(self):
         with tempfile.TemporaryDirectory() as tmp:
             args = type("Args", (), {"directory": Path(tmp) / "demo",
