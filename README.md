@@ -2,59 +2,58 @@
 
 **An independent retro-console operating-system and homebrew ecosystem inspired by Slackware Linux.**
 
-Snakey is not a single universal Linux image. It is a shared project for building console-specific software, ROM images and (where hardware permits) Linux-based systems for retro gaming platforms.
+Snakey is not one universal Linux image. It is a shared ecosystem for building console-specific ROMs and, where hardware genuinely supports it, Linux-based systems.
 
-> **Compatibility rule:** classic 8/16-bit consoles do not run a conventional Slackware Linux distribution. They receive native homebrew ROMs built for their own hardware. The Slackware-inspired Linux core is reserved for platforms that can genuinely boot and support Linux.
+> Classic 8/16-bit consoles do not run a conventional Slackware Linux distribution. They execute native homebrew built for their own hardware. Snakey Linux is reserved for Linux-capable devices.
 
-## Project components
+## Components
 
-- **Snakey Core** — shared project conventions, metadata and build interfaces.
-- **Snakey Targets** — machine-readable definitions for each console target.
-- **Snakey SDK** — planned cross-compilation toolchains and development helpers.
-- **Snakey ROM Builder** — planned packaging pipeline for console-specific homebrew.
-- **Snakey Emulator Lab** — planned automated validation in supported emulators.
-- **Snakey Linux** — Slackware-derived system builds for Linux-capable hardware only.
+- **Snakey Core** — shared project conventions and metadata.
+- **Snakey SDK** — Python CLI, project scaffolding, validation and build adapters.
+- **Snakey Boot System** — launch profiles for emulators, physical cartridges, SD flash cartridges and supported homebrew loaders.
+- **Snakey Linux** — Slackware-derived systems for supported Linux-capable hardware.
 
 ## Initial homebrew targets
 
-| Platform | Output | Execution model |
+| Platform | Output | Registered launch methods |
 | --- | --- | --- |
-| Nintendo Entertainment System (NES) | `.nes` | Native cartridge ROM / emulator |
-| Super Nintendo (SNES) | `.sfc` | Native cartridge ROM / emulator |
-| Game Boy | `.gb` | Native cartridge ROM / emulator |
-| Game Boy Color | `.gbc` | Native cartridge ROM / emulator |
-| Game Boy Advance | `.gba` | Native cartridge ROM / emulator |
-| Nintendo DS | `.nds` | Native homebrew image / emulator |
+| NES | .nes | Emulator, cartridge, compatible SD flash cartridge |
+| SNES | .sfc | Emulator, cartridge, compatible SD flash cartridge |
+| Game Boy | .gb | Emulator, cartridge, compatible SD flash cartridge |
+| Game Boy Color | .gbc | Emulator, cartridge, compatible SD flash cartridge |
+| Game Boy Advance | .gba | Emulator, cartridge, compatible SD flash cartridge |
+| Nintendo DS | .nds | Emulator, compatible SD flash cartridge, model-specific homebrew loader |
 
-These are initial build targets, not a claim that every target is already supported by a working compiler or tested on physical hardware. See [the target registry](platforms/targets.json) for status and technical metadata.
+These are registered paths, not a claim that every cartridge, firmware version or physical console has been tested. A flash-cart SD card still requires a compatible flash cartridge; ordinary legacy consoles do not boot ROMs directly from SD.
+
+## Boot planner
+
+    python3 tools/snakey.py boot-plan --target game-boy
+    python3 tools/snakey.py boot-plan --target nintendo-ds --method homebrew-loader
+
+See docs/boot-system.md for prerequisites and limitations.
 
 ## Repository layout
 
-```text
-docs/                  Architecture and project documentation
-platforms/targets.json Console target registry
-tools/                 Repository validation tools
-.github/workflows/     Continuous integration
-```
+    boot/                  Boot method registry
+    docs/                  Architecture, SDK and boot documentation
+    platforms/targets.json Console and boot-method registry
+    tools/                 SDK and validation tools
+    tests/                 Automated tests
+    .github/workflows/     Continuous integration
 
-## Validate the project
+## Validate
 
 Requires Python 3.10 or newer.
 
-```sh
-python3 tools/validate_targets.py
-```
-
-Or:
-
-```sh
-make validate
-```
+    make validate
+    make test
+    python3 tools/snakey.py doctor
 
 ## Development status
 
-Snakey is in its foundational stage. Target definitions and repository validation come first; toolchains, ROM generation, emulator automation and Linux-capable device ports will be added incrementally and tested per platform.
+The SDK currently builds Game Boy and Game Boy Color ROMs when RGBDS is installed. Boot profiles are metadata and planning tools; cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+Apache-2.0. See LICENSE.
