@@ -3,6 +3,8 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from contextlib import redirect_stderr
+import io
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("snakey_cli", ROOT / "tools" / "snakey.py")
@@ -19,9 +21,7 @@ class SnakeySdkTests(unittest.TestCase):
     def test_create_and_validate_gameboy_project(self):
         with tempfile.TemporaryDirectory() as tmp:
             project = Path(tmp) / "demo"
-            args = type("Args", (), {
-                "directory": project, "target": "game-boy", "name": "Demo"
-            })()
+            args = type("Args", (), {"directory": project, "target": "game-boy", "name": "Demo"})()
             self.assertEqual(snakey.command_new(args), 0)
             manifest = json.loads((project / snakey.MANIFEST).read_text())
             self.assertEqual(manifest["target"], "game-boy")
@@ -29,11 +29,28 @@ class SnakeySdkTests(unittest.TestCase):
                 type("Args", (), {"directory": project})()
             ), 0)
 
+    def test_every_target_boot_method_is_registered(self):
+        methods = snakey.load_boot_methods()
+        for target in snakey.load_targets().values():
+            self.assertTrue(target["boot_methods"])
+            for method in target["boot_methods"]:
+                self.assertIn(method, methods)
+
+    def test_gameboy_has_emulator_and_flashcart_sd(self):
+        methods = snakey.load_targets()["game-boy"]["boot_methods"]
+        self.assertIn("emulator-file", methods)
+        self.assertIn("flashcart-sd", methods)
+        self.assertNotIn("linux-boot-media", methods)
+
+    def test_boot_plan_rejects_unsupported_method(self):
+        args = type("Args", (), {"target": "game-boy", "method": "homebrew-loader"})()
+        with redirect_stderr(io.StringIO()):
+            self.assertEqual(snakey.command_boot_plan(args), 2)
+
     def test_refuses_unknown_target(self):
         with tempfile.TemporaryDirectory() as tmp:
-            args = type("Args", (), {
-                "directory": Path(tmp) / "demo", "target": "unknown", "name": "Demo"
-            })()
+            args = type("Args", (), {"directory": Path(tmp) / "demo",
+                                     "target": "unknown", "name": "Demo"})()
             self.assertEqual(snakey.command_new(args), 2)
 
 
