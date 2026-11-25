@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "project": "Snakey Linux",
+  "targets": [
+    {
+      "id": "nes",
+      "name": "Nintendo Entertainment System",
+      "family": "native-homebrew",
+      "cpu": "MOS 6502 variant",
+      "output": [".nes"],
+      "execution": ["cartridge-rom", "emulator"],
+      "linux_capable": false,
+      "status": "planned",
+      "notes": "Console-specific 6502 homebrew; mapper and iNES/NES 2.0 details belong to the build profile."
+    },
+    {
+      "id": "snes",
+      "name": "Super Nintendo Entertainment System",
+      "family": "native-homebrew",
+      "cpu": "WDC 65C816",
+      "output": [".sfc"],
+      "execution": ["cartridge-rom", "emulator"],
+      "linux_capable": false,
+      "status": "planned",
+      "notes": "Native 65C816 homebrew; cartridge mapping and header requirements are target-profile specific."
+    },
+    {
+      "id": "game-boy",
+      "name": "Nintendo Game Boy",
+      "family": "native-homebrew",
+      "cpu": "Sharp LR35902",
+      "output": [".gb"],
+      "execution": ["cartridge-rom", "emulator"],
+      "linux_capable": false,
+      "status": "planned",
+      "notes": "DMG-compatible homebrew image."
+    },
+    {
+      "id": "game-boy-color",
+      "name": "Nintendo Game Boy Color",
+      "family": "native-homebrew",
+      "cpu": "Sharp LR35902",
+      "output": [".gbc"],
+      "execution": ["cartridge-rom", "emulator"],
+      "linux_capable": false,
+      "status": "planned",
+      "notes": "Color-capable homebrew; compatibility flags and hardware mode must be specified by projects."
+    },
+    {
+      "id": "game-boy-advance",
+      "name": "Nintendo Game Boy Advance",
+      "family": "native-homebrew",
+      "cpu": "ARM7TDMI",
+      "output": [".gba"],
+      "execution": ["cartridge-rom", "emulator"],
+      "linux_capable": false,
+      "status": "planned",
+      "notes": "ARM7TDMI homebrew image."
+    },
+    {
+      "id": "nintendo-ds",
+      "name": "Nintendo DS",
+      "family": "native-homebrew",
+      "cpu": "ARM946E-S + ARM7TDMI",
+      "output": [".nds"],
+      "execution": ["homebrew-image", "emulator"],
+      "linux_capable": false,
+      "status": "planned",
+      "notes": "Dual-CPU homebrew image; runtime and hardware access are platform-specific."
+    }
+  ]
+}
