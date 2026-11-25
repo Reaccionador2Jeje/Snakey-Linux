@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Snakey SDK command-line interface (Python standard library only)."""
 from __future__ import annotations
-
 import argparse
 import json
 import shutil
@@ -11,18 +10,24 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "platforms" / "targets.json"
+BOOT_REGISTRY = ROOT / "boot" / "methods.json"
 MANIFEST = "snakey.project.json"
 
 
-def load_targets() -> dict[str, dict]:
+def load_targets():
     data = json.loads(REGISTRY.read_text(encoding="utf-8"))
     return {item["id"]: item for item in data["targets"]}
 
 
-def project_manifest(path: Path) -> dict:
+def load_boot_methods():
+    data = json.loads(BOOT_REGISTRY.read_text(encoding="utf-8"))
+    return {item["id"]: item for item in data["methods"]}
+
+
+def project_manifest(path):
     manifest_path = path / MANIFEST
     if not manifest_path.is_file():
-        raise ValueError(f"{manifest_path} not found; run 'snakey new' first")
+        raise ValueError(f"{manifest_path} not found; run snakey new first")
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
     if data.get("schema_version") != 1:
         raise ValueError("unsupported project manifest schema")
@@ -31,10 +36,10 @@ def project_manifest(path: Path) -> dict:
     return data
 
 
-def command_new(args: argparse.Namespace) -> int:
+def command_new(args):
     targets = load_targets()
     if args.target not in targets:
-        print(f"Unknown target '{args.target}'. Use 'snakey targets'.", file=sys.stderr)
+        print(f"Unknown target '{args.target}'. Use snakey targets.", file=sys.stderr)
         return 2
     name = args.name or args.directory.name
     if not name or not name.replace("-", "").replace("_", "").isalnum():
@@ -46,28 +51,22 @@ def command_new(args: argparse.Namespace) -> int:
         return 2
     destination.mkdir(parents=True, exist_ok=True)
     (destination / "src").mkdir(exist_ok=True)
-    manifest = {
-        "schema_version": 1,
-        "name": name,
-        "target": args.target,
-        "version": "0.1.0",
-        "entry": "src/main.asm" if args.target in {"game-boy", "game-boy-color"} else "src/main.c",
-    }
+    manifest = {"schema_version": 1, "name": name, "target": args.target,
+                "version": "0.1.0",
+                "entry": "src/main.asm" if args.target in {"game-boy", "game-boy-color"} else "src/main.c"}
     (destination / MANIFEST).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     if args.target in {"game-boy", "game-boy-color"}:
         source = """; Snakey Game Boy starter (RGBDS)
-; Build with: snakey build
 SECTION "Entry", ROM0[$100]
     nop
     jp Entry
     ds $150 - @, 0
-
 SECTION "Main", ROM0
 Entry:
     di
     ld sp, $FFFE
     xor a
-    ldh [$40], a       ; LCD off during initialization
+    ldh [$40], a
 MainLoop:
     halt
     jr MainLoop
@@ -75,21 +74,20 @@ MainLoop:
         (destination / "src/main.asm").write_text(source, encoding="utf-8")
     else:
         (destination / "src/main.c").write_text(
-            "/* Snakey homebrew starter. Add the target SDK headers/toolchain. */\n"
+            "/* Snakey homebrew starter. Add target SDK headers/toolchain. */\n"
             "int main(void) { for (;;) { } }\n", encoding="utf-8")
     print(f"Created {destination}")
     print(f"Target: {targets[args.target]['name']}")
-    print("Next: cd into the project and run 'snakey validate' or 'snakey build'.")
     return 0
 
 
-def command_targets(_: argparse.Namespace) -> int:
+def command_targets(_):
     for target in load_targets().values():
         print(f"{target['id']:<20} {target['name']:<42} {target['status']}")
     return 0
 
 
-def command_validate(args: argparse.Namespace) -> int:
+def command_validate(args):
     path = args.directory.resolve()
     try:
         data = project_manifest(path)
@@ -105,7 +103,35 @@ def command_validate(args: argparse.Namespace) -> int:
     return 0
 
 
-def command_doctor(_: argparse.Namespace) -> int:
+def command_boot_plan(args):
+    target = load_targets().get(args.target)
+    methods = load_boot_methods()
+    if target is None:
+        print(f"Unknown target: {args.target}", file=sys.stderr)
+        return 2
+    allowed = target.get("boot_methods", [])
+    if not allowed:
+        print(f"No boot methods registered for {args.target}.", file=sys.stderr)
+        return 2
+    if args.method and args.method not in allowed:
+        print(f"Method '{args.method}' is not registered for {args.target}.", file=sys.stderr)
+        print("Available: " + ", ".join(allowed), file=sys.stderr)
+        return 2
+    for method_id in ([args.method] if args.method else allowed):
+        method = methods.get(method_id)
+        if method is None:
+            print(f"Unknown method in boot registry: {method_id}", file=sys.stderr)
+            return 1
+        print(f"\n{method['name']} [{method_id}]")
+        print("Cartridge required: " + ("yes" if method["cartridge_required"] else "no"))
+        for requirement in method["requires"]:
+            print(" - " + requirement)
+        print(method["description"])
+    print("\nPlan only; physical hardware compatibility is not implied.")
+    return 0
+
+
+def command_doctor(_):
     checks = {
         "Python 3": shutil.which("python3"),
         "RGBDS assembler (rgbasm)": shutil.which("rgbasm"),
@@ -118,11 +144,11 @@ def command_doctor(_: argparse.Namespace) -> int:
     for label, executable in checks.items():
         print(f"{'FOUND' if executable else 'MISSING':<8} {label}" +
               (f" — {executable}" if executable else ""))
-    print("\nOnly the Game Boy RGBDS build adapter is currently implemented.")
+    print("\nBoot planner available. Game Boy build adapter requires RGBDS.")
     return 0
 
 
-def command_build(args: argparse.Namespace) -> int:
+def command_build(args):
     path = args.directory.resolve()
     try:
         data = project_manifest(path)
@@ -130,18 +156,12 @@ def command_build(args: argparse.Namespace) -> int:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
     if data["target"] not in {"game-boy", "game-boy-color"}:
-        print(f"Build adapter not implemented for target '{data['target']}'. "
-              "Project scaffolding and validation are available.", file=sys.stderr)
+        print(f"Build adapter not implemented for target '{data['target']}'.", file=sys.stderr)
         return 3
-    tools = [shutil.which(name) for name in ("rgbasm", "rgblink", "rgbfix")]
-    if not all(tools):
-        print("RGBDS is required. Install RGBDS and ensure rgbasm, rgblink and rgbfix are on PATH.",
-              file=sys.stderr)
+    if not all(shutil.which(name) for name in ("rgbasm", "rgblink", "rgbfix")):
+        print("RGBDS is required: rgbasm, rgblink and rgbfix must be on PATH.", file=sys.stderr)
         return 4
     source = path / data["entry"]
-    if not source.is_file():
-        print(f"Missing source file: {source}", file=sys.stderr)
-        return 1
     build = path / "build"
     build.mkdir(exist_ok=True)
     obj = build / "main.o"
@@ -160,7 +180,7 @@ def command_build(args: argparse.Namespace) -> int:
     return 0
 
 
-def main() -> int:
+def main():
     parser = argparse.ArgumentParser(prog="snakey", description="Snakey retro-console SDK")
     sub = parser.add_subparsers(dest="command", required=True)
     targets = sub.add_parser("targets", help="list registered console targets")
@@ -173,7 +193,11 @@ def main() -> int:
     validate = sub.add_parser("validate", help="validate a project")
     validate.add_argument("directory", nargs="?", type=Path, default=Path("."))
     validate.set_defaults(func=command_validate)
-    doctor = sub.add_parser("doctor", help="inspect available development tools")
+    plan = sub.add_parser("boot-plan", help="show launch methods for a console")
+    plan.add_argument("--target", required=True, choices=sorted(load_targets()))
+    plan.add_argument("--method", choices=sorted(load_boot_methods()))
+    plan.set_defaults(func=command_boot_plan)
+    doctor = sub.add_parser("doctor", help="inspect installed toolchains")
     doctor.set_defaults(func=command_doctor)
     build = sub.add_parser("build", help="build a supported project")
     build.add_argument("directory", nargs="?", type=Path, default=Path("."))
