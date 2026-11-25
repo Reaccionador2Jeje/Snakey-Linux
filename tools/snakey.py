@@ -183,7 +183,6 @@ def command_doctor(_):
         "RGBDS linker (rgblink)": shutil.which("rgblink"),
         "RGBDS fixer (rgbfix)": shutil.which("rgbfix"),
         "NES assembler (ca65)": shutil.which("ca65"),
-        "NES assembler (ca65)": shutil.which("ca65"),
         "NES linker (ld65)": shutil.which("ld65"),
         "ARM cross compiler": shutil.which("arm-none-eabi-gcc"),
     }
