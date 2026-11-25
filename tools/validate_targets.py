@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "platforms" / "targets.json"
+BOOT_REGISTRY = ROOT / "boot" / "methods.json"
 ALLOWED_FAMILIES = {"native-homebrew", "linux-system"}
 ALLOWED_STATUSES = {
     "planned", "toolchain-ready", "buildable",
@@ -35,6 +36,17 @@ def main() -> int:
     if not isinstance(targets, list) or not targets:
         fail("targets must be a non-empty array")
 
+    try:
+        boot_data = json.loads(BOOT_REGISTRY.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        fail(f"cannot read boot method registry: {exc}")
+    boot_methods = boot_data.get("methods")
+    if not isinstance(boot_methods, list) or not boot_methods:
+        fail("boot registry methods must be a non-empty array")
+    boot_ids = {item.get("id") for item in boot_methods if isinstance(item, dict)}
+    if len(boot_ids) != len(boot_methods) or None in boot_ids:
+        fail("boot method IDs must be unique and non-empty")
+
     seen: set[str] = set()
     for index, target in enumerate(targets):
         prefix = f"targets[{index}]"
@@ -61,6 +73,13 @@ def main() -> int:
             fail(f"{prefix}.execution must be a non-empty array")
         if not set(target["execution"]).issubset(ALLOWED_EXECUTION):
             fail(f"{prefix}.execution contains an unsupported value")
+        if not isinstance(target.get("boot_methods"), list) or not target["boot_methods"]:
+            fail(f"{prefix}.boot_methods must be a non-empty array")
+        unknown_methods = set(target["boot_methods"]) - boot_ids
+        if unknown_methods:
+            fail(f"{prefix}.boot_methods contains unknown methods: {sorted(unknown_methods)}")
+        if target["family"] == "native-homebrew" and "linux-boot-media" in target["boot_methods"]:
+            fail(f"{prefix}: native-homebrew targets cannot use Linux boot media")
         if target["family"] == "native-homebrew" and target["linux_capable"]:
             fail(f"{prefix}: native-homebrew targets cannot be marked Linux-capable")
         if target["family"] == "linux-system" and not target["linux_capable"]:
