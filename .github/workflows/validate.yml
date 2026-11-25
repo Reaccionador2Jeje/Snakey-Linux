@@ -22,7 +22,9 @@ jobs:
         run: python3 tools/validate_targets.py
       - name: Run SDK tests
         run: python3 -m unittest discover -s tests -v
-      - name: Check CLI
+      - name: Check CLI and boot plans
         run: |
           python3 tools/snakey.py targets
           python3 tools/snakey.py doctor
+          python3 tools/snakey.py boot-plan --target game-boy
+          python3 tools/snakey.py boot-plan --target nintendo-ds
