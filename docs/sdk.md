@@ -42,6 +42,6 @@ Each project contains snakey.project.json with schema version, name, target, ver
 | --- | --- | --- |
 | Game Boy | Yes | RGBDS |
 | Game Boy Color | Yes | RGBDS (DMG-compatible starter) |
-| NES, SNES, GBA, Nintendo DS | Yes | Not implemented yet |
+| NES | Yes | cc65 (NROM-256, mapper 0) |\n| Game Boy | Yes | RGBDS |\n| Game Boy Color | Yes | RGBDS (DMG-compatible starter) |\n| SNES, GBA, Nintendo DS | Yes | Not implemented yet |
 
 A generated starter is a minimal template, not a complete game or a claim of hardware validation.
