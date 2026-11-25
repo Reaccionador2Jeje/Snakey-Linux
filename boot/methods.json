@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "methods": [
+    {
+      "id": "emulator-file",
+      "name": "Emulator file loading",
+      "requires": ["A compatible emulator", "A legally obtained or self-built ROM/image"],
+      "cartridge_required": false,
+      "description": "Load the target-specific ROM or homebrew image as a file in an emulator."
+    },
+    {
+      "id": "cartridge-rom",
+      "name": "ROM cartridge",
+      "requires": ["A correctly built ROM", "A compatible cartridge board or flash cartridge"],
+      "cartridge_required": true,
+      "description": "The console reads the program through its cartridge interface. A ROM file alone cannot be inserted into a console."
+    },
+    {
+      "id": "flashcart-sd",
+      "name": "Flash cartridge with SD storage",
+      "requires": ["A console-compatible flash cartridge", "A supported SD card and filesystem", "A compatible ROM/image"],
+      "cartridge_required": true,
+      "description": "The SD card is read by a flash cartridge that plugs into the console. This is not standalone SD boot."
+    },
+    {
+      "id": "homebrew-loader",
+      "name": "Homebrew loader",
+      "requires": ["A console model with a compatible homebrew-loading method", "Required loader or firmware setup", "A compatible homebrew image"],
+      "cartridge_required": false,
+      "description": "A supported console software/firmware path loads the homebrew image. Availability depends on exact model and firmware."
+    },
+    {
+      "id": "linux-boot-media",
+      "name": "Linux boot media",
+      "requires": ["Hardware with a supported Linux boot chain", "A compatible kernel and device tree", "A prepared SD, USB or internal-storage image"],
+      "cartridge_required": false,
+      "description": "Boot a real Linux kernel only on hardware with the required boot firmware, memory-management hardware, RAM and drivers."
+    }
+  ]
+}
