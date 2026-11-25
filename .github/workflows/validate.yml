@@ -32,6 +32,13 @@ jobs:
           python3 tools/snakey.py validate "$RUNNER_TEMP/snakey-nes-smoke"
           python3 tools/snakey.py build "$RUNNER_TEMP/snakey-nes-smoke"
           test "$(stat -c %s "$RUNNER_TEMP/snakey-nes-smoke/build/SnakeySmoke.nes")" -eq 40976
+      - name: Upload generated NES ROM
+        uses: actions/upload-artifact@v4
+        with:
+          name: snakey-nes-nrom256-smoke-rom
+          path: ${{ runner.temp }}/snakey-nes-smoke/build/SnakeySmoke.nes
+          if-no-files-found: error
+          retention-days: 7
       - name: Check CLI and boot plans
         run: |
           python3 tools/snakey.py targets
