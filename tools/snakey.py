@@ -227,7 +227,7 @@ def command_build(args):
             return 1
         with rom.open("rb") as stream:
             header = stream.read(16)
-        if header[:4] != b"NES\\x1a" or header[4:6] != bytes((2, 1)):
+        if header[:4] != b"NES\x1a" or header[4:6] != bytes((2, 1)):
             print("Generated ROM has an invalid iNES header.", file=sys.stderr)
             return 1
         print(f"NROM-256 ROM built and header checked: {rom}")
