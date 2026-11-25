@@ -52,7 +52,7 @@ Requires Python 3.10 or newer.
 
 ## Development status
 
-The SDK currently builds Game Boy and Game Boy Color ROMs when RGBDS is installed. Boot profiles are metadata and planning tools; cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
+The SDK builds an NES NROM-256 (.nes) image with cc65 and Game Boy / Game Boy Color ROMs with RGBDS. The NES starter is a minimal reset-loop homebrew ROM, not a full OS. CI assembles it and checks the iNES header and expected 40 KiB file size. Boot profiles remain planning metadata; cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
 
 ## License
 
