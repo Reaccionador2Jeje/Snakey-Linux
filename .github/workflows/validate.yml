@@ -18,13 +18,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - name: Install NES toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cc65
       - name: Validate target registry
         run: python3 tools/validate_targets.py
       - name: Run SDK tests
         run: python3 -m unittest discover -s tests -v
+      - name: Build and verify a real NROM-256 ROM
+        run: |
+          python3 tools/snakey.py new "$RUNNER_TEMP/snakey-nes-smoke" --target nes --name SnakeySmoke
+          python3 tools/snakey.py validate "$RUNNER_TEMP/snakey-nes-smoke"
+          python3 tools/snakey.py build "$RUNNER_TEMP/snakey-nes-smoke"
+          test "$(stat -c %s "$RUNNER_TEMP/snakey-nes-smoke/build/SnakeySmoke.nes")" -eq 40976
       - name: Check CLI and boot plans
         run: |
           python3 tools/snakey.py targets
           python3 tools/snakey.py doctor
           python3 tools/snakey.py boot-plan --target game-boy
+          python3 tools/snakey.py boot-plan --target nes
           python3 tools/snakey.py boot-plan --target nintendo-ds
