@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.o
+*.gb
+*.gbc
+*.nes
+*.sfc
+*.gba
+*.nds
