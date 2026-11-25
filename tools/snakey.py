@@ -51,9 +51,10 @@ def command_new(args):
         return 2
     destination.mkdir(parents=True, exist_ok=True)
     (destination / "src").mkdir(exist_ok=True)
+    entry = ("src/main.asm" if args.target in {"game-boy", "game-boy-color"}
+             else "src/main.s" if args.target == "nes" else "src/main.c")
     manifest = {"schema_version": 1, "name": name, "target": args.target,
-                "version": "0.1.0",
-                "entry": "src/main.asm" if args.target in {"game-boy", "game-boy-color"} else "src/main.c"}
+                "version": "0.1.0", "entry": entry}
     (destination / MANIFEST).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     if args.target in {"game-boy", "game-boy-color"}:
         source = """; Snakey Game Boy starter (RGBDS)
@@ -138,6 +139,7 @@ def command_doctor(_):
         "RGBDS linker (rgblink)": shutil.which("rgblink"),
         "RGBDS fixer (rgbfix)": shutil.which("rgbfix"),
         "NES assembler (ca65)": shutil.which("ca65"),
+        "NES assembler (ca65)": shutil.which("ca65"),
         "NES linker (ld65)": shutil.which("ld65"),
         "ARM cross compiler": shutil.which("arm-none-eabi-gcc"),
     }
@@ -155,6 +157,38 @@ def command_build(args):
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
+    if data["target"] == "nes":
+        if not all(shutil.which(name) for name in ("ca65", "ld65")):
+            print("cc65 is required: install ca65 and ld65 and ensure they are on PATH.", file=sys.stderr)
+            return 4
+        source = path / data["entry"]
+        config = path / "cfg" / "nes.cfg"
+        if not source.is_file() or not config.is_file():
+            print("NES project is missing src/main.s or cfg/nes.cfg.", file=sys.stderr)
+            return 1
+        build = path / "build"
+        build.mkdir(exist_ok=True)
+        obj = build / "main.o"
+        rom = build / (data["name"] + ".nes")
+        commands = [
+            ["ca65", "-o", str(obj), str(source)],
+            ["ld65", "-C", str(config), "-o", str(rom), str(obj)],
+        ]
+        for command in commands:
+            print("+", " ".join(command))
+            result = subprocess.run(command, cwd=path, check=False)
+            if result.returncode:
+                return result.returncode
+        if not rom.is_file() or rom.stat().st_size != 16 + 32768 + 8192:
+            print("NES ROM has an unexpected size; expected iNES header + 32 KiB PRG + 8 KiB CHR.", file=sys.stderr)
+            return 1
+        with rom.open("rb") as stream:
+            header = stream.read(16)
+        if header[:4] != b"NES\\x1a" or header[4:6] != bytes((2, 1)):
+            print("Generated ROM has an invalid iNES header.", file=sys.stderr)
+            return 1
+        print(f"NROM-256 ROM built and header checked: {rom}")
+        return 0
     if data["target"] not in {"game-boy", "game-boy-color"}:
         print(f"Build adapter not implemented for target '{data['target']}'.", file=sys.stderr)
         return 3
