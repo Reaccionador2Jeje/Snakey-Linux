@@ -73,10 +73,54 @@ MainLoop:
     jr MainLoop
 """
         (destination / "src/main.asm").write_text(source, encoding="utf-8")
+    elif args.target == "nes":
+        (destination / "cfg").mkdir(exist_ok=True)
+        source = """; Snakey NES NROM-256 starter (ca65)
+.segment "HEADER"
+.byte "NES", $1A
+.byte 2, 1
+.byte $00, $00
+.res 8, $00
+
+.segment "CODE"
+Reset:
+    sei
+    cld
+    ldx #$40
+    stx $4017
+    ldx #$FF
+    txs
+    inx
+    stx $2000
+    stx $2001
+    stx $4010
+Forever:
+    jmp Forever
+
+.segment "VECTORS"
+.word Reset, Reset, Reset
+
+.segment "CHARS"
+.res $2000, $00
+"""
+        (destination / "src/main.s").write_text(source, encoding="utf-8")
+        config = """MEMORY {
+    HEADER: start = $0000, size = $0010, file = %O, fill = yes;
+    PRG:    start = $8000, size = $8000, file = %O, fill = yes, fillval = $EA;
+    CHR:    start = $0000, size = $2000, file = %O, fill = yes, fillval = $00;
+}
+SEGMENTS {
+    HEADER:  load = HEADER, type = ro;
+    CODE:    load = PRG, type = ro;
+    VECTORS: load = PRG, start = $FFFA, type = ro;
+    CHARS:   load = CHR, type = ro;
+}
+"""
+        (destination / "cfg/nes.cfg").write_text(config, encoding="utf-8")
     else:
         (destination / "src/main.c").write_text(
-            "/* Snakey homebrew starter. Add target SDK headers/toolchain. */\n"
-            "int main(void) { for (;;) { } }\n", encoding="utf-8")
+            "/* Snakey homebrew starter. Add target SDK headers/toolchain. */\\n"
+            "int main(void) { for (;;) { } }\\n", encoding="utf-8")
     print(f"Created {destination}")
     print(f"Target: {targets[args.target]['name']}")
     return 0
@@ -146,7 +190,7 @@ def command_doctor(_):
     for label, executable in checks.items():
         print(f"{'FOUND' if executable else 'MISSING':<8} {label}" +
               (f" — {executable}" if executable else ""))
-    print("\nBoot planner available. Game Boy build adapter requires RGBDS.")
+    print("\nBuild adapters: NES requires cc65 (ca65/ld65); Game Boy requires RGBDS.")
     return 0
 
 
