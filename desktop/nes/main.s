@@ -55,8 +55,19 @@ MainLoop:
     and #$10
     beq @down
     lda $01
-    beq @down
+    bne @up_decrement
+    lda $00
+    beq @up_launcher_wrap
+    lda #$02
+    sta $01
+    jmp @up_done
+@up_launcher_wrap:
+    lda #$03
+    sta $01
+    jmp @up_done
+@up_decrement:
     dec $01
+@up_done:
     jsr DrawScreen
 @down:
     lda $04
@@ -66,15 +77,23 @@ MainLoop:
     beq @launcher_down
     lda $01
     cmp #$02
-    bcs @back
+    bcc @app_down_increment
+    lda #$00
+    sta $01
+    jmp @down_done
+@app_down_increment:
     inc $01
-    jsr DrawScreen
-    jmp @back
+    jmp @down_done
 @launcher_down:
     lda $01
     cmp #$03
-    bcs @back
+    bcc @launcher_down_increment
+    lda #$00
+    sta $01
+    jmp @down_done
+@launcher_down_increment:
     inc $01
+@down_done:
     jsr DrawScreen
 @back:
     lda $04
@@ -546,8 +565,8 @@ HelpResult:     .byte 23,5,8,7,0
 NativeLabel:    .byte 18,5,1,23,13,25,5,1,6,1,11,5,25,0
 EmptyLabel:     .byte 0
 PaletteLabel:   .byte 7,3,8,5,11,11,5,0
-PaletteZero:    .byte 13,18,0
-PaletteOne:     .byte 13,14,14,0
+PaletteZero:    .byte 13,14,14,0
+PaletteOne:     .byte 13,18,0
 HardwareLabel:  .byte 18,5,1,11,3,10,22,5,11,0
 CatalogHint:    .byte 3,0,13,7,5,18,0
 
