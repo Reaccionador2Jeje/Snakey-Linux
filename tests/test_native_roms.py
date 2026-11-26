@@ -20,7 +20,8 @@ class NativeRomTests(unittest.TestCase):
             data = out.read_bytes()
             self.assertEqual(len(data), 0x8000)
             self.assertEqual(data[0xAC:0xB0], b"SNKY")
-            self.assertEqual(data[0xB2], 0x96)\n            self.assertEqual((sum(data[0xA0:0xBD]) + data[0xBD] + 0x19) & 0xFF, 0)
+            self.assertEqual(data[0xB2], 0x96)
+            self.assertEqual((sum(data[0xA0:0xBD]) + data[0xBD] + 0x19) & 0xFF, 0)
             self.assertEqual(data[0xC0:0xC4], b"\x30\x00\x9f\xe5")
 
     def test_nds_header_offsets_and_crcs(self):
