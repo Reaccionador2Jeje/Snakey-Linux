@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Snakey Control Center
+Comment=Manage Snakey Linux system and desktop settings
+Exec=xfce4-terminal --title=Snakey-Control-Center --command=/usr/bin/snakey-control-center
+Icon=preferences-system
+Terminal=false
+Categories=Settings;System;
