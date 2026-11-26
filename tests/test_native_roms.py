@@ -17,8 +17,8 @@ class NativeRomTests(unittest.TestCase):
             checksum = int.from_bytes(data[0x7FDE:0x7FE0], "little")
             self.assertEqual(complement ^ checksum, 0xFFFF)
             # The SNES boot backdrop is dark navy, not cyan.
-            self.assertEqual(data[0x10:0x12], bytes([0xA9, 0x84]))
-            self.assertEqual(data[0x15:0x17], bytes([0xA9, 0x10]))
+            self.assertEqual(data[0x10:0x12], bytes([0xA9, 0x41]))
+            self.assertEqual(data[0x15:0x17], bytes([0xA9, 0x18]))
 
     def test_gba_header_and_entry_branch(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -33,7 +33,7 @@ class NativeRomTests(unittest.TestCase):
             # Mode-3 framebuffer uses one consistent dark-navy colour.
             arm = [int.from_bytes(data[i:i+4], "little") for i in range(0xC0, 0xC0 + 16 * 4, 4)]
             self.assertEqual(arm[7], 0xE1C340B0)
-            self.assertEqual(arm[12], 0x00002108)
+            self.assertEqual(arm[12], 0x00001841)
 
     def test_nds_header_offsets_and_crcs(self):
         with tempfile.TemporaryDirectory() as tmp:
