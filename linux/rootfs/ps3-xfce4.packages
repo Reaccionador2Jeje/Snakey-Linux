@@ -1,0 +1,74 @@
+# Snakey Linux PS3 XFCE4 candidate package set.
+# All archives must be rebuilt/provided for one compatible PPC64 big-endian ABI.
+# This is a package-selection contract, NOT a verified dependency closure.
+# Keep TTY fallback; graphics/input support and memory budget remain unproven.
+aaa_base
+aaa_libraries
+bash
+bin
+coreutils
+glibc-solibs
+grep
+gzip
+sed
+tar
+util-linux
+e2fsprogs
+pkgtools
+sysvinit
+sysvinit-scripts
+shadow
+# X11 and graphics candidates
+xorg-server
+libdrm
+mesa
+xf86-input-evdev
+xf86-video-fbdev
+libX11
+libXext
+libXrender
+libXrandr
+libXi
+libXcursor
+libXinerama
+libXfixes
+libXdamage
+libXcomposite
+libXft
+libxcb
+xcb-util
+xcb-util-image
+xcb-util-keysyms
+xcb-util-renderutil
+xcb-util-wm
+pixman
+# GTK and shared desktop libraries
+gtk+3
+glib2
+atk
+cairo
+gdk-pixbuf2
+pango
+fontconfig
+freetype
+harfbuzz
+dbus
+libepoxy
+libnotify
+libwnck3
+startup-notification
+# XFCE desktop and session
+xfce4
+xfce4-session
+xfce4-panel
+xfdesktop
+xfwm4
+xfce4-settings
+xfconf
+xfce4-terminal
+thunar
+garcon
+exo
+tumbler
+libxfce4ui
+libxfce4util
