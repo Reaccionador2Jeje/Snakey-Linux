@@ -15,14 +15,48 @@
         "legacy OtherOS on specifically compatible firmware/models",
         "OtherOS++ with Petitboot on specifically compatible configurations"
       ],
-      "storage": ["internal HDD OtherOS region", "USB transfer media"],
+      "storage": [
+        "internal HDD OtherOS region",
+        "USB transfer media"
+      ],
       "graphics": "PS3 framebuffer; accelerated RSX access is not assumed",
-      "network": ["GELIC wired Ethernet", "model-dependent wireless"],
+      "network": [
+        "GELIC wired Ethernet",
+        "model-dependent wireless"
+      ],
       "desktop_goal": "XFCE4 experimental; lightweight desktop fallback required",
       "status": "research-candidate",
       "snakey_tested": false,
       "requires_physical_hardware": true,
-      "notes": "A real Linux port exists and a recent external Debian project documents a PS3-specific 6.4 kernel path. This is a research target, not a Snakey-supported release. Boot compatibility is model- and firmware-dependent."
+      "notes": "Research-only record. Deliberately deferred: the owner does not currently have compatible power or a display and has explicitly chosen not to use or modify this console. No physical work, firmware changes or hardware assumptions are authorized."
+    },
+    {
+      "id": "nintendo-wii",
+      "name": "Nintendo Wii",
+      "family": "linux-system",
+      "architecture": "powerpc32-big-endian",
+      "cpu": "IBM Broadway PowerPC 729 MHz",
+      "system_ram_mb": 88,
+      "video_ram_mb": 3,
+      "video_ram_counts_as_system_ram": false,
+      "kernel_platform_option": "Wii-Linux downstream PowerPC platform support; exact config to be pinned from upstream project",
+      "boot_chain": [
+        "existing Wii-Linux loader path (research only; no installation instructions in this registry)"
+      ],
+      "storage": [
+        "SD card",
+        "USB storage"
+      ],
+      "graphics": "Linux framebuffer; Xorg reported by Wii-Linux project; acceleration and Snakey driver path unverified",
+      "network": [
+        "onboard Wi-Fi (project support varies by loader/kernel)",
+        "USB networking"
+      ],
+      "desktop_goal": "Reach Linux shell first; test a minimal Xorg window manager; XFCE4 is not assumed feasible with 88 MB",
+      "status": "research-candidate",
+      "snakey_tested": false,
+      "requires_physical_hardware": true,
+      "notes": "Preferred first research target because a maintained Wii-Linux continuation project reports current kernels and framebuffer/Xorg support. Snakey has not built, booted or tested anything on Wii hardware. Research and cross-build work only until compatible hardware is available."
     }
   ]
 }
