@@ -428,7 +428,7 @@ InfoText:
 .res 8, $00
 .res $2000 - (16 + 16 * 16), $00
 """
-        (destination / "src/main.s").write_text(source, encoding="utf-8")
+        (destination / "src/main.s").write_text((ROOT / "desktop/nes/main.s").read_text(encoding="utf-8"), encoding="utf-8")
         config = """MEMORY {
     HEADER: start = $0000, size = $0010, file = %O, fill = yes;
     PRG:    start = $8000, size = $8000, file = %O, fill = yes, fillval = $EA;
@@ -441,7 +441,7 @@ SEGMENTS {
     CHARS:   load = CHR, type = ro;
 }
 """
-        (destination / "cfg/nes.cfg").write_text(config, encoding="utf-8")
+        (destination / "cfg/nes.cfg").write_text((ROOT / "desktop/nes/nes.cfg").read_text(encoding="utf-8"), encoding="utf-8")
     elif args.target in {"snes", "game-boy-advance", "nintendo-ds"}:
         descriptor = {"schema_version": 1, "target": args.target,
                       "generator": "tools/native_roms.py",
