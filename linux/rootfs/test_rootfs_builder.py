@@ -38,7 +38,7 @@ def main() -> None:
         for name in PACKAGES:
             make_package(pkgdir / f"{name}-1-test-1.txz", name)
 
-        for target in ("vita", "xbox", "wii"):
+        for target in ("vita", "xbox", "wii", "ps3"):
             output = base / f"rootfs-{target}"
             env = os.environ.copy()
             env["SNAKEY_PACKAGE_DIR"] = str(pkgdir)
