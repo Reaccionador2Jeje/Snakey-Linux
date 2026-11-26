@@ -1,0 +1,10 @@
+NAME="Snakey Linux"
+PRETTY_NAME="Snakey Linux Desktop"
+ID=snakey
+ID_LIKE=slackware
+VERSION="0.1.0"
+VERSION_ID="0.1.0"
+VERSION_CODENAME="slithering"
+HOME_URL="https://github.com/Reaccionador2Jeje/Snakey-Linux"
+SUPPORT_URL="https://github.com/Reaccionador2Jeje/Snakey-Linux/issues"
+BUG_REPORT_URL="https://github.com/Reaccionador2Jeje/Snakey-Linux/issues"
