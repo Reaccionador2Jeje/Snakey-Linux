@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Snakey Console Mode
+Comment=Enable large controls for TV and gamepad use
+Exec=/usr/bin/snakey-console-mode on
+Terminal=false
+X-GNOME-Autostart-enabled=true
+OnlyShowIn=XFCE;
