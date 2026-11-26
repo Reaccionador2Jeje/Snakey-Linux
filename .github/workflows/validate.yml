@@ -26,6 +26,29 @@ jobs:
         run: python3 tools/validate_targets.py
       - name: Run SDK tests
         run: python3 -m unittest discover -s tests -v
+      - name: Validate Snakey Linux desktop profile
+        run: |
+          bash -n linux/build-live.sh
+          python3 -m json.tool linux/profile.json >/dev/null
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          profile = json.loads(Path("linux/profile.json").read_text())
+          assert profile["base"] == "Slackware"
+          assert profile["builder"] == "liveslak"
+          assert profile["architecture"] == "x86_64"
+          assert profile["desktop"] == "XFCE"
+          assert profile["runlevel"] == 4
+          assert profile["trim"] == "bloat"
+          for path in (
+              "linux/rootcopy/etc/os-release",
+              "linux/rootcopy/etc/issue",
+              "linux/rootcopy/etc/motd",
+              "linux/rootcopy/usr/share/backgrounds/snakey/snakey.svg",
+          ):
+              assert Path(path).is_file(), path
+          print("Snakey Linux profile and identity assets: OK")
+          PY
       - name: Build and verify a real NROM-256 ROM
         run: |
           python3 tools/snakey.py new "$RUNNER_TEMP/snakey-nes-smoke" --target nes --name SnakeySmoke
