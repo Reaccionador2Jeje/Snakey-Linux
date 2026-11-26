@@ -27,9 +27,9 @@ def build_snes(path: Path, name: str) -> None:
         0xE2, 0x20,       # SEP #$20
         0xA9, 0x00,       # LDA #$00
         0x8D, 0x21, 0x21, # STA $2121 (CGRAM color 0)
-        0xA9, 0xE0,       # LDA #$E0 (cyan backdrop, BGR555)
+        0xA9, 0x84,       # LDA #$1084 (deep navy backdrop, BGR555 low byte)
         0x8D, 0x22, 0x21, # STA $2122 low byte
-        0xA9, 0x7F,
+        0xA9, 0x10,
         0x8D, 0x22, 0x21, # STA $2122 high byte
         0xA9, 0x0F,
         0x8D, 0x00, 0x21, # INIDISP: enable display, full brightness
@@ -71,8 +71,8 @@ def build_gba(path: Path, name: str) -> None:
     rom[0xBD] = (-sum(rom[0xA0:0xBD]) - 0x19) & 0xFF
     rom[0xBE] = 0
     rom[0xBF] = 0
-    # ARM code at 0xC0: Mode 3 framebuffer colour-ramp diagnostic (38,400 pixels).
-    # This is a graphics bring-up pattern, not yet the Snakey desktop UI.
+    # ARM code at 0xC0: clean, single-colour Snakey boot background.
+    # Mode 3 is filled with one dark navy RGB555 colour; no rainbow test pattern.
     code = struct.pack("<16I",
         0xE59F0034, # ldr r0,[pc,#52] -> DISPCNT literal
         0xE3A01003, # mov r1,#3 (Mode 3)
@@ -80,13 +80,13 @@ def build_gba(path: Path, name: str) -> None:
         0xE5801000, # str r1,[r0]
         0xE59F301C, # ldr r3,[pc,#28] -> VRAM literal
         0xE59F201C, # ldr r2,[pc,#28] -> pixel count literal
-        0xE3A0401F, # mov r4,#31 (red)
+        0xE59F4010, # ldr r4,[pc,#16] -> navy RGB555 literal
         0xE1C340B0, # strh r4,[r3]
         0xE2833002, # add r3,r3,#2
-        0xE2844001, # add r4,r4,#1 (cycle RGB555 diagnostic colour)
         0xE2522001, # subs r2,r2,#1
-        0x1AFFFFFA, # bne back to strh
+        0x1AFFFFFB, # bne back to strh
         0xEAFFFFFE, # loop forever
+        0x00002108, # deep navy RGB555
         0x06000000, # VRAM
         0x00009600, # 38,400 pixels
         0x04000000  # DISPCNT
@@ -109,9 +109,8 @@ def build_nds(path: Path, name: str) -> None:
     rom[12:16] = b"SNKY"
     rom[16:18] = b"01"
     rom[0x1E] = 0
-    # ARM9 initializes the main engine in bitmap mode 5, maps VRAM bank A
-    # to the main BG, then writes a small RGB555 diagnostic pattern. The
-    # literal pool is kept inside the first 20 words for deterministic tests.
+    # ARM9 initializes a clean dark-navy bitmap background on the main
+    # screen. This is a stable boot backdrop, not a multicolour test pattern.
     arm9_offset, arm7_offset = 0x4000, 0x5000
     arm9_words = [
         0xE59F0034, # ldr r0,[pc,#0x34] -> DISPCNT
@@ -122,7 +121,7 @@ def build_nds(path: Path, name: str) -> None:
         0xE5C21000, # strb r1,[r2]
         0xE59F3028, # ldr r3,[pc,#0x28] -> BG VRAM
         0xE59F2028, # ldr r2,[pc,#0x28] -> pixel count
-        0xE3A0401F, # mov r4,#31
+        0xE59F4028, # ldr r4,[pc,#0x28] -> navy RGB555
         0xE1C040B0, # strh r4,[r3]
         0xE2833002, # add r3,r3,#2
         0xE2522001, # subs r2,r2,#1
@@ -133,9 +132,10 @@ def build_nds(path: Path, name: str) -> None:
         0x00010005, # mode 5 + BG2
         0x04000240, # VRAMCNT_A
         0x06000000, # BG VRAM
-        0x00009600, # pixel count
+        0x0000C000, # 256 x 192 pixels
+        0x00002108, # deep navy RGB555
     ]
-    arm9 = struct.pack("<20I", *arm9_words)
+    arm9 = struct.pack("<21I", *arm9_words)
     arm7 = struct.pack("<4I", 0xEAFFFFFE, 0xE1A00000, 0xE1A00000, 0xE1A00000)
     struct.pack_into("<8I", rom, 0x20,
         arm9_offset, 0x02000000, 0x02000000, len(arm9),
