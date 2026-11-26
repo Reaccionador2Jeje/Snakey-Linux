@@ -1,0 +1,29 @@
+# Snakey Linux Desktop configuration
+# Copy to /etc/snakey/desktop.conf in the target root filesystem.
+
+[display]
+backend=fbdev
+device=/dev/fb0
+fullscreen=true
+scale=integer
+theme=snakey-dark
+
+[input]
+backend=evdev
+device=auto
+confirm=auto
+back=auto
+
+[session]
+launcher=enabled
+files=enabled
+console=enabled
+system_monitor=enabled
+settings=enabled
+about=enabled
+
+[limits]
+# Target-specific build profiles override these conservative defaults.
+max_background_apps=0
+animations=off
+software_rendering=true
