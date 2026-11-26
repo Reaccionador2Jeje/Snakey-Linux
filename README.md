@@ -107,3 +107,10 @@ The NES NROM-256 starter now initializes the PPU, draws a `SNAKEY` title and an 
 See [the Linux-on-retro-hardware roadmap](docs/linux-on-retro-hardware.md) for the long-term goal of booting a real Linux kernel and, where hardware permits, XFCE4 on retro consoles. ROM homebrew and native Linux targets are deliberately kept separate.
 
 Hardware candidates must be evaluated with the [retro Linux hardware assessment template](docs/hardware-assessment-template.md), including documented CPU/MMU, RAM, boot, storage and driver evidence.
+
+
+## Ten-console Linux program
+
+Snakey tracks ten independent Linux port lanes: PSP (MIPS), PS Vita (ARMv7), PS3 (PowerPC64), PS4 (x86-64), PS5 (x86-64), Original Xbox (i686), Wii (PowerPC32), Wii U (PowerPC32), Switch (AArch64) and Switch 2 (AArch64). Each has a separate architecture, toolchain and hardware evidence gate. See [the ten-console port program](docs/ten-console-port-program.md), [the platform matrix](platforms/linux-targets.json) and [upstream source provenance](platforms/linux-port-sources.json).
+
+GitHub Actions validates all ten records. Only the Vita currently has a pinned upstream build workflow; PS4 is priority one but its source must be audited and pinned before CI builds it. No Snakey kernel or console boot is claimed merely because a target is registered.
