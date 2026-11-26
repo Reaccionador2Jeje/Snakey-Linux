@@ -86,7 +86,7 @@ def build_gba(path: Path, name: str) -> None:
         0xE2844001, # add r4,r4,#1 (cycle RGB555 diagnostic colour)
         0xE2522001, # subs r2,r2,#1
         0x1AFFFFFA, # bne back to strh
-        0xEAFFFFFE  # loop forever
+        0xEAFFFFFE, # loop forever
         0x06000000, # VRAM
         0x00009600, # 38,400 pixels
         0x04000000  # DISPCNT
