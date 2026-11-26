@@ -77,3 +77,13 @@ translates the configured `Return`, `Escape`, `Tab`, `shift+Tab` and
 Invalid or missing profile files safely fall back to the standard Linux
 gamepad mapping. The keyboard remains available regardless of controller
 configuration.
+
+
+### Snakey XFCE panel defaults
+
+The rootcopy ships a first-run XFCE panel profile in
+`etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml`: a bottom panel
+with the Applications menu, task buttons, system tray, clock and session
+actions. It is intentionally a normal XFCE panel, so users can still adjust
+plugins through XFCE's panel preferences. These are packaged defaults; the
+actual live session still needs image and Limbo testing.
