@@ -33,9 +33,21 @@ These are registered paths, not a claim that every cartridge, firmware version o
 
 See docs/boot-system.md for prerequisites and limitations.
 
+## Official website and Cloudflare Worker
+
+The complete Snakey website is in `site/`. It includes the platform catalog, boot-method guide, RetroArch testing instructions, documentation links and an automatically populated GitHub Releases section.
+
+The Cloudflare Worker in `worker/index.js` serves the static site and exposes:
+- `/api/health`
+- `/api/targets`
+- `/api/releases`
+
+Local development: `npm install && npm test && npm run dev`.
+Deployment instructions: [docs/website-worker.md](docs/website-worker.md). A Cloudflare account token is required to deploy; CI performs tests and a Wrangler dry-run, but does not deploy to an account.
+
 ## Repository layout
 
-    boot/                  Boot method registry
+    site/                  Official website assets\n    worker/                Cloudflare Worker and read-only API\n    boot/                  Boot method registry
     docs/                  Architecture, SDK and boot documentation
     platforms/targets.json Console and boot-method registry
     tools/                 SDK and validation tools
