@@ -101,6 +101,8 @@ mkdir -p "$LIVESLAK_DIR/rootcopy"
 cp -a "$ROOT_DIR/linux/rootcopy/." "$LIVESLAK_DIR/rootcopy/"
 chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-gamepad"
 chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-virtual-keyboard"
+chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-console-mode"
+chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-open-keyboard"
 
 cd "$LIVESLAK_DIR"
 ./make_slackware_live.sh \
