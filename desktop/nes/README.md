@@ -10,12 +10,12 @@ Linux, XFCE, a browser engine, or a host-side simulation.
 - **Settings**: changes the real PPU background palette.
 - **About**: identifies the NES homebrew edition and target.
 
-Up/Down changes selection, A confirms, and B returns to the launcher.
+Up/Down changes selection, A confirms, and B returns to the launcher. Every page shares the Snakey title strip and an `A OPEN / B BACK` footer. The Settings page switches the accent color.
 
 ## Graphics
 
 The renderer uses native 8x8 CHR tiles, nametable drawing and a four-colour
-background palette. The launcher includes a 16x16 multi-colour Snakey emblem;
+background palette. The character set is stored as contiguous tile IDs so text labels map to their intended glyphs; tiles 26–29 are reserved for the emblem. The launcher includes a 16x16 multi-colour Snakey emblem;
 its tile pixels use both NES bitplanes and the palette includes cyan, orange
 and white accents over a dark background. The palette toggle changes those
 colours rather than switching to a monochrome-only text display.
