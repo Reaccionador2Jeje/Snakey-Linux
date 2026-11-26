@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071b18"/>
+      <stop offset="1" stop-color="#102d27"/>
+    </linearGradient>
+    <linearGradient id="snake" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a8e66b"/>
+      <stop offset="1" stop-color="#4eaa75"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <g fill="none" stroke="#285448" stroke-width="2" opacity=".45">
+    <path d="M0 180H1920M0 360H1920M0 540H1920M0 720H1920M0 900H1920"/>
+    <path d="M240 0V1080M480 0V1080M720 0V1080M960 0V1080M1200 0V1080M1440 0V1080M1680 0V1080"/>
+  </g>
+  <g transform="translate(1120 540)" fill="none" stroke="url(#snake)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-340 110C-340-80-160-190 10-120S250 40 120 150  -110 260-230 130"/>
+    <path d="M-230 130C-300 50-250-60-130-60S70 20 40 110"/>
+  </g>
+  <circle cx="1235" cy="410" r="12" fill="#d7f7a0"/>
+  <text x="160" y="490" fill="#e8f4e9" font-family="sans-serif" font-size="92" font-weight="700" letter-spacing="8">SNAKEY</text>
+  <text x="168" y="565" fill="#9dc9aa" font-family="sans-serif" font-size="30" letter-spacing="5">LINUX DESKTOP</text>
+  <text x="168" y="625" fill="#648d79" font-family="sans-serif" font-size="22" letter-spacing="3">SLACKWARE BASED · LIGHTWEIGHT BY DESIGN</text>
+</svg>
