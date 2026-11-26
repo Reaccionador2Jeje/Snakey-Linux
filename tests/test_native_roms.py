@@ -26,7 +26,9 @@ class NativeRomTests(unittest.TestCase):
             self.assertEqual(data[0xAC:0xB0], b"SNKY")
             self.assertEqual(data[0xB2], 0x96)
             self.assertEqual((sum(data[0xA0:0xBD]) + data[0xBD] + 0x19) & 0xFF, 0)
-            self.assertEqual(data[0xC0:0xC4], bytes([0x30, 0x00, 0x9F, 0xE5]))
+            self.assertEqual(data[0xC0:0xC4], bytes([0x34, 0x00, 0x9F, 0xE5]))
+            # Mode-3 framebuffer writer now advances through RGB555 colours.
+            self.assertEqual(int.from_bytes(data[0xC0 + 9 * 4:0xC0 + 10 * 4], "little"), 0xE2844001)
 
     def test_nds_header_offsets_and_crcs(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -38,6 +40,11 @@ class NativeRomTests(unittest.TestCase):
             self.assertEqual(int.from_bytes(data[0x20:0x24], "little"), 0x4000)
             self.assertEqual(int.from_bytes(data[0x80:0x84], "little"), len(data))
             self.assertEqual(int.from_bytes(data[0x15E:0x160], "little"), _crc16(data[:0x15E]))
+            arm9 = [int.from_bytes(data[i:i+4], "little") for i in range(0x4000, 0x4000 + 20 * 4, 4)]
+            self.assertEqual(arm9[0], 0xE59F0034)  # DISPCNT literal load
+            self.assertEqual(arm9[1], 0xE59F1034)  # bitmap mode 5 + BG2
+            self.assertEqual(arm9[4], 0xE3A01081)  # VRAM A -> main BG
+            self.assertEqual(arm9[9], 0xE1C040B0)  # RGB555 pixel write
 
 
 if __name__ == "__main__":
