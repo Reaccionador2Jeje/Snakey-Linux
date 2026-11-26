@@ -44,8 +44,10 @@ Use a layered test strategy instead of treating aPS3e as a Linux VM:
 
 1. **Kernel cross-build:** compile the pinned PS3 kernel configuration in CI
    and archive its configuration, ELF metadata and checksums.
-2. **PPC64 userspace audit:** assemble a separate PowerPC64 big-endian
-   Slackware-compatible package set. Verify package architecture, ELF
+2. **PPC64 userspace audit:** assemble the candidate package set in
+   `linux/rootfs/ps3.packages` from mutually compatible PowerPC64 big-endian
+   Slackware-compatible archives. Run `tools/audit_ps3_rootfs.py ROOTFS` to
+   reject non-ELF64, little-endian or non-PPC64 binaries. Then verify the ELF
    interpreter, shared-library dependencies, init scripts and package
    provenance. Never reuse Wii PPC32 packages or x86_64 Slackware binaries.
 3. **Userspace smoke tests:** where suitable PPC64 user-mode emulation is
@@ -67,7 +69,7 @@ Use a layered test strategy instead of treating aPS3e as a Linux VM:
 ## Bring-up gates
 
 - [ ] Kernel source build: pinned upstream PS3 defconfig compiles in CI.
-- [ ] PPC64 big-endian Slackware-compatible package set is audited.
+- [ ] PPC64 big-endian Slackware-compatible package set is assembled from `linux/rootfs/ps3.packages`.\n- [ ] `tools/audit_ps3_rootfs.py` passes on the assembled rootfs; dynamic loader and shared-library closure are audited separately.
 - [ ] Rootfs passes architecture, dependency, init and package-integrity checks.
 - [ ] Userspace smoke tests pass; their scope is explicitly marked as emulated.
 - [ ] XFCE4/X11 dependency closure and virtual-session tests pass.
