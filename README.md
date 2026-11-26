@@ -57,3 +57,8 @@ The SDK builds an NES NROM-256 (.nes) image with cc65 and Game Boy / Game Boy Co
 ## License
 
 Apache-2.0. See LICENSE.
+
+
+## NES boot-screen milestone
+
+The NES NROM-256 starter now initializes the PPU and draws a visible `SNAKEY` title screen using built-in CHR tiles. CI assembles and validates the ROM; visual emulator verification remains a separate next step.
