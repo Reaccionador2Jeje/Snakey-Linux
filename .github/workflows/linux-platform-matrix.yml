@@ -5,6 +5,8 @@ on:
       - "platforms/linux-targets.json"
       - "platforms/linux-port-sources.json"
       - "tools/validate_linux_targets.py"
+      - "tools/validate_desktop_profiles.py"
+      - "linux/rootfs/desktop-profiles.json"
       - ".github/workflows/linux-platform-matrix.yml"
   pull_request:
     paths:
@@ -30,6 +32,8 @@ jobs:
           python-version: "3.12"
       - name: Validate platform and source manifests
         run: python3 tools/validate_linux_targets.py
+      - name: Validate desktop package profiles
+        run: python3 tools/validate_desktop_profiles.py
       - name: Validate JSON syntax
         run: |
           python3 -m json.tool platforms/linux-targets.json >/dev/null
