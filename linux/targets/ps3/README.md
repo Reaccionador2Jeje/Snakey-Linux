@@ -1,6 +1,6 @@
 # Snakey Linux — PlayStation 3 bring-up
 
-<badge>Research candidate — not a Snakey release</badge>
+**Status: Research candidate — not a Snakey release.**
 
 ## Why PS3 first
 
