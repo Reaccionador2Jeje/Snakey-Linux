@@ -1,6 +1,6 @@
 # Snakey Linux 🐍
 
-**A Slackware-derived Linux distribution for capable modern hardware, with a separate retro-console homebrew SDK.**
+**A Slackware-compatible Linux distribution family for ten console ports, with Snakey Console Desktop (XFCE4) on hardware that can support it.**
 
 Snakey is not one universal Linux image. It is a shared ecosystem for building console-specific ROMs and, where hardware genuinely supports it, Linux-based systems.
 
@@ -35,11 +35,11 @@ See [experimental SNES/GBA/DS ROM builders](docs/experimental-rom-builders.md) f
 
 ## Linux on modern consoles
 
-The Linux-on-console direction now prioritizes **PlayStation 4 first**, then **PlayStation 5 and Nintendo Switch**. These use real Linux kernels and userspaces; they are not ROM-based desktop simulations. PS4 is the first engineering lane because it is x86-64 and can reuse Snakey's existing Slackware userspace work, subject to the exact console southbridge, kernel and driver support. PS5 and Switch remain separate research lanes. No universal compatibility or Snakey hardware boot is claimed. See [the modern-console Linux plan](docs/modern-console-linux.md), [PlayStation Linux research](docs/playstation-linux-research.md) and [the Linux hardware registry](platforms/linux-targets.json).
+The Linux console program covers ten independent ports: PSP, PS Vita, PS3, PS4, PS5, Original Xbox, Wii, Wii U, Switch and Switch 2. Every port targets a Slackware-compatible base built for its own CPU architecture. The common graphical target is **Snakey Console Desktop (XFCE4)**, with a controller-first experience; PSP, Original Xbox and Wii are too constrained for XFCE4 and instead target a minimal native Snakey console interface. Vita is experimental and PS3 is conditional. No universal compatibility or Snakey hardware boot is claimed. See [the ten-console port program](docs/ten-console-port-program.md) and [the Linux hardware registry](platforms/linux-targets.json).
 
 ## Snakey Linux Desktop
 
-The Linux distribution track now has its first real image profile in `linux/`. The Snakey Big Picture fullscreen controller-first launcher is available alongside XFCE.
+The Linux distribution track has an x86_64 Slackware 15.0 development profile in `linux/`. Snakey Big Picture is the controller-first shell/launcher concept for the console desktop family; XFCE4 is the full desktop target on capable ports.
 It is pinned to **Slackware 15.0 stable** (not `current`), uses native Slackware packages and `pkgtools`/SysVinit, and targets Slackware Live Edition's stripped XFCE variant. It boots graphically
 (runlevel 4), trims bloat and produces an x86_64 live ISO for Limbo/QEMU.
 Build requirements and the current untested status are documented in
@@ -77,7 +77,7 @@ Requires Python 3.10 or newer.
 
 ## Development status
 
-The Linux distribution is the primary desktop product. The existing x86-64 Slackware/XFCE live profile is a generic development base, not yet a console-compatible image. PS4 is the first modern-console Linux integration target; its upstream kernel source, exact revision, southbridge compatibility and reproducible build still need to be pinned and verified. PS5 and Switch follow as independent ports. No console image is called bootable until kernel, rootfs, drivers and boot evidence are separately validated. The retro SDK remains available for genuine native homebrew, but experimental flat-color ROM previews are not treated as Snakey Desktop releases.
+The Linux distribution is the primary desktop product. The existing x86-64 Slackware/XFCE live profile is a generic development base, not yet a console-compatible image. All ten console lanes now declare a Slackware-compatible userspace target and the Snakey Console Desktop policy in `platforms/linux-targets.json`. XFCE4 is used where memory and drivers allow it; constrained systems get the same Snakey identity through a minimal native UI. No console image is called bootable until its kernel, rootfs, drivers and hardware evidence are separately validated. The retro SDK remains available for genuine native homebrew, but experimental flat-color ROM previews are not treated as Snakey Desktop releases.
 
 ## License
 
@@ -113,7 +113,7 @@ Hardware candidates must be evaluated with the [retro Linux hardware assessment 
 
 Snakey tracks ten independent Linux port lanes: PSP (MIPS), PS Vita (ARMv7), PS3 (PowerPC64), PS4 (x86-64), PS5 (x86-64), Original Xbox (i686), Wii (PowerPC32), Wii U (PowerPC32), Switch (AArch64) and Switch 2 (AArch64). Each has a separate architecture, toolchain and hardware evidence gate. See [the ten-console port program](docs/ten-console-port-program.md), [the platform matrix](platforms/linux-targets.json) and [upstream source provenance](platforms/linux-port-sources.json).
 
-GitHub Actions validates all ten records. Only the Vita currently has a pinned upstream build workflow; PS4 is priority one but its source must be audited and pinned before CI builds it. No Snakey kernel or console boot is claimed merely because a target is registered.
+GitHub Actions validates all ten records. Only the Vita currently has a pinned upstream build workflow; PSP remains in historical source-audit, and the other console ports require independent source and driver audits. No Snakey kernel or console boot is claimed merely because a target is registered.
 
 
 ## First-wave development: PSP + PS Vita
