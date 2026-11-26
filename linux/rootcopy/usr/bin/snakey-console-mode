@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+MODE="${1:-toggle}"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/snakey"
+STATE="$CACHE_DIR/console-mode"
+mkdir -p "$CACHE_DIR"
+
+if ! command -v xfconf-query >/dev/null 2>&1; then
+  echo "Snakey Console Mode requires an active XFCE session (xfconf-query)." >&2
+  exit 2
+fi
+
+set_property() {
+  local channel="$1" property="$2" type="$3" value="$4"
+  xfconf-query -c "$channel" -p "$property" --create -t "$type" -s "$value" >/dev/null
+}
+
+enable_mode() {
+  set_property xfce4-panel /panels/panel-1/size int 56
+  set_property xfce4-panel /panels/panel-1/icon-size int 40
+  set_property xsettings /Gtk/FontName string "Noto Sans 12"
+  set_property xfce4-desktop /desktop-icons/icon-size int 64
+  set_property xfce4-desktop /desktop-icons/file-icons/show-home bool true
+  set_property xfce4-desktop /desktop-icons/file-icons/show-filesystem bool false
+  touch "$STATE"
+  echo "Snakey Console Mode enabled. Restart the panel if its size does not update."
+}
+
+disable_mode() {
+  set_property xfce4-panel /panels/panel-1/size int 32
+  set_property xfce4-panel /panels/panel-1/icon-size int 24
+  set_property xsettings /Gtk/FontName string "Noto Sans 9"
+  set_property xfce4-desktop /desktop-icons/icon-size int 48
+  rm -f "$STATE"
+  echo "Snakey Desktop Mode restored."
+}
+
+case "$MODE" in
+  on|enable) enable_mode ;;
+  off|disable) disable_mode ;;
+  toggle) if [[ -e "$STATE" ]]; then disable_mode; else enable_mode; fi ;;
+  status) if [[ -e "$STATE" ]]; then echo "console"; else echo "desktop"; fi ;;
+  *) echo "Usage: snakey-console-mode [on|off|toggle|status]" >&2; exit 2 ;;
+esac
