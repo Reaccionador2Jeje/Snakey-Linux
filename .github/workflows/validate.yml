@@ -22,8 +22,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y cc65 rgbds
-      - name: Validate target registry
-        run: python3 tools/validate_targets.py
+      - name: Validate target registries
+        run: |
+          python3 tools/validate_targets.py
+          python3 tools/validate_linux_targets.py
       - name: Run SDK tests
         run: |
           python3 -m unittest discover -s tests -v
