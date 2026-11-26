@@ -119,7 +119,11 @@ MainLoop:
     cmp #$FF
     bne @pageMode
     jsr HandleMenu
+    lda $04
+    cmp #$FF
+    bne @noCursor
     jsr UpdateCursor
+@noCursor:
     jmp MainLoop
 @pageMode:
     lda $07
