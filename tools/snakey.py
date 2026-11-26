@@ -52,7 +52,9 @@ def command_new(args):
     destination.mkdir(parents=True, exist_ok=True)
     (destination / "src").mkdir(exist_ok=True)
     entry = ("src/main.asm" if args.target in {"game-boy", "game-boy-color"}
-             else "src/main.s" if args.target == "nes" else "src/main.c")
+             else "src/main.s" if args.target == "nes"
+             else "src/rom.json" if args.target in {"snes", "game-boy-advance", "nintendo-ds"}
+             else "src/main.c")
     manifest = {"schema_version": 1, "name": name, "target": args.target,
                 "version": "0.1.0", "entry": entry}
     (destination / MANIFEST).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -440,6 +442,12 @@ SEGMENTS {
 }
 """
         (destination / "cfg/nes.cfg").write_text(config, encoding="utf-8")
+    elif args.target in {"snes", "game-boy-advance", "nintendo-ds"}:
+        descriptor = {"schema_version": 1, "target": args.target,
+                      "generator": "tools/native_roms.py",
+                      "status": "experimental-template",
+                      "note": "The current adapter emits a minimal platform image; user CPU source compilation is a future milestone."}
+        (destination / "src/rom.json").write_text(json.dumps(descriptor, indent=2) + "\\n", encoding="utf-8")
     else:
         (destination / "src/main.c").write_text(
             "/* Snakey homebrew starter. Add target SDK headers/toolchain. */\\n"
