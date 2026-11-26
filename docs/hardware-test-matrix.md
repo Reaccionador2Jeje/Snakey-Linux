@@ -6,7 +6,7 @@ This matrix separates source/build checks, emulator checks and tests performed o
 | --- | --- | --- | --- | --- |
 | NES | cc65 NROM-256 mapper 0 | RetroArch NES core; verify video, D-pad, A/B and reset | Compatible NES flash cartridge or correctly supported NROM board; verify exact console revision and cartridge compatibility first | CI build only; physical test pending |
 | SNES | Not implemented | Compatible SNES emulator after adapter exists | Compatible SNES flash cartridge; board/mapper and region compatibility must be confirmed | Scaffold only |
-| Game Boy | RGBDS | RetroArch GB core; verify DMG boot and controls | Compatible GB flash cartridge or cartridge board; test on DMG hardware | CI build being added; physical test pending |
+| Game Boy | RGBDS | RetroArch GB core; verify DMG boot and controls | Compatible GB flash cartridge or cartridge board; test on DMG hardware | CI build verified; physical test pending |
 | Game Boy Color | RGBDS (current starter is DMG-compatible) | RetroArch GBC core; verify compatibility mode | Compatible GBC flash cartridge; test DMG-compatible and CGB-specific features only when implemented | CI build being added; physical test pending |
 | Game Boy Advance | Not implemented | Compatible GBA emulator after adapter exists | Compatible GBA flash cartridge; verify supported ROM size and save type | Scaffold only |
 | Nintendo DS | Not implemented | melonDS/DeSmuME or supported RetroArch core after adapter exists | Compatible DS flashcart or documented homebrew loader for exact model/firmware | Scaffold only |
