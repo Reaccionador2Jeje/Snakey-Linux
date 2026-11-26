@@ -33,6 +33,15 @@ These are registered paths, not a claim that every cartridge, firmware version o
 
 See docs/boot-system.md for prerequisites and limitations. The current physical-console compatibility status and repeatable test procedure are tracked in [docs/hardware-test-matrix.md](docs/hardware-test-matrix.md); use [the report template](docs/hardware-test-report-template.md) to record real-device results.
 
+## Snakey Linux Desktop
+
+The Linux distribution track now has its first real image profile in `linux/`.
+It targets Slackware Live Edition's stripped XFCE variant, boots graphically
+(runlevel 4), trims bloat and produces an x86_64 live ISO for Limbo/QEMU.
+Build requirements and the current untested status are documented in
+[linux/README.md](linux/README.md). The ISO has not yet been generated or
+emulator-tested; this profile is not a claim of a working release.
+
 ## Official website and Cloudflare Worker
 
 The complete Snakey website is in `site/`. It includes the platform catalog, boot-method guide, RetroArch testing instructions, documentation links and an automatically populated GitHub Releases section.
