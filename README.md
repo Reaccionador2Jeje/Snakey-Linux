@@ -35,7 +35,7 @@ See [experimental SNES/GBA/DS ROM builders](docs/experimental-rom-builders.md) f
 
 ## Linux on retro hardware
 
-The first Linux-capable hardware research target is the **PlayStation 3**. Its status, kernel requirements and limitations are documented in [the PS3 bring-up plan](linux/targets/ps3/README.md) and [Linux hardware registry](platforms/linux-targets.json). This is a research candidate, not a tested Snakey release.
+The first active Linux-on-console research target is the **Nintendo Wii**. A maintained Wii-Linux project reports modern kernel work and framebuffer/Xorg support, but Snakey has not built or booted it. See [the Wii research plan](linux/targets/wii/README.md) and [Linux hardware registry](platforms/linux-targets.json). The PlayStation 3 remains documented as a deferred research target; it will not be powered, opened, modified or used for testing unless the owner later chooses to do so.
 
 ## Snakey Linux Desktop
 
