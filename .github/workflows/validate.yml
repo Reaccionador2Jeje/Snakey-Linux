@@ -46,6 +46,11 @@ jobs:
           from pathlib import Path
           profile = json.loads(Path("linux/profile.json").read_text())
           assert profile["base"] == "Slackware"
+          assert profile["base_release"] == "15.0"
+          assert profile["base_channel"] == "stable"
+          assert profile["package_manager"] == "pkgtools"
+          assert profile["init_system"] == "SysVinit"
+          assert profile["slackware_repository"] == "slackware64-15.0"
           assert profile["builder"] == "liveslak"
           assert profile["architecture"] == "x86_64"
           assert profile["desktop"] == "XFCE"
@@ -67,7 +72,11 @@ jobs:
               "linux/rootcopy/usr/share/applications/snakey-big-picture.desktop",
           ):
               assert Path(path).is_file(), path
-          print("Snakey Linux profile and identity assets: OK")
+          liveslak = Path("linux/make_slackware_live.conf").read_text()
+          for setting in ('SL_VERSION="15.0"', 'SL_ARCH="x86_64"', 'LIVEDE="XFCE"', 'RUNLEVEL=4', 'DISTRO="snakey"'):
+              assert setting in liveslak, setting
+          assert "rsync.osuosl.org::slackware" in liveslak
+          print("Snakey Linux Slackware 15.0 profile and identity assets: OK")
           PY
       - name: Build and verify a real NROM-256 ROM
         run: |
