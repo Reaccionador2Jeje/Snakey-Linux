@@ -33,8 +33,30 @@ class SnakeyLinuxProfileTests(unittest.TestCase):
         paths = [
             "rootcopy/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml",
             "rootcopy/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml",
+            "rootcopy/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml",
+            "rootcopy/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml",
         ]
         for path in paths:
+            with self.subTest(path=path):
+                ET.parse(LINUX / path)
+
+    def test_snake_theme_is_complete_and_selected(self):
+        theme = LINUX / "rootcopy/usr/share/themes/Snakey-Dark"
+        required = ["index.theme", "gtk-2.0/gtkrc", "gtk-3.0/gtk.css"]
+        for path in required:
+            with self.subTest(path=path):
+                self.assertTrue((theme / path).is_file())
+        settings = ET.parse(
+            LINUX / "rootcopy/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml"
+        )
+        values = [node.attrib.get("value") for node in settings.iter("property")]
+        self.assertIn("Snakey-Dark", values)
+
+    def test_panel_and_window_manager_defaults_are_valid(self):
+        for path in (
+            "rootcopy/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml",
+            "rootcopy/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml",
+        ):
             with self.subTest(path=path):
                 ET.parse(LINUX / path)
 
