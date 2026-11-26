@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+. /etc/os-release 2>/dev/null || true
+cat <<'BANNER'
+  ____                      __
+ / __/___  ____ _____ ____  / /__
+ \__ \/ _ \/ __ \`/ __ \`/ _ \/_//_/
+___/ /  __/ /_/ / /_/ /  __/ ,<
+/____/\___/\__, /\__, /\___/_/|_|
+          /____//____/
+BANNER
+printf '\nDistribution: %s\n' "\${PRETTY_NAME:-Snakey Linux}"
+printf '%s\n' 'Base:         Slackware 15.0 stable'
+printf '%s\n' 'Desktop:      XFCE4'
+printf '%s\n' 'Init:         SysVinit'
+printf '%s\n' 'Packages:     Slackware pkgtools'
+printf '\nProject: https://github.com/Reaccionador2Jeje/Snakey-Linux\n'
