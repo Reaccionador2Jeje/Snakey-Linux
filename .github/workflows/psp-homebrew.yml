@@ -59,7 +59,8 @@ jobs:
           make clean
           make
           test -s EBOOT.PBP
-          file EBOOT.PBP
+          test "$(wc -c < EBOOT.PBP)" -gt 1000
+          ls -lh EBOOT.PBP
 
       - name: Stage distributable
         run: |
