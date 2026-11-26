@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfwm4" version="1.0">
+  <property name="general" type="empty">
+    <property name="theme" type="string" value="Adwaita-dark"/>
+    <property name="title_font" type="string" value="Noto Sans Bold 9"/>
+    <property name="button_layout" type="string" value="O|HMC"/>
+    <property name="wrap_windows" type="bool" value="true"/>
+    <property name="cycle_minimum" type="bool" value="true"/>
+    <property name="focus_delay" type="int" value="10"/>
+    <property name="raise_on_click" type="bool" value="true"/>
+    <property name="snap_to_border" type="bool" value="true"/>
+    <property name="snap_to_windows" type="bool" value="true"/>
+  </property>
+</channel>
