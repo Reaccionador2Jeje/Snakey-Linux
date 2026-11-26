@@ -47,7 +47,8 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "desktop_goal": "Kernel and shell feasibility first; XFCE is not assumed",
-      "notes": "PS3-specific Linux support exists in upstream kernel history; OtherOS availability and usable memory are model/configuration dependent."
+      "notes": "PS3-specific Linux support exists in upstream kernel history; OtherOS availability and usable memory are model/configuration dependent.",
+      "toolchain_strategy": "PowerPC64 big-endian cross-toolchain; PS3-specific kernel configuration and boot-path audit"
     },
     {
       "id": "ps4",
