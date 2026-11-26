@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10140f">
+  <meta name="description" content="Snakey Linux: ecosistema retro independiente para homebrew, ROMs y sistemas Linux compatibles.">
+  <title>Snakey Linux — Retro, reconstruido</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Snakey Linux, inicio"><span class="brand-mark">S</span><span>SNAKEY<span class="brand-light"> LINUX</span></span></a>
+    <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-nav">Menú</button>
+    <nav id="primary-nav" aria-label="Navegación principal">
+      <a href="#ecosystem">Ecosistema</a><a href="#platforms">Consolas</a><a href="#downloads">Descargas</a><a href="#retroarch">RetroArch</a><a href="#docs">Documentación</a>
+    </nav>
+    <a class="header-cta" href="https://github.com/Reaccionador2Jeje/Snakey-Linux" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="pulse"></span> PROYECTO INDEPENDIENTE · OPEN SOURCE</p>
+        <h1>El retro no<br><em>se detiene.</em></h1>
+        <p class="hero-lead">Un ecosistema para crear, compilar y ejecutar homebrew en consolas clásicas, y construir sistemas Linux donde el hardware realmente lo permite.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#downloads">Explorar descargas <span>↓</span></a><a class="button button-ghost" href="#ecosystem">Conocer Snakey</a></div>
+        <div class="hero-meta"><span>SDK abierto</span><span>ROMs nativas</span><span>Sin compras obligatorias</span></div>
+      </div>
+      <div class="hero-art" aria-label="Ilustración decorativa de una serpiente pixelada">
+        <div class="scanlines"></div><div class="pixel-window"><div class="window-top"><i></i><i></i><i></i><span>SNAKEY_OS // BOOT</span></div><div class="pixel-snake"><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="pixel-screen-title">SNAKEY<span>_</span></div><div class="pixel-screen-sub">PRESS START TO BUILD</div><div class="pixel-screen-foot"><span>CORE 0.1</span><span>READY</span></div></div>
+        <span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="hero-tag">BUILD · PLAY · REPEAT</span>
+      </div>
+    </section>
+
+    <section class="ticker" aria-label="Plataformas iniciales"><div>NES <b>✳</b> SNES <b>✳</b> GAME BOY <b>✳</b> GAME BOY COLOR <b>✳</b> GAME BOY ADVANCE <b>✳</b> NINTENDO DS <b>✳</b> LINUX-CAPABLE HARDWARE <b>✳</b></div></section>
+
+    <section class="section intro" id="ecosystem">
+      <div class="section-kicker">01 / EL ECOSISTEMA</div>
+      <div class="intro-grid"><h2>No es una distro<br>para todo.</h2><div><p class="section-lead">Snakey separa dos mundos que no deben confundirse.</p><p>Las consolas clásicas ejecutan ROMs homebrew nativas diseñadas para su procesador y hardware. Snakey Linux, en cambio, está reservado para equipos capaces de ejecutar un kernel Linux real. Así mantenemos compatibilidad y expectativas honestas.</p></div></div>
+      <div class="feature-grid">
+        <article class="feature-card"><span class="feature-number">A</span><div class="feature-icon">⌘</div><h3>Snakey SDK</h3><p>Herramientas para crear proyectos, validar manifiestos y compilar ROMs para cada plataforma compatible.</p><a href="#docs">Ver herramientas ↗</a></article>
+        <article class="feature-card"><span class="feature-number">B</span><div class="feature-icon">▣</div><h3>Snakey Boot</h3><p>Perfiles de arranque para emuladores, cartuchos físicos, flashcarts SD y loaders compatibles.</p><a href="#boot-methods">Ver métodos ↗</a></article>
+        <article class="feature-card"><span class="feature-number">C</span><div class="feature-icon">⌁</div><h3>Snakey Linux</h3><p>La línea Linux basada en Slackware para hardware que realmente pueda ejecutar Linux.</p><a href="https://github.com/Reaccionador2Jeje/Snakey-Linux" target="_blank" rel="noreferrer">Ver repositorio ↗</a></article>
+      </div>
+    </section>
+
+    <section class="section platforms-section" id="platforms">
+      <div class="section-kicker">02 / PLATAFORMAS</div>
+      <div class="section-heading"><div><h2>Una plataforma,<br>su propio lenguaje.</h2><p>El estado mostrado procede del registro del proyecto.</p></div><span class="live-label"><i></i> REGISTRO DEL SDK</span></div>
+      <div class="platform-grid" id="platform-grid" aria-live="polite"><div class="loading-card">Cargando plataformas…</div></div>
+      <p class="fine-print">“Registrado” no significa que exista una compilación terminada ni que todos los cartuchos sean compatibles. Consulta el perfil específico de cada consola.</p>
+    </section>
+
+    <section class="section boot-section" id="boot-methods">
+      <div class="section-kicker">03 / CÓMO SE EJECUTA</div><h2>Con cartucho.<br><em>O sin él.</em></h2>
+      <div class="boot-grid">
+        <article><span class="boot-index">01</span><h3>Emulador</h3><p>Abre un archivo ROM compatible directamente en RetroArch u otro emulador. No necesitas cartucho físico.</p><span class="boot-chip">SIN CARTUCHO</span></article>
+        <article><span class="boot-index">02</span><h3>Cartucho</h3><p>Requiere un cartucho compatible con la consola y con el formato y mapeador de la ROM.</p><span class="boot-chip">CARTUCHO COMPATIBLE</span></article>
+        <article><span class="boot-index">03</span><h3>Flashcart + SD</h3><p>La tarjeta SD se utiliza mediante un flashcart compatible. La consola no lee una SD común por sí sola.</p><span class="boot-chip">FLASHCART NECESARIO</span></article>
+        <article><span class="boot-index">04</span><h3>Homebrew loader</h3><p>Disponible solo en plataformas y modelos cuyo firmware y método de carga lo permitan.</p><span class="boot-chip">SEGÚN MODELO</span></article>
+      </div>
+    </section>
+
+    <section class="section retroarch-section" id="retroarch">
+      <div class="retro-copy"><div class="section-kicker">04 / PRIMERA PRUEBA</div><h2>Tu primera ROM.<br><em>En RetroArch.</em></h2><p>La primera prueba pública estará centrada en NES NROM-256. Cuando haya una ROM publicada, podrás descargarla y abrirla desde RetroArch.</p><a class="button button-primary" href="https://www.retroarch.com/?page=platforms" target="_blank" rel="noreferrer">Obtener RetroArch ↗</a></div>
+      <div class="steps-card">
+        <div class="steps-head"><span>GUÍA RÁPIDA / NES</span><span class="steps-status">PREPARADO</span></div>
+        <ol><li><b>Consigue la ROM</b><span>Descarga el archivo .nes desde una publicación oficial de Snakey.</span></li><li><b>Instala un núcleo NES</b><span>En RetroArch, actualiza los núcleos y elige uno compatible con NES/Famicom.</span></li><li><b>Abre el contenido</b><span>Ve a Cargar contenido, selecciona el .nes y elige el núcleo.</span></li><li><b>Prueba el menú</b><span>Usa la cruceta para navegar, A para seleccionar y B para volver.</span></li></ol>
+        <p class="notice"><b>Importante:</b> el artefacto de CI es una compilación de prueba. La prueba visual en RetroArch se confirmará por separado; compilar correctamente no demuestra todavía que el menú se vea o responda correctamente en un emulador.</p>
+      </div>
+    </section>
+
+    <section class="section downloads-section" id="downloads">
+      <div class="section-kicker">05 / DESCARGAS</div><div class="section-heading"><div><h2>Lo que está<br>listo para probar.</h2><p>Las versiones publicadas aparecerán aquí automáticamente.</p></div><a class="text-link" href="https://github.com/Reaccionador2Jeje/Snakey-Linux/releases" target="_blank" rel="noreferrer">Todas las publicaciones ↗</a></div>
+      <div id="release-list" class="release-list" aria-live="polite"><div class="loading-card">Consultando publicaciones…</div></div>
+      <div class="artifact-note"><span>ⓘ</span><p>Los artefactos temporales de GitHub Actions no son publicaciones estables. Para una descarga permanente, el proyecto debe crear una Release con su ROM, notas y suma SHA-256.</p></div>
+    </section>
+
+    <section class="section docs-section" id="docs">
+      <div class="section-kicker">06 / DOCUMENTACIÓN</div><h2>Construye con Snakey.</h2>
+      <div class="docs-grid">
+        <a href="https://github.com/Reaccionador2Jeje/Snakey-Linux/blob/main/docs/architecture.md" target="_blank" rel="noreferrer"><span>01</span><b>Arquitectura</b><small>Cómo se organiza el ecosistema ↗</small></a>
+        <a href="https://github.com/Reaccionador2Jeje/Snakey-Linux/blob/main/docs/sdk.md" target="_blank" rel="noreferrer"><span>02</span><b>SDK</b><small>Crear, validar y compilar proyectos ↗</small></a>
+        <a href="https://github.com/Reaccionador2Jeje/Snakey-Linux/blob/main/docs/boot-system.md" target="_blank" rel="noreferrer"><span>03</span><b>Sistema de arranque</b><small>Cartuchos, emuladores y loaders ↗</small></a>
+        <a href="https://github.com/Reaccionador2Jeje/Snakey-Linux/tree/main/tests" target="_blank" rel="noreferrer"><span>04</span><b>Pruebas</b><small>Validación automatizada ↗</small></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a class="brand" href="/"><span class="brand-mark">S</span><span>SNAKEY<span class="brand-light"> LINUX</span></span></a><p>Retro independiente. Código abierto. Compatibilidad sin promesas falsas.</p><div><a href="https://github.com/Reaccionador2Jeje/Snakey-Linux" target="_blank" rel="noreferrer">GitHub ↗</a><a href="/api/health">Estado API ↗</a></div><small>© <span id="year"></span> Snakey Linux · Proyecto comunitario independiente.</small></footer>
+</body>
+</html>
