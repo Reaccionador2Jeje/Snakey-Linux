@@ -226,7 +226,7 @@ jobs:
         run: |
           make -j2 ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu- vmlinux
           powerpc64-linux-gnu-readelf -h vmlinux | tee elf-header.txt
-          grep -F '2\'s complement, big endian' elf-header.txt
+          grep -E 'Data:.*big endian' elf-header.txt
           grep -F 'PowerPC64' elf-header.txt
       - name: Record build provenance and checksums
         working-directory: linux-ps3-kernel
