@@ -75,7 +75,7 @@ MainLoop:
         (destination / "src/main.asm").write_text(source, encoding="utf-8")
     elif args.target == "nes":
         (destination / "cfg").mkdir(exist_ok=True)
-        source = """; Snakey NES NROM-256 controller-driven boot menu (ca65)
+        source = """; Snakey NES NROM-256 interactive menu and page navigation (ca65)
 .segment "HEADER"
 .byte "NES", $1A
 .byte 2, 1
@@ -100,8 +100,38 @@ Reset:
 @vblank2:
     bit $2002
     bpl @vblank2
+    lda #$00
+    sta $00
+    sta $01
+    sta $02
+    sta $03
+    lda #$FF
+    sta $04
+    jsr SetPalette
+    jsr DrawMenu
 
-    ; Background palette.
+MainLoop:
+@wait:
+    bit $2002
+    bpl @wait
+    jsr ReadController
+    lda $04
+    cmp #$FF
+    bne @pageMode
+    jsr HandleMenu
+    jsr UpdateCursor
+    jmp MainLoop
+@pageMode:
+    lda $07
+    and #$01
+    beq @continue
+    lda #$FF
+    sta $04
+    jsr DrawMenu
+@continue:
+    jmp MainLoop
+
+SetPalette:
     lda #$3F
     sta $2006
     lda #$00
@@ -114,8 +144,64 @@ Reset:
     sta $2007
     lda #$11
     sta $2007
+    rts
 
-    ; Clear nametable 0.
+ReadController:
+    lda #$01
+    sta $4016
+    lda #$00
+    sta $4016
+    sta $02
+    ldx #$00
+@read:
+    lda $4016
+    and #$01
+    beq @next
+    lda ControllerMasks,x
+    ora $02
+    sta $02
+@next:
+    inx
+    cpx #$08
+    bne @read
+    ; Keep only newly pressed buttons in $07.
+    lda $03
+    eor #$FF
+    and $02
+    sta $07
+    lda $02
+    sta $03
+    rts
+
+HandleMenu:
+    lda $07
+    and #$10
+    beq @down
+    lda $00
+    beq @down
+    dec $00
+@down:
+    lda $07
+    and #$20
+    beq @select
+    lda $00
+    cmp #$02
+    bcs @select
+    inc $00
+@select:
+    lda $07
+    and #$02
+    beq @done
+    lda $00
+    sta $04
+    jsr DrawPage
+@done:
+    rts
+
+ClearScreen:
+    lda #$00
+    sta $2001
+    bit $2002
     lda #$20
     sta $2006
     lda #$00
@@ -130,8 +216,11 @@ Reset:
     bne @clear
     dex
     bne @page
+    rts
 
-    ; Title: SNAKEY.
+DrawMenu:
+    jsr ClearScreen
+    ; SNAKEY title.
     lda #$21
     sta $2006
     lda #$CD
@@ -143,8 +232,7 @@ Reset:
     inx
     cpx #$07
     bne @title
-
-    ; Menu labels: PLAY, CART, INFO.
+    ; PLAY.
     lda #$22
     sta $2006
     lda #$8D
@@ -157,7 +245,7 @@ Reset:
     sta $2007
     lda #$06
     sta $2007
-
+    ; CART.
     lda #$22
     sta $2006
     lda #$CD
@@ -170,7 +258,7 @@ Reset:
     sta $2007
     lda #$0B
     sta $2007
-
+    ; INFO.
     lda #$23
     sta $2006
     lda #$0D
@@ -183,57 +271,64 @@ Reset:
     sta $2007
     lda #$0D
     sta $2007
-
-    ; Initialize selected menu item and render the cursor.
-    lda #$00
-    sta $00
-    sta $01
     lda #$00
     sta $2005
     sta $2005
     lda #$08
     sta $2001
+    rts
 
-MainLoop:
-@wait:
-    bit $2002
-    bpl @wait
-    jsr ReadController
-    jsr UpdateCursor
-    jmp MainLoop
-
-ReadController:
-    lda #$01
-    sta $4016
+DrawPage:
+    jsr ClearScreen
+    ; Select a four-glyph page heading through a zero-page pointer.
+    ldx $04
+    lda PageTextLo,x
+    sta $05
+    lda PageTextHi,x
+    sta $06
+    lda #$21
+    sta $2006
+    lda #$4E
+    sta $2006
+    ldy #$00
+@heading:
+    lda ($05),y
+    sta $2007
+    iny
+    cpy #$04
+    bne @heading
+    ; SNAKEY footer.
+    lda #$22
+    sta $2006
+    lda #$8D
+    sta $2006
+    ldx #$01
+@footer:
+    txa
+    sta $2007
+    inx
+    cpx #$07
+    bne @footer
+    ; CART page reports status as unknown until a hardware-specific
+    ; cartridge interface is implemented. Draw a question-mark tile.
+    lda $04
+    cmp #$01
+    bne @render
+    lda #$22
+    sta $2006
+    lda #$0E
+    sta $2006
+    lda #$10
+    sta $2007
+@render:
     lda #$00
-    sta $4016
-    lda $4016
-    lda $4016
-    lda $4016
-    lda $4016
-    lda $4016
-    and #$01
-    beq @checkDown
-    lda $00
-    beq @checkDown
-    sec
-    sbc #$01
-    sta $00
-@checkDown:
-    lda $4016
-    and #$01
-    beq @done
-    lda $00
-    cmp #$02
-    bcs @done
-    clc
-    adc #$01
-    sta $00
-@done:
+    sta $2005
+    sta $2005
+    lda #$08
+    sta $2001
     rts
 
 UpdateCursor:
-    ; Erase old cursor.
     ldx $01
     lda CursorHigh,x
     sta $2006
@@ -241,7 +336,6 @@ UpdateCursor:
     sta $2006
     lda #$00
     sta $2007
-    ; Draw new cursor.
     ldx $00
     lda CursorHigh,x
     sta $2006
@@ -253,10 +347,22 @@ UpdateCursor:
     sta $01
     rts
 
+ControllerMasks:
+.byte $01,$02,$04,$08,$10,$20,$40,$80
 CursorLow:
 .byte $8A, $CA, $0A
 CursorHigh:
 .byte $22, $22, $23
+PageTextLo:
+.byte <PlayText, <CartText, <InfoText
+PageTextHi:
+.byte >PlayText, >CartText, >InfoText
+PlayText:
+.byte 7,8,3,6
+CartText:
+.byte 9,3,10,11
+InfoText:
+.byte 12,2,14,13
 
 .segment "VECTORS"
 .word Reset, Reset, Reset
@@ -309,7 +415,10 @@ CursorHigh:
 ; >
 .byte $40,$20,$10,$08,$10,$20,$40,$00
 .res 8, $00
-.res $2000 - (16 + 15 * 16), $00
+; ?
+.byte $3C,$42,$02,$0C,$10,$00,$10,$00
+.res 8, $00
+.res $2000 - (16 + 16 * 16), $00
 """
         (destination / "src/main.s").write_text(source, encoding="utf-8")
         config = """MEMORY {
