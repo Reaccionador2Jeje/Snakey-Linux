@@ -92,10 +92,19 @@ MainLoop:
     beq @loop
     lda $00
     beq @open_app
+    cmp #$01
+    beq @files_action
     cmp #$02
     beq @console_action
     cmp #$03
     beq @settings_action
+    jmp @loop
+@files_action:
+    lda $01
+    clc
+    adc #$01
+    sta $08
+    jsr DrawScreen
     jmp @loop
 @open_app:
     lda $01
@@ -283,6 +292,8 @@ DrawLauncher:
     lda #>AboutLabel
     sta $07
     jsr DrawText
+    lda #$21
+    sta $2006
     ldx $01
     lda CursorAddress,x
     sta $2006
@@ -330,6 +341,39 @@ DrawFiles:
     sta $06
     lda #>LicenseLabel
     sta $07
+    jsr DrawText
+    lda #$23
+    ldx #$0A
+    jsr SetTextAddress
+    lda $08
+    beq @files_hint
+    cmp #$01
+    beq @file_readme
+    cmp #$02
+    beq @file_config
+    lda #<LicenseLabel
+    sta $06
+    lda #>LicenseLabel
+    sta $07
+    jmp @file_detail
+@file_readme:
+    lda #<ReadmeLabel
+    sta $06
+    lda #>ReadmeLabel
+    sta $07
+    jmp @file_detail
+@file_config:
+    lda #<ConfigLabel
+    sta $06
+    lda #>ConfigLabel
+    sta $07
+    jmp @file_detail
+@files_hint:
+    lda #<CatalogHint
+    sta $06
+    lda #>CatalogHint
+    sta $07
+@file_detail:
     jsr DrawText
     jmp EnableScreen
 
@@ -379,9 +423,9 @@ DrawConsole:
     sta $07
     jmp @result
 @about_result:
-    lda #<NativeLabel
+    lda #<AboutCmdLabel
     sta $06
-    lda #>NativeLabel
+    lda #>AboutCmdLabel
     sta $07
     jmp @result
 @help_result:
@@ -391,10 +435,10 @@ DrawConsole:
     sta $07
 @result:
     jsr DrawText
+    lda #$22
+    sta $2006
     ldx $01
-    lda CursorAddress,x
-    clc
-    adc #$80
+    lda ConsoleCursorAddress,x
     sta $2006
     lda #$0F
     sta $2007
@@ -474,27 +518,30 @@ EnableScreen:
 ControllerMasks:
 .byte $01,$02,$04,$08,$10,$20,$40,$80
 CursorAddress:
-.byte $68,$88,$A8,$C8
+.byte $88,$A8,$C8,$E8
+ConsoleCursorAddress:
+.byte $08,$48,$88
 
-Title:          .byte 1,18,19,16,17,6,0
+Title:          .byte 1,2,3,4,5,6,0
 FilesLabel:     .byte 14,12,8,17,1,0
 ConsoleLabel:   .byte 9,13,18,1,13,8,17,0
 SettingsLabel:  .byte 1,17,11,11,12,18,22,1,0
 AboutLabel:     .byte 19,20,13,21,11,0
 CatalogLabel:   .byte 9,19,11,19,8,13,22,0
-ReadmeLabel:    .byte 18,17,19,24,25,17,0
+ReadmeLabel:    .byte 10,5,3,24,25,5,0
 ConfigLabel:    .byte 9,13,18,14,12,22,0
 LicenseLabel:   .byte 8,12,9,17,18,1,17,0
-HelpLabel:      .byte 23,17,8,16,0
+HelpLabel:      .byte 23,5,8,7,0
 AboutCmdLabel:  .byte 19,20,13,21,11,0
-ClearLabel:     .byte 9,8,17,19,18,0
-HelpResult:     .byte 23,17,8,16,0
-NativeLabel:    .byte 18,19,11,12,6,17,0
-ClearedLabel:   .byte 9,8,17,19,18,0
-PaletteLabel:   .byte 16,19,8,17,11,11,17,0
-PaletteZero:    .byte 16,19,8,17,11,11,17,0
-PaletteOne:     .byte 16,19,8,17,11,11,17,0
-HardwareLabel:  .byte 23,13,25,17,0
+ClearLabel:     .byte 9,8,5,3,10,0
+HelpResult:     .byte 23,5,8,7,0
+NativeLabel:    .byte 18,5,1,23,13,25,5,1,6,1,11,5,25,0
+ClearedLabel:   .byte 9,8,5,3,10,0
+PaletteLabel:   .byte 7,3,8,5,11,11,5,0
+PaletteZero:    .byte 13,18,0
+PaletteOne:     .byte 13,14,14,0
+HardwareLabel:  .byte 18,5,1,11,3,10,22,5,11,0
+CatalogHint:    .byte 3,0
 
 .segment "VECTORS"
 .word Reset, Reset, Reset
