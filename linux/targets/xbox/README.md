@@ -50,3 +50,27 @@ modify firmware, deploy payloads, or write to physical console storage.
 
 A successful cross-build is not a kernel boot. A kernel boot is not a working
 userspace. A working userspace is not a tested desktop.
+
+## Slackware base — 32-bit x86
+
+The Original Xbox userspace is intended to derive from **Slackware 15.0
+32-bit x86**, rebuilt/trimmed for the console's i686-class CPU. Slackware 15.0
+publishes a native 32-bit x86 package tree; this is a much closer base than
+starting from an unrelated distribution.
+
+Because the Xbox has only a 64 MiB memory class, this is not a full Slackware
+installation. Snakey will select a minimal package subset and build a
+console-specific root filesystem.
+
+Base requirements:
+- Slackware package format and pkgtools database/operations.
+- Slackware filesystem layout and SysVinit startup conventions.
+- A minimal shell, core utilities, libc, device management and required
+  libraries only.
+- i686-compatible kernel and userspace ABI, verified together.
+- Snakey's framebuffer desktop and controller/input services added after the
+  base system boots to a shell.
+
+The standard Slackware 15.0 x86 package tree is the package/source baseline;
+Xbox kernel, boot integration, drivers and the final package set remain
+console-specific engineering work. No bootable image is claimed.
