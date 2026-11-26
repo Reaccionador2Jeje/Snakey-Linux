@@ -1,13 +1,29 @@
 #!/usr/bin/env python3
 """Translate a Linux joystick (/dev/input/js*) into XFCE keyboard navigation."""
 from __future__ import annotations
-import glob, os, shutil, struct, subprocess, sys
+import glob, json, os, shutil, struct, subprocess, sys
+from pathlib import Path
 from typing import Optional
 EVENT = struct.Struct("IhBB")
 JS_EVENT_BUTTON, JS_EVENT_AXIS, JS_EVENT_INIT = 0x01, 0x02, 0x80
 KEYS = {0: "Return", 1: "Escape", 2: "Tab", 4: "shift+Tab", 5: "Tab", 6: "Return"}
 AXIS_KEYS = {0: ("Left", "Right"), 1: ("Up", "Down"), 6: ("Left", "Right"), 7: ("Up", "Down")}
 DEADZONE = 16000
+DEFAULT_KEYS = dict(KEYS)
+
+
+def load_profile():
+    config_home = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config")))
+    path = config_home / "snakey" / "gamepad.json"
+    try:
+        profile = json.loads(path.read_text())
+        keys = {}
+        for button, action in profile.get("buttons", {}).items():
+            if action != "none":
+                keys[int(button)] = action
+        return keys, int(profile.get("deadzone", DEADZONE)), int(profile.get("keyboard_button", 3)), profile.get("device", "auto")
+    except (OSError, ValueError, TypeError):
+        return dict(DEFAULT_KEYS), DEADZONE, 3, "auto"
 
 def key_for_axis(axis: int, value: int) -> Optional[str]:
     if abs(value) < DEADZONE or axis not in AXIS_KEYS:
@@ -36,9 +52,9 @@ def main() -> int:
     if not shutil.which("xdotool"):
         print("Snakey Gamepad: xdotool is required.", file=sys.stderr)
         return 2
-    print("Snakey Gamepad: waiting for a controller...")
+    keys, deadzone, keyboard_button, configured_device = load_profile()\n    print("Snakey Gamepad: waiting for a controller...")
     while True:
-        device = find_device()
+        device = find_device(configured_device)
         if not device:
             import time
             time.sleep(2)
@@ -59,7 +75,7 @@ def main() -> int:
                         elif number in KEYS:
                             emit_key(KEYS[number])
                     elif event_type == JS_EVENT_AXIS and number in AXIS_KEYS:
-                        key = key_for_axis(number, value)
+                        key = key_for_axis(number, value) if abs(value) >= deadzone else None
                         if key and last_axis.get(number) != key:
                             emit_key(key)
                         last_axis[number] = key
