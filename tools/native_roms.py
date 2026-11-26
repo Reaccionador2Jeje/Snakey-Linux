@@ -6,9 +6,7 @@ not substitutes for SDKs, commercial firmware, or physical-hardware validation.
 """
 from __future__ import annotations
 import argparse
-import json
 import struct
-import zlib
 from pathlib import Path
 
 def _write(path: Path, data: bytes) -> None:
@@ -39,7 +37,8 @@ def build_snes(path: Path, name: str) -> None:
     # LoROM vectors: native/emulation NMI, reset and IRQ. Reset points to $8000.
     struct.pack_into("<8H", header, 0x20, 0x8000, 0x8000, 0x8000, 0x8000,
                      0x8000, 0x8000, 0x8000, 0x8000)
-    header[0x1C:0x20] = struct.pack("<HH", 0xFFFF, 0x0000)\n    header[0x3C:0x40] = struct.pack("<HH", 0x8000, 0x8000)
+    header[0x1C:0x20] = struct.pack("<HH", 0xFFFF, 0x0000)
+    header[0x3C:0x40] = struct.pack("<HH", 0x8000, 0x8000)
     rom[0x7FC0:0x8000] = header
     _write(path, bytes(rom))
 
@@ -65,21 +64,6 @@ def build_gba(path: Path, name: str) -> None:
     rom[0xBE] = 0
     rom[0xBF] = 0
     # ARM code at 0xC0: Mode 3 framebuffer filled with a teal field, then loop.
-    code = struct.pack("<13I",
-        0xE3A00003, # mov r0,#3
-        0xE3A01000, # mov r1,#0
-        0xE3A02000, # mov r2,#0
-        0xE3A03496, # mov r3,#0x96000000 (replaced below with literal load)
-        0xE59F301C, # ldr r3,[pc,#28] -> 0x06000000
-        0xE3A0401F, # mov r4,#31 (red)
-        0xE1C340B0, # strh r4,[r3]
-        0xE2833002, # add r3,r3,#2
-        0xE2811001, # add r1,r1,#1
-        0xE3510A00, # cmp r1,#0xA00 (approx pixel count 38400)
-        0x1AFFFFFA, # bne fill
-        0xEAFFFFFE, # loop
-        0x06000000  # VRAM literal
-    )
     # Use a conservative, visibly colored screen fill loop (38400 pixels).
     code = struct.pack("<13I",
         0xE59F0030, # ldr r0,[pc,#48] -> DISPCNT literal
@@ -87,7 +71,7 @@ def build_gba(path: Path, name: str) -> None:
         0xE5801000, # str r1,[r0]
         0xE59F3018, # ldr r3,[pc,#24] -> VRAM literal
         0xE59F2018, # ldr r2,[pc,#24] -> pixel count literal
-        0xE3A0401F, # mov r4,#31 (blue)
+        0xE3A0401F, # mov r4,#31 (red)
         0xE1C340B0, # strh r4,[r3]
         0xE2833002, # add r3,r3,#2
         0xE2522001, # subs r2,r2,#1
