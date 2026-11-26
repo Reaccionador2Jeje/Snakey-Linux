@@ -13,6 +13,5 @@ PSP_EBOOT_TITLE = Snakey PSP
 LIBS = -lpspdebug -lpspdisplay -lpspctrl -lpspkernel -lpspuser
 
 EXTRA_TARGETS = EBOOT.PBP
-PSP_EBOOT_ICON = assets/icon0.png
 
 include $(PSPSDK)/lib/build.mak
