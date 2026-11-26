@@ -43,7 +43,7 @@ def main():
         seen.add(sid)
         if s.get("target") not in EXPECTED: fail(f"{sid}: unknown target")
         if s.get("architecture")!=ARCH[s["target"]]: fail(f"{sid}: architecture does not match target")
-        if not isinstance(s.get("project_url"),str) or not s["project_url"].startswith("https://"): fail(f"{sid}: project_url must be HTTPS")
+        if s.get("project_url") is not None and (not isinstance(s["project_url"],str) or not s["project_url"].startswith("https://")): fail(f"{sid}: project_url must be HTTPS or null")
         repo=s.get("source_repository")
         if repo is not None and (not isinstance(repo,str) or not repo.startswith("https://")): fail(f"{sid}: source_repository must be HTTPS or null")
         if s.get("build_status")=="pinned-upstream-build":
