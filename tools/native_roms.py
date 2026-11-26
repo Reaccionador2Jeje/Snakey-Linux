@@ -120,6 +120,7 @@ def build_nds(path: Path, name: str) -> None:
         0xE59F2030, # ldr r2,[pc,#0x30] -> VRAMCNT_A
         0xE3A01081, # mov r1,#0x81 (enable bank A, main BG)
         0xE5C21000, # strb r1,[r2]
+        0xE59F3028, # ldr r3,[pc,#0x28] -> BG VRAM
         0xE59F2028, # ldr r2,[pc,#0x28] -> pixel count
         0xE3A0401F, # mov r4,#31
         0xE1C040B0, # strh r4,[r3]
@@ -127,7 +128,6 @@ def build_nds(path: Path, name: str) -> None:
         0xE2522001, # subs r2,r2,#1
         0x1AFFFFFB, # bne to pixel write loop
         0xEAFFFFFE, # stable idle loop
-        0xE1A00000, # reserved
         0xE1A00000, # reserved
         0x04000000, # DISPCNT
         0x00010005, # mode 5 + BG2
