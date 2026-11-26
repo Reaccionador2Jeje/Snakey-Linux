@@ -39,10 +39,11 @@
       "desktop_goal": "Boot Snakey Linux userspace, then start the shared Snakey Desktop session over framebuffer and evdev; XFCE4 remains a later measured option.",
       "notes": "First-wave ARM target. Vita Linux Next is pinned for upstream reproduction in CI; this is not a Snakey kernel or a hardware boot.",
       "distribution_base": "Slackware",
-      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "distribution_strategy": "Slackware ARM 15.0 ARMv7-A hard-float minimal rootfs; preserve pkgtools, Slackware package metadata, filesystem layout and SysVinit. 32-bit ARM development ended upstream, so treat this as a compatibility baseline with independent maintenance and Vita-specific rebuilt packages.",
       "console_desktop": "Snakey Linux Desktop (framebuffer session)",
       "xfce4_status": "experimental",
-      "xfce4_notes": "Shared Snakey framebuffer desktop is the initial session; XFCE4 is considered only after memory, graphics and input measurements."
+      "xfce4_notes": "Shared Snakey framebuffer desktop is the initial session; XFCE4 is considered only after memory, graphics and input measurements.",
+      "rootfs_strategy": "Minimal Slackware-derived root filesystem; kernel/bootloader and console drivers are separate platform layers; Snakey Desktop starts only after Slackware userspace reaches a stable init shell."
     },
     {
       "id": "ps3",
@@ -123,10 +124,11 @@
       "desktop_goal": "Boot Snakey Linux userspace, then start the ultra-light shared Snakey Desktop framebuffer session; no XFCE4.",
       "notes": "Historical Xbox Linux projects exist; legacy boot and graphics support require independent audit.",
       "distribution_base": "Slackware",
-      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "distribution_strategy": "Slackware 15.0 32-bit x86 package tree as the base, reduced to a minimal i686 rootfs for the 64 MiB memory class. Preserve pkgtools, Slackware package format/layout and SysVinit; rebuild/verify the ABI and console drivers.",
       "console_desktop": "Snakey Linux Desktop (ultralight framebuffer session)",
       "xfce4_status": "not-feasible",
-      "xfce4_notes": "64 MiB class; use the shared ultra-light Snakey Linux userspace desktop, not XFCE4."
+      "xfce4_notes": "64 MiB class; use the shared ultra-light Snakey Linux userspace desktop, not XFCE4.",
+      "rootfs_strategy": "Minimal Slackware-derived root filesystem; kernel/bootloader and console drivers are separate platform layers; Snakey Desktop starts only after Slackware userspace reaches a stable init shell."
     },
     {
       "id": "wii",
@@ -144,10 +146,11 @@
       "desktop_goal": "Boot Snakey Linux userspace, then start the ultra-light shared Snakey Desktop framebuffer session; no XFCE4.",
       "notes": "Historical Wii Linux work; severe memory constraints make a conventional desktop unlikely.",
       "distribution_base": "Slackware",
-      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "distribution_strategy": "Unofficial Slackware-compatible PowerPC32 big-endian port. Use BonSlack PowerPC as a community source/package reference, rebuild a minimal Wii-specific package set, and preserve Slackware package conventions, pkgtools semantics, filesystem layout and SysVinit. Not an official Slackware port.",
       "console_desktop": "Snakey Linux Desktop (ultralight framebuffer session)",
       "xfce4_status": "not-feasible",
-      "xfce4_notes": "88 MiB class; use the shared ultra-light Snakey Linux userspace desktop, not XFCE4."
+      "xfce4_notes": "88 MiB class; use the shared ultra-light Snakey Linux userspace desktop, not XFCE4.",
+      "rootfs_strategy": "Minimal Slackware-derived root filesystem; kernel/bootloader and console drivers are separate platform layers; Snakey Desktop starts only after Slackware userspace reaches a stable init shell."
     },
     {
       "id": "wii-u",
@@ -213,5 +216,6 @@
       "xfce4_notes": "XFCE4 is a future target; first establish public kernel, boot and driver enablement"
     }
   ],
-  "desktop_policy": "For PS Vita, Original Xbox and Wii, Snakey Desktop is a Linux userspace session started by the target's Linux init system after the Snakey kernel and root filesystem boot. The initial common backend is a fullscreen software renderer on Linux framebuffer with controller input via evdev; it does not require Xorg or Wayland. Vita may evaluate XFCE4 only after measured resources and drivers. Original Xbox and Wii use the ultra-light Snakey Desktop profile. This is an architecture target, not a claim that these Linux ports or desktops currently boot."
+  "desktop_policy": "For PS Vita, Original Xbox and Wii, Snakey Desktop is a Linux userspace session started by the target's Linux init system after the Snakey kernel and root filesystem boot. The initial common backend is a fullscreen software renderer on Linux framebuffer with controller input via evdev; it does not require Xorg or Wayland. Vita may evaluate XFCE4 only after measured resources and drivers. Original Xbox and Wii use the ultra-light Snakey Desktop profile. This is an architecture target, not a claim that these Linux ports or desktops currently boot.",
+  "slackware_base_policy": "All Linux-capable console ports use Slackware as their distribution base, but not every architecture has an official Slackware release. Use official Slackware package trees where available; otherwise maintain a clearly labeled Slackware-compatible port. Preserve pkgtools/package conventions and SysVinit where feasible. Never label a cross-build as a bootable console image."
 }
