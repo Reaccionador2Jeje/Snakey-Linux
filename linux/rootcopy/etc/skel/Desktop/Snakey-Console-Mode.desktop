@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Snakey Console Mode
+Comment=Enlarge XFCE controls for television and gamepad use
+Exec=/usr/bin/snakey-console-mode toggle
+Icon=video-display
+Terminal=true
+Categories=Settings;Accessibility;
