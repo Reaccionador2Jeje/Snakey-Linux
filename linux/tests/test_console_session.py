@@ -31,9 +31,9 @@ class ConsoleSessionTests(unittest.TestCase):
         channel = tree.getroot()
         self.assertEqual(channel.attrib.get("name"), "xfce4-panel")
         text = panel.read_text()
-        for plugin in ("applicationsmenu", "tasklist", "systray", "clock"):
+        for plugin in ("applicationsmenu", "tasklist", "systray", "clock", "actions"):
             self.assertIn(plugin, text)
-        self.assertIn('name="size" type="uint" value="36"', text)
+        self.assertIn('name="size" type="uint" value="38"', text)
 
 if __name__ == "__main__":
     unittest.main()
