@@ -14,7 +14,7 @@ on:
       - ".github/workflows/psp-homebrew.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: snakey-psp-homebrew-${{ github.ref }}
@@ -81,3 +81,18 @@ jobs:
           path: dist/snakey-psp/
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish automated PSP prerelease
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: snakey-psp-${{ github.run_number }}
+          name: Snakey PSP Build #${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          prerelease: true
+          make_latest: false
+          generate_release_notes: true
+          files: |
+            dist/snakey-psp/EBOOT.PBP
+            dist/snakey-psp/README.txt
+            dist/snakey-psp/SHA256SUMS
