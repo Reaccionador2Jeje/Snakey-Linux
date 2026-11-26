@@ -31,6 +31,17 @@ Open the local URL printed by Wrangler.
 
 The Worker name is `snakey-linux`; the default workers.dev subdomain is enabled. The GitHub Actions workflow also deploys automatically on pushes to `main` once both repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are configured. Without those secrets, CI still runs the tests and Wrangler dry-run, and skips deployment. Connect a custom domain in Cloudflare after the first deployment.
 
+## NES preview releases
+
+Pushing a tag matching `nes-v*` starts the dedicated NES release workflow. It installs cc65, generates a fresh NROM-256 ROM from the tagged source, validates the project, checks the 40,976-byte image, calculates SHA-256, and publishes a **GitHub prerelease** containing `SnakeyNES.nes` and `SHA256SUMS.txt`.
+
+Example (after reviewing the commit you want to publish):
+
+    git tag nes-v0.1.0
+    git push origin nes-v0.1.0
+
+The prerelease status is intentional: the ROM is build-verified but is not yet visually verified in RetroArch or on physical hardware. Do not treat a successful CI build as proof of emulator compatibility.
+
 ## ROM testing
 
-The site includes the RetroArch guide for the NES NROM-256 build. CI artifacts are temporary; a permanent download appears in the Releases section only after a tagged GitHub Release contains the ROM asset. The build passing is not equivalent to visual emulator verification.
+The site includes the RetroArch guide for the NES NROM-256 build. CI artifacts are temporary; a permanent download appears in the Releases section only after a tagged GitHub Release contains the ROM asset.
