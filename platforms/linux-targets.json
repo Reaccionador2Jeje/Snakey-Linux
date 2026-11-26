@@ -10,13 +10,13 @@
       "cpu": "MIPS Allegrex",
       "system_ram_mb": 32,
       "status": "source-audit-required",
-      "priority": "research-only",
+      "priority": "priority-1",
       "snakey_kernel_built": false,
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "MIPS little-endian cross-toolchain; ABI and kernel config audit",
       "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "Historical Linux feasibility research; no Snakey kernel, boot chain or usable desktop is established."
+      "notes": "First-wave legacy target. Historical uClinux-on-PSP 0.22 artifacts are documented; source archive, toolchain, kernel patch and licensing must be audited before any build. No current Snakey kernel or hardware boot is claimed."
     },
     {
       "id": "ps-vita",
@@ -26,13 +26,13 @@
       "cpu": "ARM Cortex-A9",
       "system_ram_mb": 480,
       "status": "source-audit-required",
-      "priority": "upstream-build-pinned",
+      "priority": "priority-2",
       "snakey_kernel_built": false,
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "ARM hard-float cross-toolchain; pinned upstream Vita build adapter",
       "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "A pinned Vita Linux Next upstream build exists in CI; this is not a Snakey kernel or a hardware boot."
+      "notes": "First-wave ARM target. Vita Linux Next is pinned for upstream reproduction in CI; this is not a Snakey kernel or a hardware boot."
     },
     {
       "id": "ps3",
@@ -57,13 +57,13 @@
       "cpu": "AMD Jaguar APU",
       "system_ram_mb": 8192,
       "status": "source-audit-required",
-      "priority": "priority-1",
+      "priority": "deferred",
       "snakey_kernel_built": false,
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "Native x86-64 Linux toolchain",
       "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "First integration target. Linux psX source and limited model-specific evidence; no Snakey kernel build or console boot is claimed."
+      "notes": "Deferred while PSP and Vita are the active first-wave targets. Linux psX source audit remains future work; no Snakey kernel build or console boot is claimed."
     },
     {
       "id": "ps5",
@@ -73,7 +73,7 @@
       "cpu": "AMD Zen 2 APU",
       "system_ram_mb": 16384,
       "status": "source-audit-required",
-      "priority": "priority-2",
+      "priority": "deferred",
       "snakey_kernel_built": false,
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
@@ -137,7 +137,7 @@
       "cpu": "NVIDIA Tegra X1 ARM Cortex-A57/A53",
       "system_ram_mb": 4096,
       "status": "source-audit-required",
-      "priority": "priority-3",
+      "priority": "deferred",
       "snakey_kernel_built": false,
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
