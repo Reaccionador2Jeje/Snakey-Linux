@@ -31,10 +31,11 @@ jobs:
           from pathlib import Path
           source = Path("desktop/nes/main.s").read_text()
           glyphs = source.split('.segment "CHARS"', 1)[1].split('; 16x16 Snakey emblem tiles.', 1)[0]
-          assert '.res 8, $00' not in glyphs, "CHR glyph IDs must remain contiguous"
+          assert glyphs.count(".byte") == 25, "Expected 25 character glyphs"
+          assert glyphs.count(".res 8, $00 ; second CHR bitplane (transparent)") == 25, "Every 8x8 glyph must occupy a complete 16-byte CHR tile"
           assert "FooterLabel:" in source
           assert "PaletteOne:" in source
-          print("NES Desktop 2.0 CHR glyph map and shared chrome: OK")
+          print("NES Desktop CHR tile alignment and shared chrome: OK")
           PY
           python3 tools/validate_linux_targets.py
           python3 tools/validate_linux_sources.py
@@ -118,7 +119,18 @@ jobs:
           python3 tools/snakey.py new "$RUNNER_TEMP/snakey-nes-smoke" --target nes --name SnakeySmoke
           python3 tools/snakey.py validate "$RUNNER_TEMP/snakey-nes-smoke"
           python3 tools/snakey.py build "$RUNNER_TEMP/snakey-nes-smoke"
-          test "$(stat -c %s "$RUNNER_TEMP/snakey-nes-smoke/build/SnakeySmoke.nes")" -eq 40976
+          python3 - "$RUNNER_TEMP/snakey-nes-smoke/build/SnakeySmoke.nes" <<'PY'
+          import sys
+          from pathlib import Path
+          rom = Path(sys.argv[1]).read_bytes()
+          assert len(rom) == 40976, len(rom)
+          assert rom[:4] == b"NES\\x1a"
+          assert rom[4] == 2 and rom[5] == 1
+          chr_data = rom[16 + 0x8000:]
+          assert len(chr_data) == 0x2000
+          assert chr_data[16:16 + 25 * 16] != bytes(25 * 16)
+          print("NES iNES header, 32 KiB PRG and 8 KiB CHR: OK")
+          PY
       - name: Build Game Boy and Game Boy Color ROMs
         run: |
           python3 tools/snakey.py new "$RUNNER_TEMP/snakey-gb-smoke" --target game-boy --name SnakeyGB
