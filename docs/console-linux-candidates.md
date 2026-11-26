@@ -49,3 +49,18 @@ Sources for the initial research survey:
 - https://www.ppsspp.org/docs/development/porting/
 - https://wiki.batocera.org/systems
 - https://www.kernel.org/
+
+
+## First reproducible build lane: PlayStation Vita
+
+Snakey now pins the public `acgh213/vita-linux-next` integration source at
+`05ee2d57b1d5a6f7b477141c3c68f65a069d682c`. Its upstream CI documents an
+ARMv7 Bootlin toolchain and a kernel/DTB build. Snakey's workflow reproduces
+that source build and labels the output as an upstream integration artifact;
+it does not claim the kernel is Snakey-original or hardware-tested.
+
+See [the Vita research lane](../linux/targets/vita/README.md) and
+[the pinned source manifest](../platforms/linux-port-sources.json).
+
+Switch and 3DS remain source-audit lanes until their exact repositories,
+revision pins, licenses and reproducible build commands are verified.

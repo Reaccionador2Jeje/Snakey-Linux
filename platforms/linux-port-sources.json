@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "policy": "Snakey only builds pinned upstream source in CI; no firmware flashing, device deployment, or physical-console writes are performed.",
+  "sources": [
+    {
+      "id": "vita-linux-next",
+      "name": "Vita Linux Next",
+      "project_url": "https://github.com/acgh213/vita-linux-next",
+      "source_repository": "https://github.com/acgh213/vita-linux-next.git",
+      "revision": "05ee2d57b1d5a6f7b477141c3c68f65a069d682c",
+      "architecture": "armv7",
+      "build_status": "pinned-upstream-build",
+      "license": "MIT (outer integration repository); submodules retain their own licenses",
+      "build_workflow": ".github/workflows/console-linux-research.yml",
+      "notes": "Pinned public upstream snapshot. Its own workflow documents Bootlin ARMv7 cross-build, kernel DTBs, zImage and staged artifacts. Snakey CI reproduces that build as an upstream integration artifact, not as an original Snakey kernel."
+    },
+    {
+      "id": "switch-linux-4-switch",
+      "name": "Linux 4 Switch / L4T Fedora",
+      "project_url": "https://azka.li/portfolio/",
+      "source_repository": "https://gitlab.com/l4t-community",
+      "revision": null,
+      "architecture": "aarch64",
+      "build_status": "source-audit-required",
+      "license": "Per upstream components; audit required",
+      "build_workflow": null,
+      "notes": "Maintained Switch/Tegra X1 Linux distribution is documented by its maintainer. Exact source repositories, revision pins, and redistribution licenses must be audited before CI integration."
+    },
+    {
+      "id": "linux-3ds",
+      "name": "3DS-Linux",
+      "project_url": "https://3dslinux.org/",
+      "source_repository": "https://github.com/linux-3ds",
+      "revision": null,
+      "architecture": "armv6k",
+      "build_status": "source-audit-required",
+      "license": "Per upstream kernel, loader and Buildroot components; audit required",
+      "build_workflow": null,
+      "notes": "Project reports Linux TTY, framebuffer and X11 support. Pin exact kernel/loader commits and license inventory before adding a build job."
+    },
+    {
+      "id": "wii-linux",
+      "name": "Wii-Linux",
+      "project_url": "https://wii-linux.org/",
+      "source_repository": "https://github.com/Techflash/wii-linux",
+      "revision": null,
+      "architecture": "powerpc",
+      "build_status": "source-audit-required",
+      "license": "Per upstream components; audit required",
+      "build_workflow": null,
+      "notes": "Keep as secondary research lane until a maintained source repository and reproducible toolchain are verified."
+    }
+  ]
+}

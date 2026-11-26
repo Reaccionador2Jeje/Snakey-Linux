@@ -1,0 +1,129 @@
+name: Console Linux research builds
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Upstream research build to run
+        required: true
+        type: choice
+        options:
+          - vita
+  push:
+    paths:
+      - ".github/workflows/console-linux-research.yml"
+      - "platforms/linux-port-sources.json"
+      - "linux/targets/vita/**"
+  pull_request:
+    paths:
+      - ".github/workflows/console-linux-research.yml"
+      - "platforms/linux-port-sources.json"
+      - "linux/targets/vita/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: console-linux-research-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VITA_UPSTREAM: acgh213/vita-linux-next
+  VITA_REVISION: 05ee2d57b1d5a6f7b477141c3c68f65a069d682c
+  BOOTLIN_DIR: armv7-eabihf--glibc--bleeding-edge-2025.08-1
+
+jobs:
+  vita-upstream-kernel:
+    name: Vita Linux upstream reproducibility build (ARMv7)
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'vita'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Snakey Linux
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Checkout pinned Vita Linux Next source
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.VITA_UPSTREAM }}
+          ref: ${{ env.VITA_REVISION }}
+          path: upstream-vita
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Verify source pin
+        working-directory: upstream-vita
+        run: |
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$VITA_REVISION"
+          git submodule status --recursive
+          printf 'upstream=%s\nrevision=%s\n' "$VITA_UPSTREAM" "$actual" > ../vita-build-provenance.txt
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q bc bison build-essential flex libelf-dev libssl-dev make python3
+
+      - name: Cache Bootlin ARMv7 toolchain
+        uses: actions/cache@v4
+        id: toolchain
+        with:
+          path: .toolchains/${{ env.BOOTLIN_DIR }}
+          key: bootlin-${{ env.BOOTLIN_DIR }}
+
+      - name: Download Bootlin ARMv7 toolchain
+        if: steps.toolchain.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .toolchains
+          curl --fail --location --retry 3 \
+            "https://toolchains.bootlin.com/downloads/releases/toolchains/armv7-eabihf/tarballs/${BOOTLIN_DIR}.tar.xz" \
+            -o /tmp/bootlin.tar.xz
+          tar -xJf /tmp/bootlin.tar.xz -C .toolchains
+
+      - name: Validate Snakey research metadata
+        run: |
+          python3 tools/validate_linux_targets.py
+          python3 tools/validate_linux_sources.py
+
+      - name: Run upstream build contract
+        working-directory: upstream-vita
+        env:
+          PATH: ${{ github.workspace }}/.toolchains/${{ env.BOOTLIN_DIR }}/bin:${{ env.PATH }}
+        run: make test CART_CROSS_CC=arm-linux-gcc
+
+      - name: Configure Vita kernel
+        working-directory: upstream-vita/linux_vita
+        env:
+          PATH: ${{ github.workspace }}/.toolchains/${{ env.BOOTLIN_DIR }}/bin:${{ env.PATH }}
+        run: |
+          make ARCH=arm CROSS_COMPILE=arm-linux- vita_defconfig
+          sed -i 's|^CONFIG_INITRAMFS_SOURCE=.*|CONFIG_INITRAMFS_SOURCE=""|' .config
+          make ARCH=arm CROSS_COMPILE=arm-linux- olddefconfig
+
+      - name: Build and verify device trees
+        working-directory: upstream-vita
+        env:
+          PATH: ${{ github.workspace }}/.toolchains/${{ env.BOOTLIN_DIR }}/bin:${{ env.PATH }}
+        run: |
+          make dtb CROSS_COMPILE=arm-linux-
+          make verify-dtb
+
+      - name: Build kernel and stage artifacts
+        working-directory: upstream-vita
+        env:
+          PATH: ${{ github.workspace }}/.toolchains/${{ env.BOOTLIN_DIR }}/bin:${{ env.PATH }}
+        run: |
+          make build CROSS_COMPILE=arm-linux-
+          make stage CROSS_COMPILE=arm-linux-
+          cp ../vita-build-provenance.txt dist/ci/
+          (cd dist/ci && sha256sum * > SHA256SUMS)
+
+      - name: Upload upstream Vita kernel artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: upstream-vita-linux-${{ env.VITA_REVISION }}
+          path: upstream-vita/dist/ci/
+          if-no-files-found: error
+          retention-days: 14

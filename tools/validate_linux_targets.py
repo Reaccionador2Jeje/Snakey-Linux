@@ -49,8 +49,9 @@ def main() -> int:
         if target["family"] != "linux-system":
             fail(f"{prefix}.family must be linux-system")
         for field in ("system_ram_mb", "video_ram_mb"):
-            if not isinstance(target[field], int) or target[field] <= 0:
-                fail(f"{prefix}.{field} must be a positive integer")
+            minimum = 1 if field == "system_ram_mb" else 0
+            if type(target[field]) is not int or target[field] < minimum:
+                fail(f"{prefix}.{field} must be an integer >= {minimum}")
         if not isinstance(target["video_ram_counts_as_system_ram"], bool):
             fail(f"{prefix}.video_ram_counts_as_system_ram must be boolean")
         if not isinstance(target["boot_chain"], list) or not target["boot_chain"]:

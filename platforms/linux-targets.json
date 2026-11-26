@@ -56,7 +56,7 @@
       "status": "research-candidate",
       "snakey_tested": false,
       "requires_physical_hardware": true,
-      "notes": "Preferred first research target because a maintained Wii-Linux continuation project reports current kernels and framebuffer/Xorg support. Snakey has not built, booted or tested anything on Wii hardware. Research and cross-build work only until compatible hardware is available."
+      "notes": "Secondary research candidate: Wii-Linux project reports kernel, framebuffer and Xorg work. Snakey has not built, booted or tested this target."
     },
     {
       "id": "nintendo-switch",
@@ -116,7 +116,7 @@
       "family": "linux-system",
       "architecture": "armv7",
       "cpu": "Quad-core ARM Cortex-A9",
-      "system_ram_mb": 512,
+      "system_ram_mb": 480,
       "video_ram_mb": 128,
       "video_ram_counts_as_system_ram": false,
       "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
@@ -134,7 +134,7 @@
       "status": "research-candidate",
       "snakey_tested": false,
       "requires_physical_hardware": true,
-      "notes": "Community Linux kernel port exists; maturity and compatibility require audit. No Snakey build, boot or hardware test."
+      "notes": "Linux 6.12 upstream community port reaches a shell on Vita/PSTV with framebuffer and four Cortex-A9 cores. Snakey will first reproduce the upstream build; no Snakey hardware test."
     },
     {
       "id": "original-xbox",
