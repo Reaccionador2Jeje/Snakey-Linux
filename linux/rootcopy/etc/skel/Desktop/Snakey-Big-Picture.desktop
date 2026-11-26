@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Snakey Big Picture
+Comment=Fullscreen controller-first launcher
+Exec=xfce4-terminal --fullscreen --hide-menubar --hide-borders --title=Snakey-Big-Picture --command=/usr/bin/snakey-big-picture
+Icon=applications-games
+Terminal=false
+Categories=Game;System;
