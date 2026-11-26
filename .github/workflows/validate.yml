@@ -84,7 +84,7 @@ jobs:
           ):
               assert Path(path).is_file(), path
           liveslak = Path("linux/make_slackware_live.conf").read_text()
-          for setting in ('SL_VERSION="15.0"', 'SL_ARCH="x86_64"', 'LIVEDE="SNAKEY"', 'SEQ_CUSTOM="min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme"', 'RUNLEVEL=4', 'DISTRO="snakey"'):
+          for setting in ('SL_VERSION="15.0"', 'SL_ARCH="x86_64"', 'LIVEDE="SNAKEY"', 'SEQ_CUSTOM="min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme local:snakey-control-center"', 'RUNLEVEL=4', 'DISTRO="snakey"'):
               assert setting in liveslak, setting
           for path in ("linux/packages/build-snakey-base.sh", "linux/packages/snakey-base/etc/snakey-release", "linux/packages/snakey-base/usr/bin/snakey-info", "linux/packages/snakey-base/install/doinst.sh", "linux/packages/snakey-base/slack-desc", "linux/packages/build-snakey-theme.sh", "linux/packages/snakey-theme/slack-desc", "linux/packages/snakey-theme/usr/share/themes/Snakey-Dark/index.theme", "linux/packages/snakey-theme/usr/share/themes/Snakey-Dark/gtk-3.0/gtk.css", "linux/packages/snakey-theme/usr/share/themes/Snakey-Dark/gtk-2.0/gtkrc", "linux/packages/build-snakey-control-center.sh", "linux/packages/snakey-control-center/slack-desc", "linux/packages/snakey-control-center/usr/bin/snakey-control-center", "linux/packages/snakey-control-center/usr/share/applications/snakey-control-center.desktop", "linux/packages/snakey-control-center/etc/skel/Desktop/Snakey-Control-Center.desktop"):
               assert Path(path).is_file(), path
