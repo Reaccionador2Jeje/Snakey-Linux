@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "name": "Snakey Linux Desktop",
+  "session_type": "linux-userspace",
+  "startup": {
+    "binary": "/usr/bin/snakey-desktop",
+    "init_script": "/etc/init.d/S99snakey-desktop",
+    "config": "/etc/snakey/desktop.conf",
+    "requires_linux_userspace": true,
+    "requires_framebuffer": true,
+    "requires_evdev_input": true
+  },
+  "graphics": {
+    "initial_backend": "linux-fbdev-software",
+    "display_ownership": "fullscreen",
+    "xorg_required": false,
+    "wayland_required": false,
+    "hardware_acceleration_required": false
+  },
+  "input": {
+    "backend": "linux-evdev",
+    "logical_actions": ["up", "down", "left", "right", "confirm", "back"]
+  },
+  "applications": [
+    {"id":"launcher","label":"Launcher"},
+    {"id":"files","label":"Files"},
+    {"id":"console","label":"Console"},
+    {"id":"monitor","label":"System Monitor"},
+    {"id":"settings","label":"Settings"},
+    {"id":"about","label":"About"}
+  ],
+  "security": {
+    "arbitrary_code_execution": false,
+    "filesystem_access": "rootfs-and-explicitly-mounted-volumes",
+    "missing_devices": "report-unavailable-do-not-simulate"
+  },
+  "targets": {
+    "ps-vita": {"architecture":"armv7","memory_mb":480,"profile":"snakey-fb"},
+    "xbox-original": {"architecture":"i686","memory_mb":64,"profile":"snakey-ultralight"},
+    "wii": {"architecture":"powerpc32-big-endian","memory_mb":88,"profile":"snakey-ultralight"}
+  },
+  "status": "architecture-contract-only-native-renderer-and-init-integration-pending"
+}
