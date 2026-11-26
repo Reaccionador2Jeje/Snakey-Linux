@@ -48,7 +48,7 @@ mount setup, init configuration, libraries, firmware and input/display drivers.
 
 ## Package selection
 
-The three `*.packages` files are deliberately small bootstrap selections,
+The target `*.packages` files are deliberately small bootstrap selections,
 not complete Slackware installations. Package names are matched by the
 Slackware package-name prefix, independent of the version/build suffix. If an
 upstream package name differs, update the manifest only after verifying it
