@@ -62,7 +62,7 @@ universal image for every console architecture.
 
 - [x] Separate native ROM targets from the Linux distribution track.
 - [x] Document Linux capability and acceptance criteria.
-- [ ] Create a hardware evidence sheet for each proposed Class B console.
+- [x] Create a reusable hardware evidence sheet for each proposed Class B console.
 - [ ] Select one legally and technically accessible first Linux-capable target.
 - [ ] Build a reproducible kernel and boot test for that target.
 - [ ] Reach a real Linux shell.
