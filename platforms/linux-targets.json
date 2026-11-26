@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "targets": [
+    {
+      "id": "playstation-3",
+      "name": "Sony PlayStation 3",
+      "family": "linux-system",
+      "architecture": "powerpc64-big-endian",
+      "cpu": "Cell Broadband Engine (PowerPC 64-bit PPE)",
+      "system_ram_mb": 256,
+      "video_ram_mb": 256,
+      "video_ram_counts_as_system_ram": false,
+      "kernel_platform_option": "CONFIG_PPC_PS3",
+      "boot_chain": [
+        "legacy OtherOS on specifically compatible firmware/models",
+        "OtherOS++ with Petitboot on specifically compatible configurations"
+      ],
+      "storage": ["internal HDD OtherOS region", "USB transfer media"],
+      "graphics": "PS3 framebuffer; accelerated RSX access is not assumed",
+      "network": ["GELIC wired Ethernet", "model-dependent wireless"],
+      "desktop_goal": "XFCE4 experimental; lightweight desktop fallback required",
+      "status": "research-candidate",
+      "snakey_tested": false,
+      "requires_physical_hardware": true,
+      "notes": "A real Linux port exists and a recent external Debian project documents a PS3-specific 6.4 kernel path. This is a research target, not a Snakey-supported release. Boot compatibility is model- and firmware-dependent."
+    }
+  ]
+}
