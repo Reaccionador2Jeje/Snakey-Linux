@@ -35,7 +35,7 @@ See docs/boot-system.md for prerequisites and limitations. The current physical-
 
 ## Snakey Linux Desktop
 
-The Linux distribution track now has its first real image profile in `linux/`.
+The Linux distribution track now has its first real image profile in `linux/`. The Snakey Big Picture fullscreen controller-first launcher is available alongside XFCE.
 It targets Slackware Live Edition's stripped XFCE variant, boots graphically
 (runlevel 4), trims bloat and produces an x86_64 live ISO for Limbo/QEMU.
 Build requirements and the current untested status are documented in
@@ -73,7 +73,7 @@ Requires Python 3.10 or newer.
 
 ## Development status
 
-The SDK builds an NES NROM-256 (.nes) image with cc65 and Game Boy / Game Boy Color ROMs with RGBDS. SNES, Game Boy Advance and Nintendo DS currently have project scaffolds only; their build adapters are not implemented. The NES starter has an interactive controller-driven menu: Up/Down selects PLAY, CART or INFO; A opens the corresponding page; B returns. Cartridge hardware status remains unknown without a target-specific detection interface. CI assembles the ROM and checks the iNES header and expected 40 KiB file size. Cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
+The SDK builds NES NROM-256 (.nes) with cc65 and Game Boy / Game Boy Color (.gb/.gbc) with RGBDS. SNES (.sfc), Game Boy Advance (.gba) and Nintendo DS (.nds) now have experimental native image writers that emit platform headers and minimal startup code; the GBA image paints a simple Mode 3 framebuffer, while SNES and DS remain startup-stub previews. These three are not yet certified on real hardware or every emulator, and DS logo/firmware compatibility remains unverified. The NES starter has an interactive controller-driven menu: Up/Down selects PLAY, CART or INFO; A opens the corresponding page; B returns. Cartridge hardware status remains unknown without a target-specific detection interface. CI assembles the ROM and checks the iNES header and expected 40 KiB file size. Cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
 
 ## License
 
