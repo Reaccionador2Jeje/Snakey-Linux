@@ -1,10 +1,12 @@
 import importlib.util
 import pathlib
 import unittest
+from importlib.machinery import SourceFileLoader
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "linux/rootcopy/usr/bin/snakey-gamepad"
-SPEC = importlib.util.spec_from_file_location("snakey_gamepad", SCRIPT)
+LOADER = SourceFileLoader("snakey_gamepad", str(SCRIPT))
+SPEC = importlib.util.spec_from_loader("snakey_gamepad", LOADER)
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
