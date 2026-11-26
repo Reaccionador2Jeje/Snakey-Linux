@@ -1,0 +1,157 @@
+name: Build and publish Snakey releases
+
+on:
+  push:
+    tags:
+      - "snakey-v*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Release tag (leave empty for an automatic preview tag)"
+        required: false
+        type: string
+      build_iso:
+        description: "Also build the Slackware Live ISO (requires a registered self-hosted Slackware runner)"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snakey-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-roms:
+    name: Build all registered homebrew ROMs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install console toolchains
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cc65 rgbds
+      - name: Build every supported ROM target
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p release-assets/roms
+          declare -A extensions=(
+            [nes]=nes
+            [snes]=sfc
+            [game-boy]=gb
+            [game-boy-color]=gbc
+            [game-boy-advance]=gba
+            [nintendo-ds]=nds
+          )
+          for target in nes snes game-boy game-boy-color game-boy-advance nintendo-ds; do
+            name="Snakey-${target}"
+            project="$RUNNER_TEMP/snakey-$target"
+            python3 tools/snakey.py new "$project" --target "$target" --name "$name"
+            python3 tools/snakey.py validate "$project"
+            python3 tools/snakey.py build "$project"
+            extension="${extensions[$target]}"
+            rom="$project/build/$name.$extension"
+            test -s "$rom"
+            case "$target" in
+              nes) test "$(stat -c %s "$rom")" -eq 40976 ;;
+              snes|game-boy-advance) test "$(stat -c %s "$rom")" -eq 32768 ;;
+              nintendo-ds) test "$(stat -c %s "$rom")" -eq 65536 ;;
+            esac
+            cp "$rom" "release-assets/roms/$name.$extension"
+          done
+          cat > release-assets/ROM-STATUS.md <<'EOF'
+          # Snakey homebrew ROM release
+
+          | Platform | File | Status |
+          |---|---|---|
+          | NES | Snakey-nes.nes | NROM-256 build; emulator testing recommended |
+          | SNES | Snakey-snes.sfc | Experimental generated image; execution compatibility not certified |
+          | Game Boy | Snakey-game-boy.gb | RGBDS starter ROM |
+          | Game Boy Color | Snakey-game-boy-color.gbc | DMG-compatible RGBDS starter ROM; CGB-only features not implemented |
+          | Game Boy Advance | Snakey-game-boy-advance.gba | Experimental generated image; BIOS-certified boot not claimed |
+          | Nintendo DS | Snakey-nintendo-ds.nds | Experimental image with minimal ARM stubs; runtime compatibility not certified |
+          
+          These are homebrew development images, not commercial games or complete operating systems.
+          Test ROMs in RetroArch with the matching core. Some experimental images may not boot
+          correctly in every core yet; a successful CI build checks construction and basic metadata,
+          not full gameplay or emulator compatibility.
+          EOF
+          (
+            cd release-assets
+            find roms -maxdepth 1 -type f -name 'Snakey-*' -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+          )
+      - name: Upload ROM release assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: snakey-rom-release-assets
+          path: release-assets/
+          if-no-files-found: error
+          retention-days: 14
+
+  build-iso:
+    name: Build Slackware Live ISO
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.build_iso == true }}
+    runs-on: [self-hosted, linux, x64, snakey-slackware]
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Build Snakey Linux Live ISO
+        env:
+          SNAKEY_SLACKWARE_REPO: ${{ vars.SNAKEY_SLACKWARE_REPO }}
+          SNAKEY_OUTPUT_DIR: ${{ github.workspace }}/dist
+        run: |
+          set -Eeuo pipefail
+          test -n "$SNAKEY_SLACKWARE_REPO" || {
+            echo "Repository variable SNAKEY_SLACKWARE_REPO must point to the local Slackware 15.0 mirror root." >&2
+            exit 2
+          }
+          sudo env SNAKEY_SLACKWARE_REPO="$SNAKEY_SLACKWARE_REPO" SNAKEY_OUTPUT_DIR="$SNAKEY_OUTPUT_DIR" ./linux/build-live.sh
+          test -s dist/Snakey-Linux-XFCE-x86_64.iso
+          sha256sum dist/Snakey-Linux-XFCE-x86_64.iso > dist/Snakey-Linux-XFCE-x86_64.iso.sha256
+      - name: Upload ISO release assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: snakey-iso-release-assets
+          path: |
+            dist/Snakey-Linux-XFCE-x86_64.iso
+            dist/Snakey-Linux-XFCE-x86_64.iso.sha256
+          if-no-files-found: error
+          retention-days: 14
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: [build-roms, build-iso]
+    if: ${{ always() && needs.build-roms.result == 'success' && (needs.build-iso.result == 'success' || needs.build-iso.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ROM assets
+        uses: actions/download-artifact@v4
+        with:
+          name: snakey-rom-release-assets
+          path: release-assets
+      - name: Download ISO assets when built
+        if: ${{ needs.build-iso.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: snakey-iso-release-assets
+          path: release-assets/iso
+      - name: Publish prerelease
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Snakey Linux Preview ${{ inputs.release_tag || (startsWith(github.ref, 'refs/tags/') && github.ref_name) || format('snakey-preview-{0}', github.run_number) }}
+          tag_name: ${{ inputs.release_tag || (startsWith(github.ref, 'refs/tags/') && github.ref_name) || format('snakey-preview-{0}', github.run_number) }}
+          prerelease: true
+          generate_release_notes: true
+          files: |
+            release-assets/roms/*
+            release-assets/SHA256SUMS.txt
+            release-assets/ROM-STATUS.md
+            release-assets/iso/*
