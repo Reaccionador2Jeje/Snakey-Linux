@@ -1,0 +1,6 @@
+NAME="Snakey Linux"
+VERSION="0.1.0"
+BASE="Slackware 15.0"
+ARCHITECTURE="x86_64"
+DESKTOP="XFCE4"
+INIT="SysVinit"
