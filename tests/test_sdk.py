@@ -65,6 +65,8 @@ class SnakeySdkTests(unittest.TestCase):
             self.assertIn('Tiles 1..6 spell SNAKEY', source)
             self.assertIn('ReadController:', source)
             self.assertIn('HandleMenu:', source)
+            self.assertIn('A opens the selected page.', source)
+            self.assertIn('B returns from a page to the main menu.', source)
             self.assertIn('DrawPage:', source)
             self.assertIn('UpdateCursor:', source)
             self.assertIn('ControllerMasks:', source)
