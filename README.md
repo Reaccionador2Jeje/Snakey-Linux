@@ -33,6 +33,10 @@ These are registered paths, not a claim that every cartridge, firmware version o
 
 See [experimental SNES/GBA/DS ROM builders](docs/experimental-rom-builders.md) for current image formats, build commands and compatibility limitations. See docs/boot-system.md for boot prerequisites and limitations. The current physical-console compatibility status and repeatable test procedure are tracked in [docs/hardware-test-matrix.md](docs/hardware-test-matrix.md); use [the report template](docs/hardware-test-report-template.md) to record real-device results.
 
+## Linux on retro hardware
+
+The first Linux-capable hardware research target is the **PlayStation 3**. Its status, kernel requirements and limitations are documented in [the PS3 bring-up plan](linux/targets/ps3/README.md) and [Linux hardware registry](platforms/linux-targets.json). This is a research candidate, not a tested Snakey release.
+
 ## Snakey Linux Desktop
 
 The Linux distribution track now has its first real image profile in `linux/`. The Snakey Big Picture fullscreen controller-first launcher is available alongside XFCE.
