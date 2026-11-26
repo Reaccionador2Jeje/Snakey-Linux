@@ -183,25 +183,40 @@ SetPalette:
     sta $2006
     lda #$00
     sta $2006
+    ; Four complete background palettes. Palette 0 is also the universal
+    ; backdrop; palettes 1-3 provide distinct UI accents via attributes.
     lda #$0F
     sta $2007
-    lda $05
-    beq @normal
-    lda #$16
-    sta $2007
-    lda #$30
-    sta $2007
-    lda #$21
-    sta $2007
-    jmp @done
-@normal:
     lda #$21
     sta $2007
     lda #$16
     sta $2007
     lda #$30
     sta $2007
-@done:
+    lda #$0F
+    sta $2007
+    lda #$12
+    sta $2007
+    lda #$27
+    sta $2007
+    lda #$30
+    sta $2007
+    lda #$0F
+    sta $2007
+    lda #$16
+    sta $2007
+    lda #$28
+    sta $2007
+    lda #$30
+    sta $2007
+    lda #$0F
+    sta $2007
+    lda #$21
+    sta $2007
+    lda #$2A
+    sta $2007
+    lda #$30
+    sta $2007
     rts
 
 ClearScreen:
@@ -244,13 +259,21 @@ TextAt:
 
 DrawScreen:
     jsr ClearScreen
-    ; Persistent title bar.
+    ; Shared title and controller hint make every page feel like one desktop.
     lda #$20
     ldx #$2A
     jsr SetTextAddress
     lda #<Title
     sta $06
     lda #>Title
+    sta $07
+    jsr DrawText
+    lda #$23
+    ldx #$A0
+    jsr SetTextAddress
+    lda #<FooterLabel
+    sta $06
+    lda #>FooterLabel
     sta $07
     jsr DrawText
 
@@ -278,14 +301,6 @@ SetTextAddress:
     rts
 
 DrawLauncher:
-    lda #$20
-    ldx #$2A
-    jsr SetTextAddress
-    lda #<Title
-    sta $06
-    lda #>Title
-    sta $07
-    jsr DrawText
     ; 16x16 multicolour snake emblem (four native CHR tiles).
     lda #$20
     ldx #$AE
@@ -590,6 +605,7 @@ PaletteZero:    .byte 13,14,14,0
 PaletteOne:     .byte 13,18,0
 HardwareLabel:  .byte 18,5,1,11,3,10,22,5,11,0
 CatalogHint:    .byte 3,0,13,7,5,18,0
+FooterLabel:    .byte 19,0,13,7,5,18,0,20,19,9,4,0
 
 .segment "VECTORS"
 .word Reset, Reset, Reset
