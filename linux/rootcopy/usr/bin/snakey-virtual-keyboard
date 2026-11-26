@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+for app in onboard matchbox-keyboard; do
+  if command -v "$app" >/dev/null 2>&1; then
+    exec "$app"
+  fi
+done
+if command -v notify-send >/dev/null 2>&1; then
+  notify-send "Snakey Linux" "Install Onboard or Matchbox Keyboard to enable on-screen typing."
+else
+  printf '%s\n' 'Snakey Linux: install Onboard or Matchbox Keyboard.'
+fi
+exit 1
