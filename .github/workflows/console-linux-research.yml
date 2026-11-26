@@ -1,4 +1,4 @@
-name: PSP and Vita Linux research builds
+name: PSP, Vita and PS3 Linux research builds
 
 on:
   workflow_dispatch:
