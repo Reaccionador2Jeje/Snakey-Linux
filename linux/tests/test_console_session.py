@@ -14,8 +14,9 @@ class ConsoleSessionTests(unittest.TestCase):
 
     def test_autostart_is_opt_in(self):
         source = AUTOSTART.read_text()
-        self.assertIn('test -e "$HOME/.config/snakey/start-big-picture"', source)
-        self.assertIn("snakey-console-session start", source)
+        self.assertIn('autostart-check', source)
+        self.assertIn('start-big-picture', source)
+        self.assertIn("snakey-console-session autostart-check", source)
 
     def test_session_has_application_menu_entry(self):
         source = DESKTOP.read_text()
