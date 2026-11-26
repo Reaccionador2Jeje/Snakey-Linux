@@ -27,9 +27,9 @@ def build_snes(path: Path, name: str) -> None:
         0xE2, 0x20,       # SEP #$20
         0xA9, 0x00,       # LDA #$00
         0x8D, 0x21, 0x21, # STA $2121 (CGRAM color 0)
-        0xA9, 0x84,       # LDA #$1084 (deep navy backdrop, BGR555 low byte)
+        0xA9, 0x41,       # LDA #$1841 (deep navy backdrop, BGR555 low byte)
         0x8D, 0x22, 0x21, # STA $2122 low byte
-        0xA9, 0x10,
+        0xA9, 0x18,
         0x8D, 0x22, 0x21, # STA $2122 high byte
         0xA9, 0x0F,
         0x8D, 0x00, 0x21, # INIDISP: enable display, full brightness
@@ -86,7 +86,7 @@ def build_gba(path: Path, name: str) -> None:
         0xE2522001, # subs r2,r2,#1
         0x1AFFFFFB, # bne back to strh
         0xEAFFFFFE, # loop forever
-        0x00002108, # deep navy RGB555
+        0x00001841, # deep navy RGB555
         0x06000000, # VRAM
         0x00009600, # 38,400 pixels
         0x04000000  # DISPCNT
