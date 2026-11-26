@@ -31,7 +31,7 @@ These are registered paths, not a claim that every cartridge, firmware version o
     python3 tools/snakey.py boot-plan --target game-boy
     python3 tools/snakey.py boot-plan --target nintendo-ds --method homebrew-loader
 
-See docs/boot-system.md for prerequisites and limitations.
+See docs/boot-system.md for prerequisites and limitations. The current physical-console compatibility status and repeatable test procedure are tracked in [docs/hardware-test-matrix.md](docs/hardware-test-matrix.md); use [the report template](docs/hardware-test-report-template.md) to record real-device results.
 
 ## Official website and Cloudflare Worker
 
@@ -64,7 +64,7 @@ Requires Python 3.10 or newer.
 
 ## Development status
 
-The SDK builds an NES NROM-256 (.nes) image with cc65 and Game Boy / Game Boy Color ROMs with RGBDS. The NES starter has an interactive controller-driven menu: Up/Down selects PLAY, CART or INFO; A opens the corresponding page; B returns. Cartridge hardware status remains unknown without a target-specific detection interface. CI assembles the ROM and checks the iNES header and expected 40 KiB file size. Cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
+The SDK builds an NES NROM-256 (.nes) image with cc65 and Game Boy / Game Boy Color ROMs with RGBDS. SNES, Game Boy Advance and Nintendo DS currently have project scaffolds only; their build adapters are not implemented. The NES starter has an interactive controller-driven menu: Up/Down selects PLAY, CART or INFO; A opens the corresponding page; B returns. Cartridge hardware status remains unknown without a target-specific detection interface. CI assembles the ROM and checks the iNES header and expected 40 KiB file size. Cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
 
 ## License
 
