@@ -63,3 +63,26 @@ Shared architecture and application contract:
 Current state: architecture defined only. The pinned upstream Vita build is
 not yet a Snakey kernel/rootfs or a bootable Snakey Desktop image. Native
 renderer, init integration and emulator/hardware validation remain pending.
+
+## Slackware base — ARMv7
+
+The Vita root filesystem is intended to be based on **Slackware ARM 15.0
+(ARMv7-A, hard-float ABI)**, not a generic Buildroot or BusyBox distribution.
+Slackware ARM 15.0 is the final 32-bit ARM release; its development ceased in
+March 2022, so Snakey must treat it as a compatibility baseline and maintain
+its own security/build review rather than imply ongoing upstream development.
+
+Rootfs policy:
+- Start from a minimal Slackware ARM 15.0 package set.
+- Preserve Slackware package metadata and `installpkg`, `upgradepkg`,
+  `removepkg`, `pkgtool` and `slackpkg` conventions where usable.
+- Keep SysVinit and Slackware's standard filesystem layout.
+- Cross-build or rebuild packages for the Vita ARMv7 hard-float ABI where
+  upstream hardware packages do not apply.
+- Add Vita-specific kernel, device nodes, framebuffer/input support and
+  firmware integration as a separate hardware layer.
+- Add Snakey Desktop only after the Slackware init/rootfs reaches a stable
+  userspace shell.
+
+Slackware ARM is the distribution base; Vita Linux Next supplies a kernel
+reference/build lane only. Neither one alone is a bootable Snakey image.
