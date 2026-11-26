@@ -71,7 +71,7 @@ def build_gba(path: Path, name: str) -> None:
         0xE3A02000, # mov r2,#0
         0xE3A03496, # mov r3,#0x96000000 (replaced below with literal load)
         0xE59F301C, # ldr r3,[pc,#28] -> 0x06000000
-        0xE3A0401F, # mov r4,#31 (blue)
+        0xE3A0401F, # mov r4,#31 (red)
         0xE1C340B0, # strh r4,[r3]
         0xE2833002, # add r3,r3,#2
         0xE2811001, # add r1,r1,#1
