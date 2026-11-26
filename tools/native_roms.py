@@ -129,7 +129,7 @@ def build_nds(path: Path, name: str) -> None:
         0xEAFFFFFE, # stable idle loop
         0xE1A00000, # reserved
         0x04000000, # DISPCNT
-        0x00010005, # mode 5 + BG2
+        0x00000405, # mode 5 + BG2
         0x04000240, # VRAMCNT_A
         0x06000000, # BG VRAM
         0x0000C000, # 256 x 192 pixels
