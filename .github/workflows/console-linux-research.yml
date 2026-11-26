@@ -15,6 +15,8 @@ on:
       - "platforms/linux-targets.json"
       - "tools/audit_psp_archives.py"
       - "tools/fetch_psp_archives.py"
+      - "tools/audit_ps3_rootfs.py"
+      - "tools/validate_ps3_xfce4_manifest.py"
       - "docs/ps3-linux-bringup.md"
       - "linux/rootfs/**"
   pull_request:
@@ -220,6 +222,8 @@ jobs:
           assert names and len(names)==len(set(names)), "invalid PS3 package manifest"
           print(f"PS3 PPC64 bootstrap package contract: OK ({len(names)} packages; ABI audit still required)")
           PY
+      - name: Validate PS3 XFCE4 candidate package manifest
+        run: python3 tools/validate_ps3_xfce4_manifest.py
       - name: Install PowerPC64 cross-build dependencies
         run: |
           sudo apt-get update -q
