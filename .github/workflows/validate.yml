@@ -48,7 +48,7 @@ jobs:
               "linux/rootcopy/etc/motd",
               "linux/rootcopy/usr/share/backgrounds/snakey/snakey.svg",
               "linux/rootcopy/etc/xdg/autostart/snakey-gamepad.desktop",
-              "linux/rootcopy/usr/share/applications/snakey-virtual-keyboard.desktop",\n              "linux/rootcopy/usr/bin/snakey-console-mode",\n              "linux/rootcopy/usr/bin/snakey-open-keyboard",
+              "linux/rootcopy/usr/share/applications/snakey-virtual-keyboard.desktop",\n              "linux/rootcopy/etc/xdg/autostart/snakey-console-mode.desktop",\n              "linux/rootcopy/usr/bin/snakey-console-mode",\n              "linux/rootcopy/usr/bin/snakey-open-keyboard",
           ):
               assert Path(path).is_file(), path
           print("Snakey Linux profile and identity assets: OK")
