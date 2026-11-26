@@ -94,7 +94,10 @@ class SnakeySdkTests(unittest.TestCase):
                 self.assertEqual(snakey.command_new(args), 0)
                 manifest = json.loads((project / snakey.MANIFEST).read_text())
                 self.assertEqual(manifest["entry"], expected_entry)
-                self.assertTrue((project / expected_entry).is_file())\n                if target in {"snes", "game-boy-advance", "nintendo-ds"}:\n                    descriptor = json.loads((project / expected_entry).read_text())\n                    self.assertEqual(descriptor["status"], "experimental-template")
+                self.assertTrue((project / expected_entry).is_file())
+                if target in {"snes", "game-boy-advance", "nintendo-ds"}:
+                    descriptor = json.loads((project / expected_entry).read_text())
+                    self.assertEqual(descriptor["status"], "experimental-template")
                 self.assertEqual(snakey.command_validate(
                     type("Args", (), {"directory": project})()
                 ), 0)
