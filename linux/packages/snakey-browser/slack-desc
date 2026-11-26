@@ -1,0 +1,9 @@
+snakey-browser: Snakey Web launcher
+snakey-browser:
+snakey-browser: Lightweight Snakey Linux web-browser entry point.
+snakey-browser: Opens HTTP and HTTPS addresses in an installed browser engine.
+snakey-browser: Rendering and TLS are provided by Firefox, Chromium, Falkon,
+snakey-browser: SeaMonkey, or another explicitly configured browser executable.
+snakey-browser:
+snakey-browser: This package does not bundle a browser engine.
+snakey-browser:
