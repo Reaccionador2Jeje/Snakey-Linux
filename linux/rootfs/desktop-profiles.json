@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "policy": "Desktop package profiles are architecture-specific build contracts, not proof that packages exist, compile, fit in RAM, or boot on hardware. Never mix packages across ABIs. XFCE4 requires a matching X server, graphics/input drivers and a working kernel/userspace.",
+  "xfce4_package_groups": {
+    "desktop": [
+      "xfce4",
+      "xfce4-session",
+      "xfce4-panel",
+      "xfdesktop",
+      "xfwm4",
+      "xfce4-settings",
+      "xfconf",
+      "xfce4-terminal",
+      "thunar",
+      "garcon",
+      "exo",
+      "tumbler",
+      "gtk+3",
+      "glib2",
+      "dbus"
+    ],
+    "x11": [
+      "xorg-server",
+      "xorg-server-xephyr",
+      "libdrm",
+      "mesa",
+      "xf86-input-evdev",
+      "xf86-video-fbdev"
+    ],
+    "fonts": [
+      "fontconfig",
+      "freetype",
+      "harfbuzz"
+    ]
+  },
+  "targets": [
+    {
+      "id": "psp",
+      "desktop": "snakey-native-micro",
+      "xfce4": "excluded",
+      "package_groups": [],
+      "reason": "MIPSel no-MMU/uClinux and 32 MiB class; standard XFCE4/Xorg is not a viable target. A separately ported Slackware-style userspace and tiny native UI are required.",
+      "build_status": "not-started"
+    },
+    {
+      "id": "ps-vita",
+      "desktop": "xfce4",
+      "xfce4": "experimental",
+      "package_groups": [
+        "desktop",
+        "x11",
+        "fonts"
+      ],
+      "reason": "ARMv7 hard-float; validate exact Slackware ARM package availability, Vita display/input drivers and measured memory before enabling in rootfs.",
+      "build_status": "package-audit-required"
+    },
+    {
+      "id": "ps3",
+      "desktop": "xfce4",
+      "xfce4": "conditional",
+      "package_groups": [
+        "desktop",
+        "x11",
+        "fonts"
+      ],
+      "reason": "PowerPC64 big-endian; enable only with a verified boot path, usable memory and matching GPU/display/input stack.",
+      "build_status": "package-audit-required"
+    },
+    {
+      "id": "ps4",
+      "desktop": "xfce4",
+      "xfce4": "planned",
+      "package_groups": [
+        "desktop",
+        "x11",
+        "fonts"
+      ],
+      "reason": "x86_64; platform kernel, GPU/display and controller support must be independently validated.",
+      "build_status": "package-audit-required"
+    },
+    {
+      "id": "ps5",
+      "desktop": "xfce4",
+      "xfce4": "planned",
+      "package_groups": [
+        "desktop",
+        "x11",
+        "fonts"
+      ],
+      "reason": "x86_64; platform kernel, GPU/display and controller support must be independently validated.",
+      "build_status": "package-audit-required"
+    },
+    {
+      "id": "xbox-original",
+      "desktop": "xfce4",
+      "xfce4": "experimental",
+      "package_groups": [
+        "desktop",
+        "x11",
+        "fonts"
+      ],
+      "reason": "i686 and 64 MiB RAM; full XFCE4 stack is a high-risk memory target. Require stripped package set and measured boot/idle memory; retain console fallback.",
+      "build_status": "package-audit-required"
+    },
+    {
+      "id": "wii",
+      "desktop": "xfce4",
+      "xfce4": "experimental",
+      "package_groups": [
+        "desktop",
+        "x11",
+        "fonts"
+      ],
+      "reason": "PPC32 big-endian and 88 MiB RAM; full XFCE4 stack is a high-risk memory target. Require a native PPC port and measured boot/idle memory; retain console fallback.",
+      "build_status": "package-audit-required"
+    },
+    {
+      "id": "wii-u",
+      "desktop": "xfce4",
+      "xfce4": "planned",
+      "package_groups": [
+        "desktop",
+        "x11",
+        "fonts"
+      ],
+      "reason": "Independent PowerPC32 port; do not reuse Wii kernel or binary assumptions.",
+      "build_status": "package-audit-required"
+    },
+    {
+      "id": "switch",
+      "desktop": "xfce4",
+      "xfce4": "planned",
+      "package_groups": [
+        "desktop",
+        "x11",
+        "fonts"
+      ],
+      "reason": "AArch64; SoC-specific kernel, GPU/display and controller support must be independently validated.",
+      "build_status": "package-audit-required"
+    },
+    {
+      "id": "switch-2",
+      "desktop": "xfce4",
+      "xfce4": "planned",
+      "package_groups": [
+        "desktop",
+        "x11",
+        "fonts"
+      ],
+      "reason": "AArch64; require public platform enablement and a verified graphics/input stack before packaging.",
+      "build_status": "package-audit-required"
+    }
+  ],
+  "runtime_contract": {
+    "session": "xfce4-session",
+    "display_manager": "startx via startx-compatible xinit; no display manager by default",
+    "fallback": "tty login remains available if X server or XFCE session fails",
+    "controller": "Snakey controller bridge starts only after the input device is detected",
+    "autologin": "disabled by default"
+  }
+}
