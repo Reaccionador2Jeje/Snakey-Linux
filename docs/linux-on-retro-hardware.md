@@ -18,10 +18,11 @@ The Nintendo DS has ARM CPUs but very limited memory and no general-purpose
 desktop-class memory-management environment. Its current homebrew target is
 not a Linux port and must not be presented as one.
 
-The Nintendo Wii is now the preferred first research target. An independent
-Wii-Linux continuation project reports maintained kernels, framebuffer output
-and optional Xorg. Its 88 MB main-memory budget makes XFCE4 highly uncertain;
-a shell and a minimal window manager are the first meaningful milestones.
+The Wii is one candidate in a broader survey including Switch, Vita, 3DS,
+original Xbox and Dreamcast. Their project maturity varies; see
+[the console Linux candidate matrix](console-linux-candidates.md). The Switch
+has the most memory headroom, while Wii/3DS/Xbox/Dreamcast are constrained.
+XFCE4 is never assumed feasible.
 
 The PlayStation 3 is deferred. The owner does not currently have compatible
 power or a display and has explicitly chosen not to use or modify it. Snakey
@@ -73,10 +74,12 @@ unverified stretch goal; 88 MB main memory is a severe constraint.
 - [x] Separate native ROM targets from the Linux distribution track.
 - [x] Document Linux capability and acceptance criteria.
 - [x] Create a reusable hardware evidence sheet for each proposed Class B console.
-- [x] Select Nintendo Wii as the first active Linux research candidate; upstream Wii-Linux work exists, but Snakey has not tested it.
+- [x] Create a multi-console Linux research matrix; all candidates remain untested.
+- [ ] Audit Switch and Vita source projects, licenses, toolchains and drivers.
+- [ ] Audit Wii and 3DS kernel sources and compare reproducible build paths.
 - [x] Defer PlayStation 3 hardware work until the owner independently chooses to use it.
-- [ ] Pin a Wii-Linux kernel/toolchain revision and create a reproducible cross-build environment.
-- [ ] Build a reproducible kernel artifact; no hardware boot claim.
+- [ ] Select a target after source/toolchain/driver audit.
+- [ ] Build a reproducible kernel artifact for that target; no hardware boot claim.
 - [ ] Reach a real Linux shell.
 - [ ] Add display and controller support.
 - [ ] Evaluate XFCE4 memory and performance requirements.
