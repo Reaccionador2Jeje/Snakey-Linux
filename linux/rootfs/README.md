@@ -1,7 +1,9 @@
 # Snakey Slackware console root filesystems
 
 This directory assembles **Slackware package archives** into target-specific
-root filesystem staging trees. It does not replace Slackware with Buildroot,
+root filesystem staging trees for conventional MMU Linux ports. PSP is a
+separate MIPSel no-MMU/uClinux adaptation and is not yet handled by this
+standard `.txz` rootfs builder. It does not replace Slackware with Buildroot,
 Debian, Alpine or a BusyBox-only image.
 
 ## Build lanes
@@ -11,6 +13,7 @@ Debian, Alpine or a BusyBox-only image.
 | Vita | Slackware ARM 15.0 package mirror | ARMv7 hard-float | Legacy upstream package baseline |
 | Original Xbox | Slackware 15.0 x86 package mirror | i686-compatible 32-bit x86 | Minimal subset; ABI still to validate |
 | Wii | Locally built Slackware-compatible PowerPC packages | PPC32 big-endian | Port required; no official Slackware tree |
+| PSP | Separate Slackware-style no-MMU adaptation | MIPSel / uClinux ABI | Toolchain and package ABI audit required; not handled by this builder |
 
 ## Assemble a rootfs
 
@@ -57,3 +60,11 @@ against the selected architecture's official/community package tree.
 3. Add target-specific kernel modules, firmware and device configuration.
 4. Boot to a serial/console shell before starting Snakey Desktop.
 5. Add Snakey Desktop only after the base userspace is stable.
+
+## PSP exception
+
+The PSP target must not consume ordinary Slackware MIPS/glibc binaries. Its historical no-MMU/uClinux execution model requires a separately audited toolchain, libc/ABI, kernel and package format. The Snakey goal is to retain Slackware package conventions and management semantics where they can be ported, not to claim an official or binary-compatible Slackware PSP release. A PSP rootfs builder will be added only after that ABI is specified and validated.
+
+## Desktop policy
+
+XFCE4 is the target desktop on all Linux console ports except PSP. PSP uses the native Snakey micro desktop. Xbox Original and Wii retain XFCE4 as experimental targets; their low memory budgets mean a successful build and runtime memory/driver measurements are mandatory before any image can claim XFCE4 support.
