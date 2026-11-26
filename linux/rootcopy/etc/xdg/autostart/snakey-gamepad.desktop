@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Snakey Gamepad Navigation
+Comment=Use a game controller to navigate XFCE
+Exec=/usr/bin/snakey-gamepad
+Terminal=false
+X-GNOME-Autostart-enabled=true
+OnlyShowIn=XFCE;
