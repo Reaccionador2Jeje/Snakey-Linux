@@ -24,7 +24,12 @@ class ConsoleModeTests(unittest.TestCase):
             with self.subTest(name=name):
                 self.assertTrue((desktop / name).is_file())
 
-    def test_console_mode_autostarts_in_xfce(self):\n        autostart = LINUX / "rootcopy/etc/xdg/autostart/snakey-console-mode.desktop"\n        self.assertTrue(autostart.is_file())\n        self.assertIn("Exec=/usr/bin/snakey-console-mode on", autostart.read_text())\n\n    def test_console_mode_is_executable_in_build_script(self):
+    def test_console_mode_autostarts_in_xfce(self):
+        autostart = LINUX / "rootcopy/etc/xdg/autostart/snakey-console-mode.desktop"
+        self.assertTrue(autostart.is_file())
+        self.assertIn("Exec=/usr/bin/snakey-console-mode on", autostart.read_text())
+
+    def test_console_mode_is_executable_in_build_script(self):
         build = (LINUX / "build-live.sh").read_text()
         self.assertIn('chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-console-mode"', build)
 
