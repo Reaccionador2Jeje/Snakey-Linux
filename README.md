@@ -40,7 +40,7 @@ Snakey is researching **Nintendo Switch, PlayStation Vita, Nintendo 3DS, Wii, or
 ## Snakey Linux Desktop
 
 The Linux distribution track now has its first real image profile in `linux/`. The Snakey Big Picture fullscreen controller-first launcher is available alongside XFCE.
-It targets Slackware Live Edition's stripped XFCE variant, boots graphically
+It is pinned to **Slackware 15.0 stable** (not `current`), uses native Slackware packages and `pkgtools`/SysVinit, and targets Slackware Live Edition's stripped XFCE variant. It boots graphically
 (runlevel 4), trims bloat and produces an x86_64 live ISO for Limbo/QEMU.
 Build requirements and the current untested status are documented in
 [linux/README.md](linux/README.md). The ISO has not yet been generated or
