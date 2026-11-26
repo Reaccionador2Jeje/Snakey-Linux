@@ -62,3 +62,22 @@ free memory and graphics stability.
 - Hardware-tested: tested on a physical Wii with model and logs recorded.
 
 Never promote a milestone without evidence.
+
+## Snakey Desktop session
+
+The target desktop is a **Linux userspace session**, not a Wii homebrew
+application. Once a Snakey Linux kernel and root filesystem reach userspace,
+Linux init will start the shared `/usr/bin/snakey-desktop` process.
+
+The Wii profile is ultra-light: fullscreen software rendering through Linux
+framebuffer (`/dev/fb0`) and controller input through evdev. It does not
+depend on Xorg, Wayland or XFCE4. The 88 MiB memory budget requires keeping the
+desktop, fonts, assets and background services tightly bounded.
+
+Shared architecture and application contract:
+- `desktop/linux/README.md`
+- `desktop/linux/desktop-contract.json`
+
+Current state: architecture defined only. Kernel/loader source selection,
+Snakey rootfs, native renderer, init integration and emulator boot remain
+pending. No Wii desktop build or boot is claimed.
