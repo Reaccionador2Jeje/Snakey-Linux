@@ -22,7 +22,7 @@ start() {
   rm -f "$PID_FILE"
   command -v xfce4-terminal >/dev/null || { echo "xfce4-terminal is required." >&2; exit 2; }
   command -v snakey-big-picture >/dev/null || { echo "snakey-big-picture is not installed." >&2; exit 2; }
-  nohup xfce4-terminal --fullscreen --hide-menubar --hide-borders --title=Snakey-Big-Picture --command=/usr/bin/snakey-big-picture >/dev/null 2>&1 &
+  nohup xfce4-terminal --disable-server --fullscreen --hide-menubar --hide-borders --title=Snakey-Big-Picture --command=/usr/bin/snakey-big-picture >/dev/null 2>&1 &
   echo "$!" > "$PID_FILE"
   echo "Snakey Big Picture started."
 }
