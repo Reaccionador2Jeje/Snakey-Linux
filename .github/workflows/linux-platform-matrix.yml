@@ -1,0 +1,48 @@
+name: Snakey console platform matrix
+on:
+  push:
+    paths:
+      - "platforms/linux-targets.json"
+      - "platforms/linux-port-sources.json"
+      - "tools/validate_linux_targets.py"
+      - ".github/workflows/linux-platform-matrix.yml"
+  pull_request:
+    paths:
+      - "platforms/linux-targets.json"
+      - "platforms/linux-port-sources.json"
+      - "tools/validate_linux_targets.py"
+      - ".github/workflows/linux-platform-matrix.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: snakey-linux-matrix-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate-matrix:
+    name: Validate all ten console ports
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - name: Validate platform and source manifests
+        run: python3 tools/validate_linux_targets.py
+      - name: Validate JSON syntax
+        run: |
+          python3 -m json.tool platforms/linux-targets.json >/dev/null
+          python3 -m json.tool platforms/linux-port-sources.json >/dev/null
+      - name: Verify ten requested platforms are registered
+        run: |
+          python3 - <<'PY'
+          import json
+          expected={"psp","ps-vita","ps3","ps4","ps5","xbox-original","wii","wii-u","switch","switch-2"}
+          actual={item["id"] for item in json.load(open("platforms/linux-targets.json"))["targets"]}
+          assert actual == expected, (expected-actual, actual-expected)
+          print("All ten requested platforms are registered.")
+          PY
+      - name: Run repository tests
+        run: python3 -m unittest discover -s tests -v
