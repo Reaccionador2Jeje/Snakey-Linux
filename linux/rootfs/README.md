@@ -13,6 +13,7 @@ Debian, Alpine or a BusyBox-only image.
 | Vita | Slackware ARM 15.0 package mirror | ARMv7 hard-float | Legacy upstream package baseline |
 | Original Xbox | Slackware 15.0 x86 package mirror | i686-compatible 32-bit x86 | Minimal subset; ABI still to validate |
 | Wii | Locally built Slackware-compatible PowerPC packages | PPC32 big-endian | Port required; no official Slackware tree |
+| PS3 | Locally built Slackware-compatible package set | PPC64 big-endian | Bootstrap manifest added; package availability/ABI audit required |
 | PSP | Separate Slackware-style no-MMU adaptation | MIPSel / uClinux ABI | Toolchain and package ABI audit required; not handled by this builder |
 
 ## Assemble a rootfs
@@ -27,7 +28,7 @@ SNAKEY_PACKAGE_DIR=/path/to/slackware-packages \
   linux/rootfs/build-slackware-rootfs.sh vita dist/rootfs-vita
 ```
 
-For Xbox use `xbox`; for Wii use `wii`. The Wii package directory must
+For Xbox use `xbox`; for Wii use `wii`; for PS3 use `ps3`. The PS3 package directory must contain only mutually compatible **PowerPC64 big-endian** (`ppc64`) Slackware-compatible `.txz` archives. Do not use Wii PPC32 packages or ordinary x86_64 Slackware packages. The PS3 manifest is a candidate bootstrap contract, not evidence that an official Slackware PPC64 package tree exists. The Wii package directory must
 contain packages built for big-endian PowerPC; x86 or ARM packages are rejected
 by the package manifest convention and must never be mixed.
 
@@ -57,7 +58,7 @@ against the selected architecture's official/community package tree.
 
 1. Verify each manifest against the exact package mirror and architecture.
 2. Assemble the rootfs and inspect its ELF interpreter and shared libraries.
-3. Add target-specific kernel modules, firmware and device configuration.
+3. For PS3, build/audit every package for the same PPC64 big-endian ABI and verify ELF class, endianness, machine, dynamic interpreter and library closure before treating the rootfs as usable.\n4. Add target-specific kernel modules, firmware and device configuration.
 4. Boot to a serial/console shell before starting Snakey Desktop.
 5. Add Snakey Desktop only after the base userspace is stable.
 
