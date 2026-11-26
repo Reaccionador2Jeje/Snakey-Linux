@@ -44,3 +44,22 @@ and is not required for the CI build.
 4. Keep GPU/SGX acceleration separate from framebuffer support.
 5. Evaluate XFCE4 only after a measured memory/display session; a working shell
    does not imply a complete desktop.
+
+## Snakey Desktop session
+
+The intended desktop is a **Linux userspace session**, not a standalone Vita
+homebrew. After the Snakey Linux kernel and root filesystem boot, Linux init
+will start the shared `/usr/bin/snakey-desktop` session.
+
+Initial backend: fullscreen software rendering on Linux framebuffer
+(`/dev/fb0`) with controller input through evdev. This avoids requiring
+Xorg/Wayland for the first desktop milestone. Vita's available memory makes
+XFCE4 a later optional experiment, not the first session.
+
+Shared architecture and application contract:
+- `desktop/linux/README.md`
+- `desktop/linux/desktop-contract.json`
+
+Current state: architecture defined only. The pinned upstream Vita build is
+not yet a Snakey kernel/rootfs or a bootable Snakey Desktop image. Native
+renderer, init integration and emulator/hardware validation remain pending.
