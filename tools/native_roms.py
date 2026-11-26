@@ -81,7 +81,10 @@ def build_gba(path: Path, name: str) -> None:
         0x06000000  # VRAM literal
     )
     # Use a conservative, visibly colored screen fill loop (38400 pixels).
-    code = struct.pack("<11I",
+    code = struct.pack("<13I",
+        0xE59F002C, # ldr r0,[pc,#44] -> DISPCNT literal
+        0xE3A01003, # mov r1,#3 (Mode 3)
+        0xE5801000, # str r1,[r0]
         0xE59F3018, # ldr r3,[pc,#24] -> VRAM literal
         0xE59F2018, # ldr r2,[pc,#24] -> pixel count literal
         0xE3A0401F, # mov r4,#31 (blue)
@@ -92,7 +95,7 @@ def build_gba(path: Path, name: str) -> None:
         0xEAFFFFFE, # loop forever
         0x06000000, # VRAM
         0x00009600, # 38,400 pixels
-        0x00000000
+        0x04000000  # DISPCNT
     )
     rom[0xC0:0xC0+len(code)] = code
     _write(path, bytes(rom))
@@ -120,7 +123,7 @@ def build_nds(path: Path, name: str) -> None:
     struct.pack_into("<8I", rom, 0x20,
         arm9_offset, 0x02000000, 0x02000000, len(arm9),
         arm7_offset, 0x03800000, 0x03800000, len(arm7))
-    struct.pack_into("<I", rom, 0x80, 0x4000) # total used ROM size
+    struct.pack_into("<I", rom, 0x80, len(rom)) # total used ROM size
     struct.pack_into("<I", rom, 0x84, 0x4000) # header-size field
     rom[arm9_offset:arm9_offset+len(arm9)] = arm9
     rom[arm7_offset:arm7_offset+len(arm7)] = arm7
