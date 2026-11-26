@@ -30,7 +30,7 @@ class NativeRomTests(unittest.TestCase):
             data = out.read_bytes()
             self.assertEqual(len(data), 0x10000)
             self.assertEqual(data[12:16], b"SNKY")
-            self.assertEqual(int.from_bytes(data[0x20:0x24], "little"), 0x4000)
+            self.assertEqual(int.from_bytes(data[0x20:0x24], "little"), 0x4000)\n            self.assertEqual(int.from_bytes(data[0x80:0x84], "little"), len(data))
             self.assertEqual(int.from_bytes(data[0x15E:0x160], "little"),
                              __import__("tools.native_roms", fromlist=["_crc16"])._crc16(data[:0x15E]))
 
