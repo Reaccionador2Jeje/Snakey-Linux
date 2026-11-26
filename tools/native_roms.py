@@ -82,7 +82,7 @@ def build_gba(path: Path, name: str) -> None:
     )
     # Use a conservative, visibly colored screen fill loop (38400 pixels).
     code = struct.pack("<13I",
-        0xE59F002C, # ldr r0,[pc,#44] -> DISPCNT literal
+        0xE59F0030, # ldr r0,[pc,#48] -> DISPCNT literal
         0xE3A01003, # mov r1,#3 (Mode 3)
         0xE5801000, # str r1,[r0]
         0xE59F3018, # ldr r3,[pc,#24] -> VRAM literal
