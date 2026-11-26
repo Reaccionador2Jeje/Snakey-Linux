@@ -73,7 +73,7 @@ def build_gba(path: Path, name: str) -> None:
     rom[0xBF] = 0
     # ARM code at 0xC0: Mode 3 framebuffer colour-ramp diagnostic (38,400 pixels).
     # This is a graphics bring-up pattern, not yet the Snakey desktop UI.
-    code = struct.pack("<16I",
+    code = struct.pack("<15I",
         0xE59F0030, # ldr r0,[pc,#48] -> DISPCNT literal
         0xE3A01003, # mov r1,#3 (Mode 3)
         0xE3811B01, # orr r1,r1,#0x400 (enable BG2)
@@ -108,10 +108,33 @@ def build_nds(path: Path, name: str) -> None:
     rom[12:16] = b"SNKY"
     rom[16:18] = b"01"
     rom[0x1E] = 0
-    # ARM9 and ARM7 binaries are small ARM branch-to-self stubs. Real dual-screen
-    # rendering and retail logo compatibility are deliberately future work.
+    # ARM9 initializes the main engine in bitmap mode 5, maps VRAM bank A
+    # to the main BG, then writes a small RGB555 diagnostic pattern. The
+    # literal pool is kept inside the first 20 words for deterministic tests.
     arm9_offset, arm7_offset = 0x4000, 0x5000
-    arm9 = struct.pack("<4I", 0xEAFFFFFE, 0xE1A00000, 0xE1A00000, 0xE1A00000)
+    arm9_words = [
+        0xE59F0034, # ldr r0,[pc,#0x34] -> DISPCNT
+        0xE59F1034, # ldr r1,[pc,#0x34] -> mode 5 + BG2
+        0xE5801000, # str r1,[r0]
+        0xE59F2030, # ldr r2,[pc,#0x30] -> VRAMCNT_A
+        0xE3A01081, # mov r1,#0x81 (enable bank A, main BG)
+        0xE5C21000, # strb r1,[r2]
+        0xE59F3024, # ldr r3,[pc,#0x24] -> BG VRAM
+        0xE3A0401F, # mov r4,#31
+        0xE2830002, # add r0,r3,#2
+        0xE1C040B0, # strh r4,[r0]
+        0xE2833002, # add r3,r3,#2
+        0xE2522001, # subs r2,r2,#1
+        0x1AFFFFFB, # bne to pixel write loop
+        0xEAFFFFFE, # stable idle loop
+        0xE1A00000, # reserved
+        0x04000000, # DISPCNT
+        0x00010005, # mode 5 + BG2
+        0x04000240, # VRAMCNT_A
+        0x06000000, # BG VRAM
+        0x00009600, # pixel count
+    ]
+    arm9 = struct.pack("<20I", *arm9_words)
     arm7 = struct.pack("<4I", 0xEAFFFFFE, 0xE1A00000, 0xE1A00000, 0xE1A00000)
     struct.pack_into("<8I", rom, 0x20,
         arm9_offset, 0x02000000, 0x02000000, len(arm9),
