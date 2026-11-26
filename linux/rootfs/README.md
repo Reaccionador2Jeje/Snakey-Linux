@@ -56,11 +56,13 @@ against the selected architecture's official/community package tree.
 
 ## Next validation gates
 
-1. Verify each manifest against the exact package mirror and architecture.
-2. Assemble the rootfs and inspect its ELF interpreter and shared libraries.
-3. For PS3, build/audit every package for the same PPC64 big-endian ABI and verify ELF class, endianness, machine, dynamic interpreter and library closure before treating the rootfs as usable.\n4. Add target-specific kernel modules, firmware and device configuration.
-4. Boot to a serial/console shell before starting Snakey Desktop.
-5. Add Snakey Desktop only after the base userspace is stable.
+1. Verify each manifest against the exact package mirror or local port and architecture.
+2. Assemble the base rootfs and inspect its ELF interpreter and shared libraries.
+3. For PS3, select `ps3-xfce4.packages` with `SNAKEY_PACKAGE_MANIFEST` to stage the desktop candidate set; run `python3 tools/validate_ps3_xfce4_manifest.py` first.
+4. Build/audit every PS3 package for the same PPC64 big-endian ABI and verify ELF class, endianness, machine, dynamic interpreter and library closure.
+5. Add target-specific kernel modules, firmware and device configuration.
+6. Boot to a supported console shell before starting Snakey Desktop.
+7. Add Snakey Desktop only after the base userspace is stable.
 
 ## PSP exception
 
