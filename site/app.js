@@ -4,6 +4,14 @@ const platformGrid = $("#platform-grid");
 const releaseList = $("#release-list");
 
 $("#year").textContent = new Date().getFullYear();
+const workerStatus = $("#worker-status");
+getJson("/api/health").then((health) => {
+  workerStatus.textContent = `API ${health.status.toUpperCase()}`;
+  workerStatus.classList.add("online");
+}).catch(() => {
+  workerStatus.textContent = "API NO DISPONIBLE";
+  workerStatus.classList.add("offline");
+});
 const navToggle = $("#nav-toggle");
 navToggle.addEventListener("click", () => {
   const nav = $("#primary-nav");
