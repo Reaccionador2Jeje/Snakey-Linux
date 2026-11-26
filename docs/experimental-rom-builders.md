@@ -1,6 +1,7 @@
 # Experimental SNES, GBA and DS ROM builders
 
-The SDK now generates a first image for every registered console target.
+The SDK generates a first native image for each registered target. These are
+early bring-up programs, not finished Snakey desktop ports.
 
 ## Build
 
@@ -17,24 +18,27 @@ python3 tools/snakey.py build build-ds
 ```
 
 Artifacts are written to each project's `build/` directory as `.sfc`,
-`.gba`, and `.nds`. The build uses Python's standard library and is wired
-into GitHub Actions.
+`.gba`, and `.nds`. The builders use Python's standard library.
 
-## What is implemented
+## Current implementation status
 
 - **SNES:** 32 KiB LoROM image, internal header, reset vector and checksum pair.
-  Current CPU program initializes the display backdrop and then idles; no menu or game logic yet.
-- **GBA:** 32 KiB image, entry branch, cartridge header and complement checksum.
-  Startup code selects bitmap Mode 3 and fills the framebuffer with a solid
-  color. The Nintendo logo area is intentionally blank, so this is not
-  certified for BIOS-enforced retail boot paths.
-- **Nintendo DS:** 64 KiB image, ARM9/ARM7 load offsets, header CRCs and minimal
-  CPU stubs. It does not yet initialize either screen; logo/firmware and
-  flashcart compatibility are not certified.
+  The 65816 reset program sets a cyan CGRAM backdrop and idles. It does not
+  draw tiles, a menu, or a game yet.
+- **GBA:** 32 KiB image, entry branch and cartridge header/checksum. ARM code
+  selects bitmap Mode 3 and writes a changing RGB555 colour-ramp diagnostic
+  across the 240×160 framebuffer. This is a graphics bring-up test, not the
+  Snakey desktop interface. The Nintendo logo area remains blank, so retail
+  BIOS-enforced boot compatibility is not claimed.
+- **Nintendo DS:** 64 KiB image with ARM9/ARM7 load metadata and header CRCs.
+  ARM9 maps VRAM bank A to main-engine BG memory, selects bitmap Mode 5 and
+  writes an RGB555 colour-ramp diagnostic to the 256×192 main screen. ARM7
+  remains an idle stub; the second screen, touch input, audio and UI are not
+  implemented. Retail logo/firmware and flashcart compatibility are not claimed.
 
-These are experimental image-generation milestones, not complete games or
-operating systems. A successful CI build validates file structure and metadata,
-not actual execution. Test the artifacts in an emulator before attempting any
-physical hardware. The next native-development milestone is to replace the
-SNES and DS idle stubs with visible controller-driven menus and to move all
-three experimental targets toward real source-compiling SDK adapters.
+A successful CI build validates source generation, image sizes, selected
+instructions and metadata. It does **not** prove that a ROM boots or displays
+correctly in RetroArch. Test each artifact with an appropriate core and report
+the core name plus a screenshot if the output is still blank or incorrect.
+The next milestone is a real SNES tile-based UI, followed by controller-driven
+GBA/DS interfaces and proper dual-screen DS support.
