@@ -7,10 +7,10 @@ OUT_ARG="${2:-}"
 PACKAGE_DIR="${SNAKEY_PACKAGE_DIR:-}"
 
 usage() {
-  echo "Usage: SNAKEY_PACKAGE_DIR=/path/to/txz $0 {vita|xbox|wii} [output-dir]" >&2
+  echo "Usage: SNAKEY_PACKAGE_DIR=/path/to/txz $0 {vita|xbox|wii|ps3} [output-dir]" >&2
   exit 2
 }
-[[ "$TARGET" == vita || "$TARGET" == xbox || "$TARGET" == wii ]] || usage
+[[ "$TARGET" == vita || "$TARGET" == xbox || "$TARGET" == wii || "$TARGET" == ps3 ]] || usage
 [[ -n "$PACKAGE_DIR" && -d "$PACKAGE_DIR" ]] || usage
 command -v python3 >/dev/null 2>&1 || { echo "ERROR: python3 required" >&2; exit 2; }
 command -v sha256sum >/dev/null 2>&1 || { echo "ERROR: sha256sum required" >&2; exit 2; }
