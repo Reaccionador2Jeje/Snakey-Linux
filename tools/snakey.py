@@ -149,25 +149,27 @@ Reset:
     sta $2006
     lda #$8D
     sta $2006
-    ldx #$07
-@play:
-    txa
+    lda #$07
     sta $2007
-    inx
-    cpx #$0B
-    bne @play
+    lda #$08
+    sta $2007
+    lda #$03
+    sta $2007
+    lda #$06
+    sta $2007
 
     lda #$22
     sta $2006
     lda #$CD
     sta $2006
-    ldx #$09
-@cart:
-    txa
+    lda #$09
     sta $2007
-    inx
-    cpx #$0D
-    bne @cart
+    lda #$03
+    sta $2007
+    lda #$0A
+    sta $2007
+    lda #$0B
+    sta $2007
 
     lda #$23
     sta $2006
@@ -233,9 +235,9 @@ ReadController:
 UpdateCursor:
     ; Erase old cursor.
     ldx $01
-    lda CursorLow,x
-    sta $2006
     lda CursorHigh,x
+    sta $2006
+    lda CursorLow,x
     sta $2006
     lda #$00
     sta $2007
