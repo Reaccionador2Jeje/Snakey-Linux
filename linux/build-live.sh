@@ -24,8 +24,8 @@ Environment:
   SNAKEY_SLACKWARE_REPO Local mirror root containing slackware64-15.0
 
 Build profile:
-  Slackware Live + XFCE, graphical runlevel 4, xz compression,
-  bloat trimming. This creates a real Slackware-based live ISO.
+  Slackware 15.0 + Snakey XFCE4 desktop, native Snakey packages,
+  graphical runlevel 4 and xz compression. Creates a Slackware-based live ISO.
 EOF
 }
 
@@ -61,7 +61,6 @@ required = {
     "base": "Slackware",
     "live_variant": "SNAKEY",
     "custom_package": "snakey-base",
-    "custom_packages": ["snakey-base", "snakey-theme"],
     "custom_packages": ["snakey-base", "snakey-theme"],
     "custom_package_sequence": "min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme",
     "live_user": "snakey",
