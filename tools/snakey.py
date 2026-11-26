@@ -512,7 +512,7 @@ def command_doctor(_):
     for label, executable in checks.items():
         print(f"{'FOUND' if executable else 'MISSING':<8} {label}" +
               (f" — {executable}" if executable else ""))
-    print("\nBuild adapters: NES requires cc65 (ca65/ld65); Game Boy and Game Boy Color require RGBDS. SNES/GBA/DS adapters are not implemented yet.")
+    print("\nBuild adapters: NES requires cc65 (ca65/ld65); Game Boy and Game Boy Color require RGBDS. SNES/GBA/DS use experimental native image writers; emulator compatibility is not yet certified.")
     return 0
 
 
