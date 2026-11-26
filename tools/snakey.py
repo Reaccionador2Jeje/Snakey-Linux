@@ -75,7 +75,7 @@ MainLoop:
         (destination / "src/main.asm").write_text(source, encoding="utf-8")
     elif args.target == "nes":
         (destination / "cfg").mkdir(exist_ok=True)
-        source = """; Snakey NES NROM-256 visible boot screen (ca65)
+        source = """; Snakey NES NROM-256 controller-driven boot menu (ca65)
 .segment "HEADER"
 .byte "NES", $1A
 .byte 2, 1
@@ -94,8 +94,6 @@ Reset:
     stx $2000
     stx $2001
     stx $4010
-
-    ; Wait for the PPU to become ready.
 @vblank1:
     bit $2002
     bpl @vblank1
@@ -103,7 +101,7 @@ Reset:
     bit $2002
     bpl @vblank2
 
-    ; Set a simple background palette.
+    ; Background palette.
     lda #$3F
     sta $2006
     lda #$00
@@ -117,7 +115,7 @@ Reset:
     lda #$11
     sta $2007
 
-    ; Clear the first nametable.
+    ; Clear nametable 0.
     lda #$20
     sta $2006
     lda #$00
@@ -133,7 +131,7 @@ Reset:
     dex
     bne @page
 
-    ; Draw SNAKEY at row 14, column 13.
+    ; Title: SNAKEY.
     lda #$21
     sta $2006
     lda #$CD
@@ -146,20 +144,123 @@ Reset:
     cpx #$07
     bne @title
 
-    ; Enable background rendering and wait forever.
+    ; Menu labels: PLAY, CART, INFO.
+    lda #$22
+    sta $2006
+    lda #$8D
+    sta $2006
+    ldx #$07
+@play:
+    txa
+    sta $2007
+    inx
+    cpx #$0B
+    bne @play
+
+    lda #$22
+    sta $2006
+    lda #$CD
+    sta $2006
+    ldx #$09
+@cart:
+    txa
+    sta $2007
+    inx
+    cpx #$0D
+    bne @cart
+
+    lda #$23
+    sta $2006
+    lda #$0D
+    sta $2006
+    lda #$0C
+    sta $2007
+    lda #$02
+    sta $2007
+    lda #$0E
+    sta $2007
+    lda #$0D
+    sta $2007
+
+    ; Initialize selected menu item and render the cursor.
+    lda #$00
+    sta $00
+    sta $01
     lda #$00
     sta $2005
     sta $2005
     lda #$08
     sta $2001
-Forever:
-    jmp Forever
+
+MainLoop:
+@wait:
+    bit $2002
+    bpl @wait
+    jsr ReadController
+    jsr UpdateCursor
+    jmp MainLoop
+
+ReadController:
+    lda #$01
+    sta $4016
+    lda #$00
+    sta $4016
+    lda $4016
+    lda $4016
+    lda $4016
+    lda $4016
+    lda $4016
+    and #$01
+    beq @checkDown
+    lda $00
+    beq @checkDown
+    sec
+    sbc #$01
+    sta $00
+@checkDown:
+    lda $4016
+    and #$01
+    beq @done
+    lda $00
+    cmp #$02
+    bcs @done
+    clc
+    adc #$01
+    sta $00
+@done:
+    rts
+
+UpdateCursor:
+    ; Erase old cursor.
+    ldx $01
+    lda CursorLow,x
+    sta $2006
+    lda CursorHigh,x
+    sta $2006
+    lda #$00
+    sta $2007
+    ; Draw new cursor.
+    ldx $00
+    lda CursorLow,x
+    sta $2006
+    lda CursorHigh,x
+    sta $2006
+    lda #$0F
+    sta $2007
+    lda $00
+    sta $01
+    rts
+
+CursorLow:
+.byte $8A, $CA, $0A
+CursorHigh:
+.byte $22, $22, $23
 
 .segment "VECTORS"
 .word Reset, Reset, Reset
 
 .segment "CHARS"
-; Tile 0 is blank. Tiles 1..6 spell SNAKEY (2bpp, low plane).
+; Tile 0 blank. Tiles 1..6 spell SNAKEY.
 .res 16, $00
 ; S
 .byte $3C,$42,$40,$3C,$02,$42,$3C,$00
@@ -179,7 +280,34 @@ Forever:
 ; Y
 .byte $42,$42,$24,$18,$18,$18,$18,$00
 .res 8, $00
-.res $2000 - (16 + 6 * 16), $00
+; P
+.byte $7C,$42,$42,$7C,$40,$40,$40,$00
+.res 8, $00
+; L
+.byte $40,$40,$40,$40,$40,$40,$7E,$00
+.res 8, $00
+; C
+.byte $3C,$42,$40,$40,$40,$42,$3C,$00
+.res 8, $00
+; R
+.byte $7C,$42,$42,$7C,$48,$44,$42,$00
+.res 8, $00
+; T
+.byte $7E,$18,$18,$18,$18,$18,$18,$00
+.res 8, $00
+; I
+.byte $7E,$18,$18,$18,$18,$18,$7E,$00
+.res 8, $00
+; O
+.byte $3C,$42,$42,$42,$42,$42,$3C,$00
+.res 8, $00
+; F
+.byte $7E,$40,$40,$7C,$40,$40,$40,$00
+.res 8, $00
+; >
+.byte $40,$20,$10,$08,$10,$20,$40,$00
+.res 8, $00
+.res $2000 - (16 + 15 * 16), $00
 """
         (destination / "src/main.s").write_text(source, encoding="utf-8")
         config = """MEMORY {
