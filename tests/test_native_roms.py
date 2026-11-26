@@ -1,7 +1,8 @@
 import tempfile
 import unittest
 from pathlib import Path
-from tools.native_roms import build_snes, build_gba, build_nds
+from tools.native_roms import _crc16, build_gba, build_nds, build_snes
+
 
 class NativeRomTests(unittest.TestCase):
     def test_snes_lorom_image_and_header(self):
@@ -11,7 +12,10 @@ class NativeRomTests(unittest.TestCase):
             data = out.read_bytes()
             self.assertEqual(len(data), 0x8000)
             self.assertEqual(data[0x7FC0:0x7FC6], b"SNAKEY")
-            self.assertEqual(data[0x7FFC:0x7FFE], b"\x00\x80")
+            self.assertEqual(data[0x7FFC:0x7FFE], bytes([0x00, 0x80]))
+            complement = int.from_bytes(data[0x7FDC:0x7FDE], "little")
+            checksum = int.from_bytes(data[0x7FDE:0x7FE0], "little")
+            self.assertEqual(complement ^ checksum, 0xFFFF)
 
     def test_gba_header_and_entry_branch(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -22,7 +26,7 @@ class NativeRomTests(unittest.TestCase):
             self.assertEqual(data[0xAC:0xB0], b"SNKY")
             self.assertEqual(data[0xB2], 0x96)
             self.assertEqual((sum(data[0xA0:0xBD]) + data[0xBD] + 0x19) & 0xFF, 0)
-            self.assertEqual(data[0xC0:0xC4], b"\x30\x00\x9f\xe5")
+            self.assertEqual(data[0xC0:0xC4], bytes([0x30, 0x00, 0x9F, 0xE5]))
 
     def test_nds_header_offsets_and_crcs(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -33,8 +37,8 @@ class NativeRomTests(unittest.TestCase):
             self.assertEqual(data[12:16], b"SNKY")
             self.assertEqual(int.from_bytes(data[0x20:0x24], "little"), 0x4000)
             self.assertEqual(int.from_bytes(data[0x80:0x84], "little"), len(data))
-            self.assertEqual(int.from_bytes(data[0x15E:0x160], "little"),
-                             __import__("tools.native_roms", fromlist=["_crc16"])._crc16(data[:0x15E]))
+            self.assertEqual(int.from_bytes(data[0x15E:0x160], "little"), _crc16(data[:0x15E]))
+
 
 if __name__ == "__main__":
     unittest.main()
