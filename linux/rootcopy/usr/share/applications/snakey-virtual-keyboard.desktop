@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Snakey Virtual Keyboard
+Comment=Open the on-screen keyboard
+Exec=/usr/bin/snakey-virtual-keyboard
+Icon=input-keyboard
+Terminal=false
+Categories=Utility;Accessibility;
