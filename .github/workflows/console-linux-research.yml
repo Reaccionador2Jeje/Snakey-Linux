@@ -16,6 +16,7 @@ on:
       - "tools/audit_psp_archives.py"
       - "tools/fetch_psp_archives.py"
       - "docs/ps3-linux-bringup.md"
+      - "linux/rootfs/**"
   pull_request:
     paths:
       - ".github/workflows/console-linux-research.yml"
@@ -24,6 +25,7 @@ on:
       - "tools/audit_psp_archives.py"
       - "tools/fetch_psp_archives.py"
       - "docs/ps3-linux-bringup.md"
+      - "linux/rootfs/**"
 
 permissions:
   contents: read
@@ -203,6 +205,17 @@ jobs:
           python3 tools/validate_linux_targets.py
           python3 tools/validate_linux_sources.py
           grep -F 'CONFIG_PPC_PS3=y' <(curl --fail --location --retry 3 "https://raw.githubusercontent.com/torvalds/linux/${PS3_KERNEL_REVISION}/arch/powerpc/configs/ps3_defconfig")
+      - name: Test Slackware rootfs assembly contract (including PS3)
+        run: python3 linux/rootfs/test_rootfs_builder.py
+      - name: Verify PS3 package manifest is present and unique
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          names=[line.split("#",1)[0].strip() for line in Path("linux/rootfs/ps3.packages").read_text().splitlines()]
+          names=[name for name in names if name]
+          assert names and len(names)==len(set(names)), "invalid PS3 package manifest"
+          print(f"PS3 PPC64 bootstrap package contract: OK ({len(names)} packages; ABI audit still required)")
+          PY
       - name: Install PowerPC64 cross-build dependencies
         run: |
           sudo apt-get update -q
