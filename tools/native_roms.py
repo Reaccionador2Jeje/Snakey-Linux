@@ -39,7 +39,7 @@ def build_snes(path: Path, name: str) -> None:
     # LoROM vectors: native/emulation NMI, reset and IRQ. Reset points to $8000.
     struct.pack_into("<8H", header, 0x20, 0x8000, 0x8000, 0x8000, 0x8000,
                      0x8000, 0x8000, 0x8000, 0x8000)
-    header[0x3C:0x40] = struct.pack("<HH", 0xFFFF, 0x0000)
+    header[0x1C:0x20] = struct.pack("<HH", 0xFFFF, 0x0000)\n    header[0x3C:0x40] = struct.pack("<HH", 0x8000, 0x8000)
     rom[0x7FC0:0x8000] = header
     _write(path, bytes(rom))
 
@@ -81,9 +81,19 @@ def build_gba(path: Path, name: str) -> None:
         0x06000000  # VRAM literal
     )
     # Use a conservative, visibly colored screen fill loop (38400 pixels).
-    code = struct.pack("<12I", 0xE3A00000, 0xE59F301C, 0xE3A0401F,
-        0xE3A01000, 0xE1C340B0, 0xE2833002, 0xE2811001, 0xE3510906,
-        0x1AFFFFFA, 0xEAFFFFFE, 0x06000000, 0x00000000)
+    code = struct.pack("<11I",
+        0xE59F3018, # ldr r3,[pc,#24] -> VRAM literal
+        0xE59F2018, # ldr r2,[pc,#24] -> pixel count literal
+        0xE3A0401F, # mov r4,#31 (blue)
+        0xE1C340B0, # strh r4,[r3]
+        0xE2833002, # add r3,r3,#2
+        0xE2522001, # subs r2,r2,#1
+        0x1AFFFFFB, # bne back to strh
+        0xEAFFFFFE, # loop forever
+        0x06000000, # VRAM
+        0x00009600, # 38,400 pixels
+        0x00000000
+    )
     rom[0xC0:0xC0+len(code)] = code
     _write(path, bytes(rom))
 
