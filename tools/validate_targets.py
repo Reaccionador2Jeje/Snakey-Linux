@@ -12,7 +12,7 @@ BOOT_REGISTRY = ROOT / "boot" / "methods.json"
 ALLOWED_FAMILIES = {"native-homebrew", "linux-system"}
 ALLOWED_STATUSES = {
     "planned", "toolchain-ready", "buildable",
-    "emulator-tested", "hardware-tested",
+    "emulator-tested", "hardware-tested", "experimental-buildable",
 }
 ALLOWED_EXECUTION = {
     "cartridge-rom", "emulator", "homebrew-image", "linux-boot",
