@@ -21,7 +21,7 @@ jobs:
       - name: Install NES toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y cc65
+          sudo apt-get install -y cc65 rgbds
       - name: Validate target registry
         run: python3 tools/validate_targets.py
       - name: Run SDK tests
@@ -32,6 +32,16 @@ jobs:
           python3 tools/snakey.py validate "$RUNNER_TEMP/snakey-nes-smoke"
           python3 tools/snakey.py build "$RUNNER_TEMP/snakey-nes-smoke"
           test "$(stat -c %s "$RUNNER_TEMP/snakey-nes-smoke/build/SnakeySmoke.nes")" -eq 40976
+      - name: Build Game Boy and Game Boy Color ROMs
+        run: |
+          python3 tools/snakey.py new "$RUNNER_TEMP/snakey-gb-smoke" --target game-boy --name SnakeyGB
+          python3 tools/snakey.py validate "$RUNNER_TEMP/snakey-gb-smoke"
+          python3 tools/snakey.py build "$RUNNER_TEMP/snakey-gb-smoke"
+          test -s "$RUNNER_TEMP/snakey-gb-smoke/build/SnakeyGB.gb"
+          python3 tools/snakey.py new "$RUNNER_TEMP/snakey-gbc-smoke" --target game-boy-color --name SnakeyGBC
+          python3 tools/snakey.py validate "$RUNNER_TEMP/snakey-gbc-smoke"
+          python3 tools/snakey.py build "$RUNNER_TEMP/snakey-gbc-smoke"
+          test -s "$RUNNER_TEMP/snakey-gbc-smoke/build/SnakeyGBC.gbc"
       - name: Upload generated NES ROM
         uses: actions/upload-artifact@v4
         with:
