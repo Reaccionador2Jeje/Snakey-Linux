@@ -1,19 +1,15 @@
 #!/usr/bin/env python3
-"""Snakey Console Desktop launcher for XFCE4 and controller-first sessions.
-
-The launcher uses Linux joystick events directly. It does not depend on
-xdotool, a particular controller brand, or a background key-injection daemon.
-"""
+"""Snakey Console Desktop launcher for XFCE4 and controller-first sessions."""
 from __future__ import annotations
 
 import curses
 import glob
+import json
 import os
 import select
 import shutil
 import struct
 import subprocess
-import time
 from pathlib import Path
 from typing import Optional
 
@@ -22,9 +18,8 @@ JS_EVENT_BUTTON = 0x01
 JS_EVENT_AXIS = 0x02
 JS_EVENT_INIT = 0x80
 DEADZONE = 16000
+CONFIG_PATH = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "snakey" / "gamepad.json"
 
-# Standard Linux gamepad mapping: south face button = confirm,
-# east face button = back. Keyboard navigation always remains available.
 ITEMS = (
     ("Games", ("retroarch",), "Launch RetroArch"),
     ("Applications", ("xfce4-appfinder",), "Browse installed applications"),
@@ -36,31 +31,65 @@ ITEMS = (
     ("Power", ("xfce4-session-logout",), "Log out or shut down"),
 )
 
+DEFAULT_PROFILE = {
+    "device": "auto",
+    "deadzone": DEADZONE,
+    "buttons": {"0": "Return", "1": "Escape", "2": "Tab", "4": "shift+Tab", "5": "Tab", "6": "Return"},
+}
 
-def find_gamepad() -> Optional[str]:
-    configured = os.environ.get("SNAKEY_GAMEPAD_DEVICE")
-    if configured and os.path.exists(configured):
-        return configured
+
+def load_profile(path: Path = CONFIG_PATH) -> dict:
+    """Load the shared Controller Center profile with safe defaults."""
+    profile = {
+        "device": DEFAULT_PROFILE["device"],
+        "deadzone": DEFAULT_PROFILE["deadzone"],
+        "buttons": dict(DEFAULT_PROFILE["buttons"]),
+    }
+    try:
+        saved = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(saved, dict):
+            profile["device"] = str(saved.get("device", profile["device"]))
+            profile["deadzone"] = max(1000, min(32000, int(saved.get("deadzone", profile["deadzone"]))))
+            if isinstance(saved.get("buttons"), dict):
+                profile["buttons"].update({str(k): str(v) for k, v in saved["buttons"].items()})
+    except (OSError, ValueError, TypeError):
+        pass
+    return profile
+
+
+def find_gamepad(configured: str = "auto") -> Optional[str]:
+    environment_device = os.environ.get("SNAKEY_GAMEPAD_DEVICE")
+    selected = environment_device or configured
+    if selected != "auto" and os.path.exists(selected):
+        return selected
     devices = sorted(glob.glob("/dev/input/js*"))
     return devices[0] if devices else None
 
 
-def decode_gamepad_event(raw: bytes, selected: int, count: int) -> tuple[int, str | None]:
-    """Return the selected item and an optional action from one joystick event."""
+def decode_gamepad_event(
+    raw: bytes,
+    selected: int,
+    count: int,
+    buttons: Optional[dict[str, str]] = None,
+    deadzone: int = DEADZONE,
+) -> tuple[int, str | None]:
+    """Translate configured Linux joystick events into launcher actions."""
     if len(raw) != JS_EVENT.size:
         return selected, None
     _timestamp, value, event_type, number = JS_EVENT.unpack(raw)
     event_type &= ~JS_EVENT_INIT
     if event_type == JS_EVENT_BUTTON and value:
-        if number == 0:
+        mapping = buttons if buttons is not None else DEFAULT_PROFILE["buttons"]
+        action = mapping.get(str(number), "none").lower().replace(" ", "")
+        if action in ("return", "enter", "space"):
             return selected, "confirm"
-        if number == 1:
+        if action in ("escape", "esc"):
             return selected, "back"
-        if number == 4:
-            return (selected - 1) % count, None
-        if number == 5:
+        if action == "tab":
             return (selected + 1) % count, None
-    if event_type == JS_EVENT_AXIS and abs(value) > DEADZONE:
+        if action in ("shift+tab", "shift-tab"):
+            return (selected - 1) % count, None
+    if event_type == JS_EVENT_AXIS and abs(value) > deadzone:
         if number == 1:
             return (selected + (1 if value > 0 else -1)) % count, None
         if number == 0:
@@ -100,7 +129,8 @@ def draw(stdscr) -> int:
     stdscr.keypad(True)
     stdscr.timeout(50)
     selected = 0
-    device_path = find_gamepad()
+    profile = load_profile()
+    device_path = find_gamepad(profile["device"])
     gamepad = None
     if device_path:
         try:
@@ -149,7 +179,9 @@ def draw(stdscr) -> int:
                         raw = os.read(gamepad.fileno(), JS_EVENT.size)
                     except OSError:
                         raw = b""
-                    selected, action = decode_gamepad_event(raw, selected, len(ITEMS))
+                    selected, action = decode_gamepad_event(
+                        raw, selected, len(ITEMS), profile["buttons"], profile["deadzone"]
+                    )
                     if action == "back":
                         return 0
                     if action == "confirm":
