@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: First-wave research lane
+        description: Console Linux research lane
         required: true
         type: choice
-        options: [psp, vita]
+        options: [psp, vita, ps3]
   push:
     paths:
       - ".github/workflows/console-linux-research.yml"
@@ -15,6 +15,7 @@ on:
       - "platforms/linux-targets.json"
       - "tools/audit_psp_archives.py"
       - "tools/fetch_psp_archives.py"
+      - "docs/ps3-linux-bringup.md"
   pull_request:
     paths:
       - ".github/workflows/console-linux-research.yml"
@@ -22,6 +23,7 @@ on:
       - "platforms/linux-targets.json"
       - "tools/audit_psp_archives.py"
       - "tools/fetch_psp_archives.py"
+      - "docs/ps3-linux-bringup.md"
 
 permissions:
   contents: read
@@ -182,5 +184,67 @@ jobs:
         with:
           name: upstream-vita-linux-${{ env.VITA_REVISION }}
           path: upstream-vita/dist/ci/
+          if-no-files-found: error
+          retention-days: 14
+
+  ps3-mainline-kernel:
+    name: PS3 mainline Linux kernel build (PowerPC64 big-endian)
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'ps3'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PS3_KERNEL_REVISION: adc218676eef25575469234709c2d87185ca223a
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Validate pinned source provenance
+        run: |
+          python3 tools/validate_linux_targets.py
+          python3 tools/validate_linux_sources.py
+          grep -F 'CONFIG_PPC_PS3=y' <(curl --fail --location --retry 3 "https://raw.githubusercontent.com/torvalds/linux/${PS3_KERNEL_REVISION}/arch/powerpc/configs/ps3_defconfig")
+      - name: Install PowerPC64 cross-build dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q bc bison build-essential flex gcc-powerpc64-linux-gnu libelf-dev libssl-dev make
+      - name: Fetch exact upstream kernel revision
+        run: |
+          git init linux-ps3-kernel
+          git -C linux-ps3-kernel remote add origin https://github.com/torvalds/linux.git
+          git -C linux-ps3-kernel fetch --depth 1 origin "${PS3_KERNEL_REVISION}"
+          git -C linux-ps3-kernel checkout --detach FETCH_HEAD
+          test "$(git -C linux-ps3-kernel rev-parse HEAD)" = "$PS3_KERNEL_REVISION"
+      - name: Configure PS3 kernel
+        working-directory: linux-ps3-kernel
+        run: |
+          make ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu- ps3_defconfig
+          grep -Fx 'CONFIG_PPC_PS3=y' .config
+          grep -Fx 'CONFIG_FB_PS3=y' .config
+          grep -Fx 'CONFIG_GELIC_NET=y' .config
+      - name: Build PowerPC64 big-endian kernel
+        working-directory: linux-ps3-kernel
+        run: |
+          make -j2 ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu- vmlinux
+          powerpc64-linux-gnu-readelf -h vmlinux | tee elf-header.txt
+          grep -F '2\'s complement, big endian' elf-header.txt
+          grep -F 'PowerPC64' elf-header.txt
+      - name: Record build provenance and checksums
+        working-directory: linux-ps3-kernel
+        run: |
+          mkdir -p ../ps3-kernel-artifact
+          cp vmlinux .config System.map elf-header.txt ../ps3-kernel-artifact/
+          {
+            printf 'upstream=https://github.com/torvalds/linux.git\n'
+            printf 'revision=%s\n' "$(git rev-parse HEAD)"
+            printf 'config=arch/powerpc/configs/ps3_defconfig\n'
+            printf 'artifact=vmlinux (ELF kernel; not a console boot image)\n'
+          } > ../ps3-kernel-artifact/provenance.txt
+          cd ../ps3-kernel-artifact
+          sha256sum vmlinux .config System.map elf-header.txt provenance.txt > SHA256SUMS
+      - name: Upload PS3 kernel build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snakey-ps3-mainline-kernel-v6.12
+          path: ps3-kernel-artifact/
           if-no-files-found: error
           retention-days: 14
