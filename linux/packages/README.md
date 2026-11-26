@@ -25,3 +25,15 @@ Build it on a Slackware 15.0 x86_64 host:
 The Live builder adds the package as `local:snakey-theme` in the custom
 liveslak package sequence. It inherits Adwaita icons and window decorations
 rather than shipping a partial or incompatible icon/window-manager theme.
+
+## snakey-control-center
+
+`snakey-control-center` provides the main text-mode system panel, launched
+from the XFCE desktop. It shows system information and opens native XFCE
+settings, display and appearance tools, network connections, Slackware
+pkgtool (with root authentication), and the dedicated controller panel.
+It uses Python's standard library and does not add a GTK/PyGObject dependency.
+
+Build it on a Slackware 15.0 x86_64 host:
+
+    sudo linux/packages/build-snakey-control-center.sh
