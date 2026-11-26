@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Snakey Dark
+Comment=Dark graphite theme with Snakey teal and serpent-green accents
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Snakey-Dark
+MetacityTheme=Adwaita-dark
+IconTheme=Adwaita
+CursorTheme=Adwaita
