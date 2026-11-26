@@ -18,6 +18,7 @@ on:
       - "linux/targets/psp/**"
       - "linux/targets/vita/**"
       - "tools/audit_psp_archives.py"
+      - "tools/fetch_psp_archives.py"
   pull_request:
     paths:
       - ".github/workflows/console-linux-research.yml"
@@ -26,6 +27,7 @@ on:
       - "linux/targets/psp/**"
       - "linux/targets/vita/**"
       - "tools/audit_psp_archives.py"
+      - "tools/fetch_psp_archives.py"
 
 permissions:
   contents: read
@@ -44,22 +46,15 @@ jobs:
     name: PSP uClinux 0.22 archival source audit (MIPS)
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'psp'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Validate Snakey source and platform metadata
         run: |
           python3 tools/validate_linux_targets.py
           python3 tools/validate_linux_sources.py
-      - name: Download documented historical source archives
-        run: |
-          set -euo pipefail
-          mkdir -p artifacts/psp-archives
-          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/uclinux_on_psp-0.22.zip" -o artifacts/psp-archives/uclinux-psp-022
-          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/buildroot_patches-0.22.zip" -o artifacts/psp-archives/buildroot-patches-022
-          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/busybox-0.22.config.gz" -o artifacts/psp-archives/busybox-config-022
-          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/kernel-0.22.config.gz" -o artifacts/psp-archives/kernel-config-022
-          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/kernel-0.22.patch_.gz" -o artifacts/psp-archives/kernel-patch-022
+      - name: Fetch historical PSP archives from the declared manifest
+        run: python3 tools/fetch_psp_archives.py artifacts/psp-archives
       - name: Verify archive integrity and record SHA-256
         run: python3 tools/audit_psp_archives.py artifacts/psp-archives
       - name: Upload PSP archive audit
@@ -70,11 +65,54 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-  vita-upstream-kernel:
-    name: Vita Linux upstream reproducibility build (ARMv7)
+  vita-rootfs:
+    name: Vita Buildroot initramfs (ARMv7)
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'vita'
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 120
+    steps:
+      - name: Checkout pinned Vita Linux Next source and submodules
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.VITA_UPSTREAM }}
+          ref: ${{ env.VITA_REVISION }}
+          path: upstream-vita
+          submodules: recursive
+          fetch-depth: 1
+      - name: Install Buildroot host dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q bc binutils build-essential bzip2 cpio file flex g++ gcc git libelf-dev libncurses-dev libssl-dev make patch perl python3 rsync sed tar unzip wget
+      - name: Build Vita initramfs with pinned Buildroot submodule
+        working-directory: upstream-vita
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$VITA_REVISION"
+          test -f buildroot/Makefile
+          make rootfs LINUX_VITA_DIR=./linux_vita
+          test -s linux_vita/rootfs.cpio.zst
+          {
+            printf 'upstream=%s\nrevision=%s\n' "$VITA_UPSTREAM" "$VITA_REVISION"
+            printf 'buildroot_revision=%s\n' "$(git -C buildroot rev-parse HEAD)"
+            printf 'rootfs_sha256='
+            sha256sum linux_vita/rootfs.cpio.zst | cut -d ' ' -f 1
+          } > rootfs-provenance.txt
+      - name: Upload Vita initramfs
+        uses: actions/upload-artifact@v4
+        with:
+          name: upstream-vita-rootfs-${{ env.VITA_REVISION }}
+          path: |
+            upstream-vita/linux_vita/rootfs.cpio.zst
+            upstream-vita/rootfs-provenance.txt
+          if-no-files-found: error
+          retention-days: 14
+
+  vita-upstream-kernel:
+    name: Vita kernel + embedded initramfs (ARMv7)
+    needs: vita-rootfs
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'vita'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
     steps:
       - name: Checkout Snakey Linux
         uses: actions/checkout@v4
@@ -88,17 +126,27 @@ jobs:
           path: upstream-vita
           submodules: recursive
           fetch-depth: 1
-      - name: Verify source pin and submodule provenance
+      - name: Restore Buildroot initramfs artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: upstream-vita-rootfs-${{ env.VITA_REVISION }}
+          path: upstream-vita
+      - name: Verify source and initramfs provenance
         working-directory: upstream-vita
         run: |
           set -euo pipefail
-          actual="$(git rev-parse HEAD)"
-          test "$actual" = "$VITA_REVISION"
+          test "$(git rev-parse HEAD)" = "$VITA_REVISION"
+          test -s linux_vita/rootfs.cpio.zst
           git submodule status --recursive
-          printf "upstream=%s\nrevision=%s\n" "$VITA_UPSTREAM" "$actual" > ../vita-build-provenance.txt
-          git submodule status --recursive >> ../vita-build-provenance.txt
-      - name: Install build dependencies
-        run: sudo apt-get update -q && sudo apt-get install -y -q bc bison build-essential flex libelf-dev libssl-dev make python3
+          {
+            printf 'upstream=%s\nrevision=%s\n' "$VITA_UPSTREAM" "$(git rev-parse HEAD)"
+            git submodule status --recursive
+            cat rootfs-provenance.txt
+          } > ../vita-build-provenance.txt
+      - name: Install kernel build dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q bc bison build-essential flex libelf-dev libssl-dev make python3
       - name: Cache Bootlin ARMv7 toolchain
         uses: actions/cache@v4
         id: toolchain
@@ -116,32 +164,29 @@ jobs:
         run: |
           python3 tools/validate_linux_targets.py
           python3 tools/validate_linux_sources.py
+          python3 -m py_compile tools/audit_psp_archives.py tools/fetch_psp_archives.py
       - name: Run upstream build-contract tests
         working-directory: upstream-vita
         run: |
           export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
           make test CART_CROSS_CC=arm-linux-gcc
-      - name: Configure Vita kernel
-        working-directory: upstream-vita
-        run: |
-          export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
-          make config CROSS_COMPILE=arm-linux-
-      - name: Build Vita kernel and device trees
+      - name: Configure Vita kernel with embedded rootfs
         working-directory: upstream-vita
         run: |
           set -euo pipefail
           export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
-          make build CROSS_COMPILE=arm-linux-
-          make verify-dtb CROSS_COMPILE=arm-linux-
-      - name: Stage kernel artifacts and provenance
+          make config CROSS_COMPILE=arm-linux-
+          grep -F 'CONFIG_INITRAMFS_SOURCE="rootfs.cpio.zst"' linux_vita/.config
+      - name: Build and stage Vita kernel and device trees
         working-directory: upstream-vita
         run: |
           set -euo pipefail
           export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
           make stage CROSS_COMPILE=arm-linux-
+          make verify-dtb CROSS_COMPILE=arm-linux-
           cp ../vita-build-provenance.txt dist/ci/
           (cd dist/ci && sha256sum * > SHA256SUMS)
-      - name: Upload upstream Vita kernel artifacts
+      - name: Upload Vita kernel, DTBs and provenance
         uses: actions/upload-artifact@v4
         with:
           name: upstream-vita-linux-${{ env.VITA_REVISION }}
