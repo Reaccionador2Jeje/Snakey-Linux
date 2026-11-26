@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""Snakey Linux system control center (stdlib-only curses interface)."""
+from __future__ import annotations
+
+import curses
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+MENU = [
+    ("System overview", "overview"),
+    ("Desktop settings", "settings"),
+    ("Display settings", "display"),
+    ("Appearance", "appearance"),
+    ("Network connections", "network"),
+    ("Package manager (root required)", "packages"),
+    ("Controller Center", "controller"),
+    ("Open terminal", "terminal"),
+    ("About Snakey Linux", "about"),
+    ("Exit", "exit"),
+]
+
+
+def read_os_release() -> dict[str, str]:
+    values: dict[str, str] = {}
+    try:
+        for line in Path("/etc/os-release").read_text(encoding="utf-8").splitlines():
+            if "=" in line and not line.startswith("#"):
+                key, value = line.split("=", 1)
+                values[key] = value.strip().strip('"')
+    except OSError:
+        pass
+    return values
+
+
+def system_summary() -> list[str]:
+    release = read_os_release()
+    memory = "Unavailable"
+    try:
+        for line in Path("/proc/meminfo").read_text().splitlines():
+            if line.startswith("MemTotal:"):
+                memory = f"{int(line.split()[1]) // 1024} MiB"
+                break
+    except (OSError, ValueError, IndexError):
+        pass
+    root_disk = "Unavailable"
+    try:
+        usage = shutil.disk_usage("/")
+        root_disk = f"{usage.free // (1024 ** 3)} GiB free / {usage.total // (1024 ** 3)} GiB"
+    except OSError:
+        pass
+    try:
+        kernel = os.uname().release
+    except AttributeError:
+        kernel = "Unavailable"
+    return [
+        f"Distribution: {release.get('PRETTY_NAME', 'Snakey Linux')}",
+        "Base: Slackware 15.0 stable (x86_64)",
+        f"Kernel: {kernel}",
+        f"Hostname: {os.uname().nodename if hasattr(os, 'uname') else 'unknown'}",
+        f"Memory: {memory}",
+        f"Root filesystem: {root_disk}",
+        "Desktop: XFCE4 | Init: SysVinit | Packages: pkgtools",
+    ]
+
+
+def launch(action: str) -> str:
+    commands = {
+        "settings": ["xfce4-settings-manager"],
+        "display": ["xfce4-display-settings"],
+        "appearance": ["xfce4-appearance-settings"],
+        "network": ["nm-connection-editor"],
+        "controller": ["xfce4-terminal", "--title=Snakey Controller Center",
+                       "--command=/usr/bin/snakey-controller-center"],
+        "terminal": ["xfce4-terminal"],
+        "packages": ["xfce4-terminal", "--title=Snakey Package Manager",
+                     "--command=su -c pkgtool"],
+    }
+    command = commands.get(action)
+    if not command:
+        return "This action is not available."
+    if shutil.which(command[0]) is None:
+        return f"Required program not found: {command[0]}"
+    try:
+        subprocess.Popen(command, start_new_session=True)
+    except OSError as exc:
+        return f"Could not start application: {exc}"
+    if action == "packages":
+        return "pkgtool opened. Enter the root password in its terminal when prompted."
+    return "Application launched."
+
+
+def show_message(stdscr, title: str, lines: list[str]) -> None:
+    stdscr.erase()
+    stdscr.addstr(1, 2, title, curses.A_BOLD)
+    for index, line in enumerate(lines, start=3):
+        if index >= curses.LINES - 2:
+            break
+        stdscr.addnstr(index, 2, line, max(1, curses.COLS - 4))
+    stdscr.addstr(curses.LINES - 2, 2, "Press any key to return.")
+    stdscr.refresh()
+    stdscr.getch()
+
+
+def run(stdscr) -> None:
+    selected = 0
+    notice = "UP/DOWN: navigate   ENTER: open   Q: exit"
+    while True:
+        stdscr.erase()
+        stdscr.addstr(0, 2, "SNAKEY CONTROL CENTER", curses.A_BOLD)
+        stdscr.addstr(1, 2, "Slackware-powered desktop control panel")
+        stdscr.addstr(2, 2, "System | Desktop | Devices | Maintenance")
+        for index, (label, _action) in enumerate(MENU):
+            y = 4 + index
+            if y >= curses.LINES - 3:
+                break
+            stdscr.addnstr(y, 3, label, max(1, curses.COLS - 6),
+                           curses.A_REVERSE if index == selected else curses.A_NORMAL)
+        stdscr.addnstr(curses.LINES - 2, 2, notice, max(1, curses.COLS - 4))
+        stdscr.refresh()
+        key = stdscr.getch()
+        if key in (ord("q"), ord("Q")):
+            return
+        if key in (curses.KEY_UP, ord("k")):
+            selected = (selected - 1) % len(MENU)
+        elif key in (curses.KEY_DOWN, ord("j")):
+            selected = (selected + 1) % len(MENU)
+        elif key in (10, 13, curses.KEY_ENTER):
+            action = MENU[selected][1]
+            if action == "exit":
+                return
+            if action == "overview":
+                show_message(stdscr, "SYSTEM OVERVIEW", system_summary())
+                notice = "System information refreshed."
+            elif action == "about":
+                show_message(stdscr, "ABOUT SNAKEY", [
+                    "Snakey Linux is based on Slackware 15.0 stable.",
+                    "Desktop: XFCE4 | Package tools: Slackware pkgtools",
+                    "Project: github.com/Reaccionador2Jeje/Snakey-Linux",
+                    "This panel launches native XFCE and Slackware tools.",
+                ])
+            else:
+                notice = launch(action)
+
+
+def main() -> int:
+    try:
+        curses.wrapper(run)
+    except curses.error as exc:
+        print(f"Snakey Control Center needs a usable terminal: {exc}", file=sys.stderr)
+        return 2
+    except KeyboardInterrupt:
+        return 130
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
