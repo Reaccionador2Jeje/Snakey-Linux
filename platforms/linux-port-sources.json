@@ -109,15 +109,47 @@
     {
       "id": "psp-linux",
       "target": "psp",
-      "name": "PSP Linux feasibility research",
-      "project_url": null,
+      "name": "PSP Linux / uClinux 0.22 historical source archive",
+      "project_url": "https://psplinux.info/files/",
       "source_repository": null,
       "revision": null,
       "architecture": "mipsel",
       "build_status": "source-audit-required",
       "build_workflow": null,
       "license": "Unknown; upstream project not identified",
-      "notes": "Feasibility research only; no working general-purpose Linux port is claimed."
+      "notes": "Historical PSP Linux project archive, not a maintained modern kernel tree. CI only audits downloaded archive integrity and metadata; it does not execute archive contents or deploy to a console.",
+      "archives": [
+        {
+          "id": "uclinux-psp-022",
+          "url": "https://psplinux.info/wp-content/uploads/2011/09/uclinux_on_psp-0.22.zip",
+          "format": "zip",
+          "role": "historical prebuilt/source bundle; inspect contents"
+        },
+        {
+          "id": "buildroot-patches-022",
+          "url": "https://psplinux.info/wp-content/uploads/2011/09/buildroot_patches-0.22.zip",
+          "format": "zip",
+          "role": "historical Buildroot patch bundle"
+        },
+        {
+          "id": "busybox-config-022",
+          "url": "https://psplinux.info/wp-content/uploads/2011/09/busybox-0.22.config.gz",
+          "format": "gzip",
+          "role": "BusyBox configuration"
+        },
+        {
+          "id": "kernel-config-022",
+          "url": "https://psplinux.info/wp-content/uploads/2011/09/kernel-0.22.config.gz",
+          "format": "gzip",
+          "role": "uClinux kernel configuration"
+        },
+        {
+          "id": "kernel-patch-022",
+          "url": "https://psplinux.info/wp-content/uploads/2011/09/kernel-0.22.patch_.gz",
+          "format": "gzip",
+          "role": "historical kernel patch"
+        }
+      ]
     },
     {
       "id": "switch-2-linux",
