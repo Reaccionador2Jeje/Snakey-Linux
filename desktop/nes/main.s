@@ -425,9 +425,9 @@ DrawConsole:
     beq @help_result
     cmp #$01
     beq @about_result
-    lda #<ClearedLabel
+    lda #<EmptyLabel
     sta $06
-    lda #>ClearedLabel
+    lda #>EmptyLabel
     sta $07
     jmp @result
 @about_result:
@@ -544,7 +544,7 @@ AboutCmdLabel:  .byte 19,20,13,21,11,0
 ClearLabel:     .byte 9,8,5,3,10,0
 HelpResult:     .byte 23,5,8,7,0
 NativeLabel:    .byte 18,5,1,23,13,25,5,1,6,1,11,5,25,0
-ClearedLabel:   .byte 9,8,5,3,10,0
+EmptyLabel:     .byte 0
 PaletteLabel:   .byte 7,3,8,5,11,11,5,0
 PaletteZero:    .byte 13,18,0
 PaletteOne:     .byte 13,14,14,0
