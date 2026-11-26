@@ -21,7 +21,7 @@ A built NES image is written to `snakey-nes/build/SnakeyNES.nes`.
 
 ## NES adapter: NROM-256
 
-The NES template uses ca65 assembly and an ld65 linker configuration. It creates a standard iNES 1.0 image with mapper 0, 32 KiB PRG ROM and 8 KiB CHR ROM. The starter initializes the CPU and PPU, clears the first nametable, loads a palette and CHR glyphs, draws a `SNAKEY` title plus `PLAY`, `CART` and `INFO` menu entries, and polls the NES controller to move a visible cursor with Up/Down. The entries are currently navigation placeholders: selecting them does not launch subsystems yet. This is an early boot-menu prototype, not a full Snakey OS or game.
+The NES template uses ca65 assembly and an ld65 linker configuration. It creates a standard iNES 1.0 image with mapper 0, 32 KiB PRG ROM and 8 KiB CHR ROM. The starter initializes the CPU and PPU, draws a `SNAKEY` title and `PLAY`, `CART` and `INFO` menu entries, and reads all eight controller buttons. Up/Down moves the cursor; A opens a dedicated page for the selected entry and B returns to the menu. The CART page deliberately displays an unknown-status marker: NROM software cannot reliably detect the physical cartridge/flashcart hardware through a generic interface. PLAY is currently a navigable launcher page, not an application runtime. This is an interactive boot-menu prototype, not a full Snakey OS or game.
 
 The build command checks that the image is exactly 40,976 bytes and validates the iNES magic and PRG/CHR bank counts. CI installs cc65, assembles the sample and performs the same checks.
 
