@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Snakey Controller Center
+Comment=Configure and test gamepad controls
+Exec=xfce4-terminal --title=Snakey-Controller-Center --command=/usr/bin/snakey-controller-center
+Icon=input-gaming
+Terminal=false
+Categories=Settings;Game;
