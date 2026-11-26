@@ -1,0 +1,29 @@
+#!/bin/sh
+# BusyBox/SysV init hook. Install as /etc/init.d/S99snakey-desktop.
+# The desktop executable is built separately for each target architecture.
+
+DESKTOP=/usr/bin/snakey-desktop
+LOG=/var/log/snakey-desktop.log
+FB=/dev/fb0
+
+[ -x "$DESKTOP" ] || {
+    echo "Snakey Desktop: missing executable $DESKTOP" >&2
+    exit 1
+}
+
+[ -e "$FB" ] || {
+    echo "Snakey Desktop: framebuffer $FB is unavailable" >&2
+    exit 1
+}
+
+if ! ls /dev/input/event* >/dev/null 2>&1; then
+    echo "Snakey Desktop: no evdev input devices found" >&2
+    exit 1
+fi
+
+mkdir -p /var/log
+echo "Starting Snakey Desktop ($(date 2>/dev/null || echo boot))" >> "$LOG"
+
+# Do not respawn from this script. Let the target init policy decide whether
+# to restart a failed session; this prevents a crash loop on early bring-up.
+exec "$DESKTOP" --config /etc/snakey/desktop.conf >> "$LOG" 2>&1
