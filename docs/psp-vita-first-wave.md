@@ -20,7 +20,7 @@ The PSP has a documented historical Linux port based on uClinux. The archived PS
 5. Audit licensing and source completeness.
 6. Only then design an isolated, reproducible MIPS/uClinux build job.
 
-The PSP archive audit deliberately does not execute archive contents, create a boot image, alter console firmware or deploy anything to hardware. The unified toolchain is listed on an external download host and is not treated as verified or fetched by CI.
+The PSP archive audit deliberately does not extract or execute archive contents, create a boot image, alter console firmware or deploy anything to hardware. Its fetcher is restricted to the declared psplinux.info HTTPS host. The unified toolchain is listed on an external download host and is not treated as verified or fetched by CI.
 
 ## PS Vita — ARMv7 upstream reproduction
 
@@ -30,13 +30,14 @@ The upstream project documents Linux 6.12 booting to a shell on Vita 1000 and PS
 
 ### Vita milestones
 
-1. Reproduce the pinned upstream build in GitHub Actions.
-2. Preserve the upstream commit and recursive submodule revisions in artifact provenance.
-3. Verify zImage and Vita 1000 / Vita 2000 / PSTV DTBs.
-4. Build a Snakey-owned ARMv7 root filesystem as a separate, later stage.
-5. Integrate branding and userspace only after ABI and kernel/module compatibility are documented.
+1. Build the pinned Buildroot initramfs as a separate GitHub Actions job.
+2. Preserve the upstream commit, Buildroot submodule revision and initramfs SHA-256.
+3. Embed that initramfs into the Vita kernel build using the upstream vita_defconfig.
+4. Verify zImage and Vita 1000 / Vita 2000 / PSTV DTBs.
+5. Build a Snakey-owned ARMv7 root filesystem as a separate, later stage.
+6. Integrate branding and userspace only after ABI and kernel/module compatibility are documented.
 
-CI does not run upstream deploy, push, boot or hardware-gate commands.
+CI does not run upstream deploy, push, boot or hardware-gate commands. The rootfs and kernel are upstream artifacts for reproducibility; Snakey-specific integration and hardware boot remain future gates.
 
 ## Evidence labels
 
