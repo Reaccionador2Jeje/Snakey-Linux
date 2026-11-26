@@ -45,6 +45,7 @@ case "${1:-status}" in
   stop) stop ;;
   restart) stop; start ;;
   status) if is_running; then echo "running (PID $(cat "$PID_FILE"))"; else echo "stopped"; fi ;;
+  autostart-check) if [[ -e "$AUTOSTART_FILE" ]]; then start; fi ;;
   autostart-on) touch "$AUTOSTART_FILE"; echo "Big Picture will start at the next XFCE login." ;;
   autostart-off) rm -f "$AUTOSTART_FILE"; echo "Automatic Big Picture startup disabled." ;;
   *) echo "Usage: snakey-console-session {start|stop|restart|status|autostart-on|autostart-off}" >&2; exit 2 ;;
