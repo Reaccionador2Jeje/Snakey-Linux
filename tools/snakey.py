@@ -523,6 +523,19 @@ def command_build(args):
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
+    if data["target"] in {"snes", "game-boy-advance", "nintendo-ds"}:
+        build = path / "build"
+        build.mkdir(exist_ok=True)
+        extension = {"snes": ".sfc", "game-boy-advance": ".gba", "nintendo-ds": ".nds"}[data["target"]]
+        rom = build / (data["name"] + extension)
+        command = [sys.executable, str(ROOT / "tools" / "native_roms.py"),
+                   data["target"], str(rom), "--name", data["name"]]
+        print("+", " ".join(command))
+        result = subprocess.run(command, cwd=ROOT, check=False)
+        if result.returncode:
+            return result.returncode
+        print(f"Experimental {data['target']} homebrew image built: {rom}")
+        return 0
     if data["target"] == "nes":
         if not all(shutil.which(name) for name in ("ca65", "ld65")):
             print("cc65 is required: install ca65 and ld65 and ensure they are on PATH.", file=sys.stderr)
