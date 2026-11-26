@@ -1,0 +1,20 @@
+# Slackware-compatible PS3 bootstrap candidates.
+# Every archive MUST be rebuilt/provided for PowerPC64 big-endian (ppc64),
+# with a mutually compatible libc/ABI. This list is a package-name contract,
+# not proof that official Slackware ships these packages for PS3.
+aaa_base
+aaa_libraries
+bash
+bin
+coreutils
+glibc-solibs
+grep
+gzip
+sed
+tar
+util-linux
+e2fsprogs
+pkgtools
+sysvinit
+sysvinit-scripts
+shadow
