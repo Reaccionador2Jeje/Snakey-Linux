@@ -64,8 +64,12 @@ class SnakeySdkTests(unittest.TestCase):
             self.assertIn('sta $2007', source)
             self.assertIn('Tiles 1..6 spell SNAKEY', source)
             self.assertIn('ReadController:', source)
+            self.assertIn('HandleMenu:', source)
+            self.assertIn('DrawPage:', source)
             self.assertIn('UpdateCursor:', source)
-            self.assertIn('Menu labels: PLAY, CART, INFO.', source)
+            self.assertIn('ControllerMasks:', source)
+            self.assertIn('PageTextLo:', source)
+            self.assertIn('CART page reports status as unknown', source)
             self.assertEqual(snakey.command_validate(
                 type("Args", (), {"directory": project})()
             ), 0)
