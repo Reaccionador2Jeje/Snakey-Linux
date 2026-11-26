@@ -1,0 +1,12 @@
+snakey-base: Snakey Linux base identity and utilities
+snakey-base:
+snakey-base: Snakey Linux is a Slackware-based distribution maintained by
+snakey-base: AtDev. This package provides the Snakey release identity and
+snakey-base: the snakey-info system information command.
+snakey-base:
+snakey-base: Base system: Slackware 15.0 stable
+snakey-base: Desktop: XFCE4
+snakey-base: Init system: SysVinit
+snakey-base:
+snakey-base: https://github.com/Reaccionador2Jeje/Snakey-Linux
+snakey-base:
