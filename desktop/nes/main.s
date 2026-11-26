@@ -257,13 +257,21 @@ DrawScreen:
     jsr DrawText
 
     lda $00
-    beq DrawLauncher
+    bne @not_launcher
+    jmp DrawLauncher
+@not_launcher:
     cmp #$01
-    beq DrawFiles
+    bne @not_files
+    jmp DrawFiles
+@not_files:
     cmp #$02
-    beq DrawConsole
+    bne @not_console
+    jmp DrawConsole
+@not_console:
     cmp #$03
-    beq DrawSettings
+    bne @draw_about
+    jmp DrawSettings
+@draw_about:
     jmp DrawAbout
 
 SetTextAddress:
