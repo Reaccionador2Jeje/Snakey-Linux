@@ -2,6 +2,8 @@
 
 validate:
 	python3 tools/validate_targets.py
+	python3 tools/validate_desktop_editions.py
+	python3 tools/validate_desktop_core.py
 
 test:
 	python3 -m unittest discover -s tests -v
