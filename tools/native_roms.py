@@ -62,7 +62,7 @@ def build_gba(path: Path, name: str) -> None:
     rom[0xB3] = 0
     rom[0xB4:0xBC] = bytes(8)
     rom[0xBC] = 0
-    rom[0xBD] = 0
+    rom[0xBD] = (-sum(rom[0xA0:0xBD]) - 0x19) & 0xFF
     rom[0xBE] = 0
     rom[0xBF] = 0
     # ARM code at 0xC0: Mode 3 framebuffer filled with a teal field, then loop.
