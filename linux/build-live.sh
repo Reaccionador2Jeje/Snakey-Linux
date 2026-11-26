@@ -33,17 +33,14 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   usage
   exit 0
 fi
-
 if [[ "$ARCH" != "x86_64" ]]; then
   echo "ERROR: only x86_64 is currently supported by this profile." >&2
   exit 2
 fi
-
 if [[ "$(id -u)" -ne 0 ]]; then
   echo "ERROR: liveslak image creation must run as root. Re-run with sudo." >&2
   exit 2
 fi
-
 for command in git python3 makepkg; do
   command -v "$command" >/dev/null 2>&1 || {
     echo "ERROR: missing required command: $command" >&2
@@ -61,8 +58,8 @@ required = {
     "base": "Slackware",
     "live_variant": "SNAKEY",
     "custom_package": "snakey-base",
-    "custom_packages": ["snakey-base", "snakey-theme", "snakey-control-center"],
-    "custom_package_sequence": "min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme local:snakey-control-center",
+    "custom_packages": ["snakey-base", "snakey-theme", "snakey-control-center", "snakey-browser"],
+    "custom_package_sequence": "min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme local:snakey-control-center local:snakey-browser",
     "live_user": "snakey",
     "base_release": "15.0",
     "base_channel": "stable",
@@ -98,7 +95,6 @@ if [[ ! -d "$LIVESLAK_DIR/.git" ]]; then
 else
   git -C "$LIVESLAK_DIR" pull --ff-only
 fi
-
 BUILDER="$LIVESLAK_DIR/make_slackware_live.sh"
 if [[ ! -x "$BUILDER" ]]; then
   echo "ERROR: liveslak builder not found or not executable: $BUILDER" >&2
@@ -110,7 +106,8 @@ echo "  Base: Slackware 15.0 (stable, x86_64)"
 echo "  Package manager: pkgtools"
 echo "  Init system: SysVinit"
 echo "  Desktop: XFCE4 (Snakey custom liveslak variant)"
-echo "  Native packages: snakey-base, snakey-theme, snakey-control-center"
+echo "  Native packages: snakey-base, snakey-theme, snakey-control-center, snakey-browser"
+echo "  Browser engine: detected at runtime (Firefox/Chromium/Falkon/SeaMonkey)"
 echo "  Slackware mirror: $SLACKWARE_REPO/slackware64-15.0"
 echo "  Architecture: $ARCH"
 echo "  Boot mode: graphical (runlevel 4)"
@@ -119,15 +116,17 @@ echo
 echo "NOTE: run this on a supported Slackware build host with liveslak prerequisites"
 echo "and access to a complete Slackware package repository."
 
-mkdir -p "$LIVESLAK_DIR/rootcopy" "$LIVESLAK_DIR/local64/snakey-base" "$LIVESLAK_DIR/local64/snakey-control-center"
+mkdir -p "$LIVESLAK_DIR/rootcopy" "$LIVESLAK_DIR/local64/snakey-base" "$LIVESLAK_DIR/local64/snakey-control-center" "$LIVESLAK_DIR/local64/snakey-browser"
 PACKAGE_OUTPUT="$OUTPUT_DIR/packages"
 "$ROOT_DIR/linux/packages/build-snakey-base.sh" "$PACKAGE_OUTPUT"
 "$ROOT_DIR/linux/packages/build-snakey-theme.sh" "$PACKAGE_OUTPUT"
 "$ROOT_DIR/linux/packages/build-snakey-control-center.sh" "$PACKAGE_OUTPUT"
+"$ROOT_DIR/linux/packages/build-snakey-browser.sh" "$PACKAGE_OUTPUT"
 install -m 0644 "$PACKAGE_OUTPUT/snakey-base-0.1.0-noarch-1.txz" "$LIVESLAK_DIR/local64/snakey-base/"
 mkdir -p "$LIVESLAK_DIR/local64/snakey-theme"
 install -m 0644 "$PACKAGE_OUTPUT/snakey-theme-0.1.0-noarch-1.txz" "$LIVESLAK_DIR/local64/snakey-theme/"
 install -m 0644 "$PACKAGE_OUTPUT/snakey-control-center-0.1.0-noarch-1.txz" "$LIVESLAK_DIR/local64/snakey-control-center/"
+install -m 0644 "$PACKAGE_OUTPUT/snakey-browser-0.1.0-noarch-1.txz" "$LIVESLAK_DIR/local64/snakey-browser/"
 cp "$ROOT_DIR/linux/make_slackware_live.conf" "$LIVESLAK_DIR/make_slackware_live.conf"
 cp -a "$ROOT_DIR/linux/rootcopy/." "$LIVESLAK_DIR/rootcopy/"
 chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-gamepad"
