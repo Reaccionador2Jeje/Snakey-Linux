@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=On-screen Keyboard
+Comment=Open the virtual keyboard
+Exec=snakey-virtual-keyboard
+Icon=input-keyboard
+Terminal=false
+Categories=Utility;Accessibility;
