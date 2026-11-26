@@ -32,7 +32,13 @@ jobs:
 
       - name: Verify source contract
         run: |
-          python3 tests/test_psp_homebrew.py
+          set -eu
+          test -f psp/Makefile
+          test -f psp/src/main.c
+          test -f psp/README.md
+          grep -q 'PSP_MODULE_INFO' psp/src/main.c
+          grep -q 'sceCtrlReadBufferPositive' psp/src/main.c
+          grep -q 'EBOOT.PBP' psp/Makefile
 
       - name: Build native PSP homebrew
         working-directory: psp
