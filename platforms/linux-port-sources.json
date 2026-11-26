@@ -60,12 +60,12 @@
       "name": "Linux kernel PS3 platform support",
       "project_url": "https://github.com/torvalds/linux",
       "source_repository": "https://github.com/torvalds/linux.git",
-      "revision": null,
+      "revision": "adc218676eef25575469234709c2d87185ca223a",
       "architecture": "powerpc64-big-endian",
-      "build_status": "source-audit-required",
-      "build_workflow": null,
-      "license": "GPL-2.0-only with documented exceptions; audit relevant files",
-      "notes": "Mainline kernel source contains PS3 platform support; exact config, kernel version and boot path need research."
+      "build_status": "pinned-upstream-build",
+      "build_workflow": ".github/workflows/console-linux-research.yml",
+      "license": "Linux kernel v6.12 is GPL-2.0-only with documented exceptions; audit applies to any redistributed build and separately sourced firmware.",
+      "notes": "Pinned to the signed upstream v6.12 release commit. CI builds the upstream PS3 defconfig and verifies the PowerPC64 big-endian vmlinux ELF. This is a kernel source-build milestone only: it does not create a PS3 boot image, supply firmware, validate OtherOS availability, or prove emulator/console boot."
     },
     {
       "id": "wii-linux",
