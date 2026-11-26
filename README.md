@@ -84,7 +84,18 @@ The SDK builds NES NROM-256 (.nes) with cc65 and Game Boy / Game Boy Color (.gb/
 Apache-2.0. See LICENSE.
 
 
-## Snakey Desktop 8 for NES
+## Snakey Desktop — Retro Edition Family
+
+Snakey Desktop is a shared family of native homebrew interfaces for NES, SNES, Game Boy, Game Boy Color, Game Boy Advance and Nintendo DS. Each edition has a platform-specific renderer and input layer while sharing the same launcher and application concepts. These ROMs are **not Linux or XFCE4**; the real Snakey Linux desktop remains a separate Slackware system for Linux-capable hardware. See [the family specification](docs/desktop-family.md) and [the edition registry](platforms/desktop-editions.json).
+
+## NES boot-screen milestone
+
+The NES NROM-256 starter now initializes the PPU, draws a `SNAKEY` title and an interactive `PLAY` / `CART` / `INFO` menu. Up/Down moves the cursor, A opens a page, and B returns. The PLAY page is not yet an application runtime, and CART status is explicitly unknown until hardware-specific support exists. Visual emulator verification remains a separate next step.
+
+
+See [the Linux-on-retro-hardware roadmap](docs/linux-on-retro-hardware.md) for the long-term goal of booting a real Linux kernel and, where hardware permits, XFCE4 on retro consoles. ROM homebrew and native Linux targets are deliberately kept separate.
+
+Hardware candidates must be evaluated with the [retro Linux hardware assessment template](docs/hardware-assessment-template.md), including documented CPU/MMU, RAM, boot, storage and driver evidence.
 
 The NES track is evolving into **Snakey Desktop 8**, a native 8-bit homebrew environment inspired by the Snakey Linux/XFCE desktop. The original NES cannot execute a Linux kernel or XFCE4; its edition uses a tile-based launcher and native applications instead. See [the NES Desktop 8 specification](docs/nes-desktop-8.md) for hardware limits, application scope, build steps and RetroArch test milestones.
 
