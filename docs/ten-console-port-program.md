@@ -1,6 +1,6 @@
 # Snakey Linux — Ten Console Port Program
 
-Snakey Linux tracks ten independent console ports. Every Linux lane targets a **Slackware-compatible base** and the same product identity: **Snakey Console Desktop**, with XFCE4 as the standard desktop on hardware that can genuinely support it. A shared distribution identity does **not** mean a shared kernel, boot chain, root filesystem, package repository or graphics stack. Architectures without maintained official Slackware support require a separately maintained port/adaptation; we will not pretend an x86_64 Slackware package can run on MIPS, ARM or PowerPC.
+Snakey Linux tracks ten independent console ports. Every Linux lane targets a **Slackware-derived or Slackware-compatible base** and the same product identity: **Snakey Console Desktop**, with XFCE4 as the standard desktop on hardware that can genuinely support it. A shared distribution identity does **not** mean a shared kernel, boot chain, root filesystem, package repository or graphics stack. Architectures without maintained official Slackware support require a separately maintained port/adaptation; we will not pretend an x86_64 Slackware package can run on MIPS, ARM or PowerPC.
 
 ## Official platform matrix
 
@@ -35,7 +35,7 @@ A CI metadata pass is not a kernel build. A kernel build is not a boot. An emula
 
 ## Slackware base + Snakey Console Desktop
 
-The package/userland goal is a Slackware-compatible system per CPU architecture, with architecture-specific package builds and kernel modules matched to each console kernel. The desktop goal is one recognizable XFCE4-based Snakey Console Desktop, including controller-first launcher integration. XFCE4 is not forced onto hardware that cannot reasonably run it: those ports receive a small native Snakey console interface while retaining the same branding and application concepts.
+The package/userland goal is a Slackware-derived or Slackware-compatible system per CPU/ABI, with architecture-specific package builds and kernel modules matched to each console kernel. PSP is a special MIPSel no-MMU/uClinux adaptation: it may preserve Slackware package conventions and pkgtools-style metadata, but standard Slackware/glibc binaries cannot be assumed compatible. The desktop goal is one recognizable XFCE4-based Snakey Console Desktop on Vita, PS3, PS4, PS5, Xbox Original, Wii, Wii U, Switch and Switch 2, including controller-first integration. PSP receives a tiny native Snakey interface because conventional XFCE4 is not viable on its hardware class. Xbox and Wii remain experimental XFCE4 targets until real memory/driver measurements prove feasibility.
 
 The matrix records `distribution_base`, `distribution_strategy`, `console_desktop` and `xfce4_status` for each console. `planned` is a target, not a build or boot claim; only evidence gates can advance it.
 
@@ -61,5 +61,5 @@ CI performs repository validation and host-side builds only. It does not modify 
 - PSP has a documented historical uClinux 0.22 archive-audit lane; no Snakey kernel build is claimed.
 - PS Vita has a pinned upstream kernel reproduction lane; no Snakey kernel or hardware boot is claimed.
 - PS4, PS5, Switch and other platforms are deferred while PSP and Vita are first-wave targets.
-- XFCE4 is the standard desktop target where hardware permits; PSP, Original Xbox and Wii are explicitly minimal-UI targets, Vita is experimental, and PS3 is conditional.
+- XFCE4 is the target on all Linux-capable consoles except PSP; PSP is a native micro-UI target, Vita is experimental, PS3 is conditional, and Xbox Original/Wii are experimental XFCE4 targets with severe memory constraints.
 - No Snakey console kernel or physical console boot is claimed by this milestone.
