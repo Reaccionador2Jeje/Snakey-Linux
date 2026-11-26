@@ -207,6 +207,10 @@ jobs:
           grep -F 'CONFIG_PPC_PS3=y' <(curl --fail --location --retry 3 "https://raw.githubusercontent.com/torvalds/linux/${PS3_KERNEL_REVISION}/arch/powerpc/configs/ps3_defconfig")
       - name: Test Slackware rootfs assembly contract (including PS3)
         run: python3 linux/rootfs/test_rootfs_builder.py
+      - name: Test PS3 PPC64 ELF rootfs audit
+        run: python3 -m unittest discover -s tests -p 'test_ps3_rootfs_audit.py' -v
+      - name: Compile PS3 rootfs audit tool
+        run: python3 -m py_compile tools/audit_ps3_rootfs.py
       - name: Verify PS3 package manifest is present and unique
         run: |
           python3 - <<'PY'
