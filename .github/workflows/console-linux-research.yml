@@ -1,24 +1,31 @@
-name: Console Linux research builds
+name: PSP and Vita Linux research builds
 
 on:
   workflow_dispatch:
     inputs:
       target:
-        description: Upstream research build to run
+        description: First-wave research lane
         required: true
         type: choice
         options:
+          - psp
           - vita
   push:
     paths:
       - ".github/workflows/console-linux-research.yml"
       - "platforms/linux-port-sources.json"
+      - "platforms/linux-targets.json"
+      - "linux/targets/psp/**"
       - "linux/targets/vita/**"
+      - "tools/audit_psp_archives.py"
   pull_request:
     paths:
       - ".github/workflows/console-linux-research.yml"
       - "platforms/linux-port-sources.json"
+      - "platforms/linux-targets.json"
+      - "linux/targets/psp/**"
       - "linux/targets/vita/**"
+      - "tools/audit_psp_archives.py"
 
 permissions:
   contents: read
@@ -33,6 +40,32 @@ env:
   BOOTLIN_DIR: armv7-eabihf--glibc--bleeding-edge-2025.08-1
 
 jobs:
+  psp-archive-audit:
+    name: PSP uClinux 0.22 archival source audit (MIPS)
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'psp'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download documented historical source archives
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/psp-archives
+          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/uclinux_on_psp-0.22.zip" -o artifacts/psp-archives/uclinux-psp-022
+          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/buildroot_patches-0.22.zip" -o artifacts/psp-archives/buildroot-patches-022
+          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/busybox-0.22.config.gz" -o artifacts/psp-archives/busybox-config-022
+          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/kernel-0.22.config.gz" -o artifacts/psp-archives/kernel-config-022
+          curl --fail --location --retry 3 "https://psplinux.info/wp-content/uploads/2011/09/kernel-0.22.patch_.gz" -o artifacts/psp-archives/kernel-patch-022
+      - name: Verify archive integrity and record SHA-256
+        run: python3 tools/audit_psp_archives.py artifacts/psp-archives
+      - name: Upload PSP archive audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: snakey-psp-uclinux-022-source-audit
+          path: artifacts/psp-archives/psp-archive-audit.json
+          if-no-files-found: error
+          retention-days: 30
+
   vita-upstream-kernel:
     name: Vita Linux upstream reproducibility build (ARMv7)
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'vita'
@@ -43,7 +76,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
       - name: Checkout pinned Vita Linux Next source
         uses: actions/checkout@v4
         with:
@@ -52,71 +84,59 @@ jobs:
           path: upstream-vita
           submodules: recursive
           fetch-depth: 1
-
-      - name: Verify source pin
+      - name: Verify source pin and submodule provenance
         working-directory: upstream-vita
         run: |
+          set -euo pipefail
           actual="$(git rev-parse HEAD)"
           test "$actual" = "$VITA_REVISION"
           git submodule status --recursive
-          printf 'upstream=%s\nrevision=%s\n' "$VITA_UPSTREAM" "$actual" > ../vita-build-provenance.txt
-
+          printf "upstream=%s\nrevision=%s\n" "$VITA_UPSTREAM" "$actual" > ../vita-build-provenance.txt
+          git submodule status --recursive >> ../vita-build-provenance.txt
       - name: Install build dependencies
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install -y -q bc bison build-essential flex libelf-dev libssl-dev make python3
-
+        run: sudo apt-get update -q && sudo apt-get install -y -q bc bison build-essential flex libelf-dev libssl-dev make python3
       - name: Cache Bootlin ARMv7 toolchain
         uses: actions/cache@v4
         id: toolchain
         with:
           path: .toolchains/${{ env.BOOTLIN_DIR }}
           key: bootlin-${{ env.BOOTLIN_DIR }}
-
       - name: Download Bootlin ARMv7 toolchain
         if: steps.toolchain.outputs.cache-hit != 'true'
         run: |
+          set -euo pipefail
           mkdir -p .toolchains
-          curl --fail --location --retry 3 \
-            "https://toolchains.bootlin.com/downloads/releases/toolchains/armv7-eabihf/tarballs/${BOOTLIN_DIR}.tar.xz" \
-            -o /tmp/bootlin.tar.xz
+          curl --fail --location --retry 3 "https://toolchains.bootlin.com/downloads/releases/toolchains/armv7-eabihf/tarballs/${BOOTLIN_DIR}.tar.xz" -o /tmp/bootlin.tar.xz
           tar -xJf /tmp/bootlin.tar.xz -C .toolchains
-
-      - name: Validate Snakey research metadata
+      - name: Validate Snakey platform metadata
         run: |
           python3 tools/validate_linux_targets.py
           python3 tools/validate_linux_sources.py
-
-      - name: Run upstream build contract
+      - name: Run upstream build-contract tests
         working-directory: upstream-vita
         run: |
           export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
           make test CART_CROSS_CC=arm-linux-gcc
-
       - name: Configure Vita kernel
-        working-directory: upstream-vita/linux_vita
-        run: |
-          export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
-          make ARCH=arm CROSS_COMPILE=arm-linux- vita_defconfig
-          sed -i 's|^CONFIG_INITRAMFS_SOURCE=.*|CONFIG_INITRAMFS_SOURCE=""|' .config
-          make ARCH=arm CROSS_COMPILE=arm-linux- olddefconfig
-
-      - name: Build and verify device trees
         working-directory: upstream-vita
         run: |
           export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
-          make dtb CROSS_COMPILE=arm-linux-
-          make verify-dtb
-
-      - name: Build kernel and stage artifacts
+          make config CROSS_COMPILE=arm-linux-
+      - name: Build Vita kernel and device trees
         working-directory: upstream-vita
         run: |
+          set -euo pipefail
           export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
           make build CROSS_COMPILE=arm-linux-
+          make verify-dtb CROSS_COMPILE=arm-linux-
+      - name: Stage kernel artifacts and provenance
+        working-directory: upstream-vita
+        run: |
+          set -euo pipefail
+          export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
           make stage CROSS_COMPILE=arm-linux-
           cp ../vita-build-provenance.txt dist/ci/
           (cd dist/ci && sha256sum * > SHA256SUMS)
-
       - name: Upload upstream Vita kernel artifacts
         uses: actions/upload-artifact@v4
         with:
