@@ -75,7 +75,7 @@ MainLoop:
         (destination / "src/main.asm").write_text(source, encoding="utf-8")
     elif args.target == "nes":
         (destination / "cfg").mkdir(exist_ok=True)
-        source = """; Snakey NES NROM-256 starter (ca65)
+        source = """; Snakey NES NROM-256 visible boot screen (ca65)
 .segment "HEADER"
 .byte "NES", $1A
 .byte 2, 1
@@ -94,6 +94,64 @@ Reset:
     stx $2000
     stx $2001
     stx $4010
+
+    ; Wait for the PPU to become ready.
+@vblank1:
+    bit $2002
+    bpl @vblank1
+@vblank2:
+    bit $2002
+    bpl @vblank2
+
+    ; Set a simple background palette.
+    lda #$3F
+    sta $2006
+    lda #$00
+    sta $2006
+    lda #$0F
+    sta $2007
+    lda #$30
+    sta $2007
+    lda #$21
+    sta $2007
+    lda #$11
+    sta $2007
+
+    ; Clear the first nametable.
+    lda #$20
+    sta $2006
+    lda #$00
+    sta $2006
+    lda #$00
+    ldx #$04
+@page:
+    ldy #$00
+@clear:
+    sta $2007
+    iny
+    bne @clear
+    dex
+    bne @page
+
+    ; Draw SNAKEY at row 14, column 13.
+    lda #$21
+    sta $2006
+    lda #$CD
+    sta $2006
+    ldx #$01
+@title:
+    txa
+    sta $2007
+    inx
+    cpx #$07
+    bne @title
+
+    ; Enable background rendering and wait forever.
+    lda #$00
+    sta $2005
+    sta $2005
+    lda #$08
+    sta $2001
 Forever:
     jmp Forever
 
@@ -101,7 +159,27 @@ Forever:
 .word Reset, Reset, Reset
 
 .segment "CHARS"
-.res $2000, $00
+; Tile 0 is blank. Tiles 1..6 spell SNAKEY (2bpp, low plane).
+.res 16, $00
+; S
+.byte $3C,$42,$40,$3C,$02,$42,$3C,$00
+.res 8, $00
+; N
+.byte $42,$62,$52,$4A,$46,$42,$42,$00
+.res 8, $00
+; A
+.byte $18,$24,$42,$7E,$42,$42,$42,$00
+.res 8, $00
+; K
+.byte $42,$44,$48,$70,$48,$44,$42,$00
+.res 8, $00
+; E
+.byte $7E,$40,$40,$7C,$40,$40,$7E,$00
+.res 8, $00
+; Y
+.byte $42,$42,$24,$18,$18,$18,$18,$00
+.res 8, $00
+.res $2000 - (16 + 6 * 16), $00
 """
         (destination / "src/main.s").write_text(source, encoding="utf-8")
         config = """MEMORY {
