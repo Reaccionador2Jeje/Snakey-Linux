@@ -9,7 +9,7 @@ ___/ /  __/ /_/ / /_/ /  __/ ,<
 /____/\___/\__, /\__, /\___/_/|_|
           /____//____/
 BANNER
-printf '\nDistribution: %s\n' "\${PRETTY_NAME:-Snakey Linux}"
+printf '\nDistribution: %s\n' "${PRETTY_NAME:-Snakey Linux}"
 printf '%s\n' 'Base:         Slackware 15.0 stable'
 printf '%s\n' 'Desktop:      XFCE4'
 printf '%s\n' 'Init:         SysVinit'
