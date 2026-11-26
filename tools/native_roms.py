@@ -27,9 +27,9 @@ def build_snes(path: Path, name: str) -> None:
         0xE2, 0x20,       # SEP #$20
         0xA9, 0x00,       # LDA #$00
         0x8D, 0x21, 0x21, # STA $2121 (CGRAM color 0)
-        0xA9, 0x1F,       # LDA #$1F (red, BGR555)
+        0xA9, 0xE0,       # LDA #$E0 (cyan backdrop, BGR555)
         0x8D, 0x22, 0x21, # STA $2122 low byte
-        0xA9, 0x00,
+        0xA9, 0x7F,
         0x8D, 0x22, 0x21, # STA $2122 high byte
         0xA9, 0x0F,
         0x8D, 0x00, 0x21, # INIDISP: enable display, full brightness
@@ -71,9 +71,9 @@ def build_gba(path: Path, name: str) -> None:
     rom[0xBD] = (-sum(rom[0xA0:0xBD]) - 0x19) & 0xFF
     rom[0xBE] = 0
     rom[0xBF] = 0
-    # ARM code at 0xC0: Mode 3 framebuffer filled with a red field, then loop.
-    # Use a conservative, visibly colored screen fill loop (38400 pixels).
-    code = struct.pack("<15I",
+    # ARM code at 0xC0: Mode 3 framebuffer colour-ramp diagnostic (38,400 pixels).
+    # This is a graphics bring-up pattern, not yet the Snakey desktop UI.
+    code = struct.pack("<16I",
         0xE59F0030, # ldr r0,[pc,#48] -> DISPCNT literal
         0xE3A01003, # mov r1,#3 (Mode 3)
         0xE3811B01, # orr r1,r1,#0x400 (enable BG2)
