@@ -447,7 +447,7 @@ SEGMENTS {
                       "generator": "tools/native_roms.py",
                       "status": "experimental-template",
                       "note": "The current adapter emits a minimal platform image; user CPU source compilation is a future milestone."}
-        (destination / "src/rom.json").write_text(json.dumps(descriptor, indent=2) + "\\n", encoding="utf-8")
+        (destination / "src/rom.json").write_text(json.dumps(descriptor, indent=2) + "\n", encoding="utf-8")
     else:
         (destination / "src/main.c").write_text(
             "/* Snakey homebrew starter. Add target SDK headers/toolchain. */\\n"
