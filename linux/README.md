@@ -19,7 +19,7 @@ This is deliberately a real XFCE desktop, not a mockup or a ROM menu.
 Applications and services will be trimmed further only after boot testing.
 The rootcopy also installs Snakey's release identity, login banner, SVG wallpaper,
 default XFCE wallpaper/GTK settings, and the Snakey Gamepad UI autostart/launcher.
-See [Gamepad UI documentation](gamepad/README.md) for controls and dependencies, and [Console Mode documentation](console/README.md) for the TV-friendly desktop. The [Controller Center](gamepad/README.md#controller-center) configures and tests controller profiles.
+See [Gamepad UI documentation](gamepad/README.md) for controls and dependencies, [Console Mode documentation](console/README.md) for the TV-friendly desktop, and [Big Picture documentation](big-picture/README.md) for the fullscreen controller-first launcher. The [Controller Center](gamepad/README.md#controller-center) configures and tests controller profiles.
 
 ## Build
 
