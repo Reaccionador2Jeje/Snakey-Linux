@@ -18,7 +18,8 @@ The initial profile is defined in [profile.json](profile.json):
 This is deliberately a real XFCE desktop, not a mockup or a ROM menu.
 Applications and services will be trimmed further only after boot testing.
 The rootcopy also installs Snakey's release identity, login banner, SVG wallpaper,
-and default XFCE wallpaper/GTK settings under `/etc/xdg`.
+default XFCE wallpaper/GTK settings, and the Snakey Gamepad UI autostart/launcher.
+See [Gamepad UI documentation](gamepad/README.md) for controls and dependencies.
 
 ## Build
 
