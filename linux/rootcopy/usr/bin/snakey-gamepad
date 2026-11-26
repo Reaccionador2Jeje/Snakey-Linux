@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""Translate a Linux joystick (/dev/input/js*) into XFCE keyboard navigation."""
+from __future__ import annotations
+import glob, os, shutil, struct, subprocess, sys
+EVENT = struct.Struct("IhBB")
+JS_EVENT_BUTTON, JS_EVENT_AXIS, JS_EVENT_INIT = 0x01, 0x02, 0x80
+KEYS = {0: "Return", 1: "Escape", 2: "Tab", 4: "shift+Tab", 5: "Tab", 6: "Return"}
+AXIS_KEYS = {0: ("Left", "Right"), 1: ("Up", "Down")}
+DEADZONE = 16000
+
+def key_for_axis(axis: int, value: int) -> str | None:
+    if abs(value) < DEADZONE or axis not in AXIS_KEYS:
+        return None
+    return AXIS_KEYS[axis][1 if value > 0 else 0]
+
+def emit_key(key: str) -> None:
+    subprocess.run(["xdotool", "key", "--clearmodifiers", key], check=False)
+
+def open_keyboard() -> None:
+    for app in ("onboard", "matchbox-keyboard"):
+        executable = shutil.which(app)
+        if executable:
+            subprocess.Popen([executable], start_new_session=True)
+            return
+    print("Snakey: install Onboard or Matchbox Keyboard for on-screen typing.", file=sys.stderr)
+
+def find_device() -> str | None:
+    configured = os.environ.get("SNAKEY_GAMEPAD_DEVICE")
+    if configured and os.path.exists(configured):
+        return configured
+    devices = sorted(glob.glob("/dev/input/js*"))
+    return devices[0] if devices else None
+
+def main() -> int:
+    if not shutil.which("xdotool"):
+        print("Snakey Gamepad: xdotool is required.", file=sys.stderr)
+        return 2
+    device = find_device()
+    if not device:
+        print("Snakey Gamepad: no /dev/input/js* device found.", file=sys.stderr)
+        return 1
+    print(f"Snakey Gamepad: reading {device}")
+    last_axis: dict[int, str | None] = {}
+    try:
+        with open(device, "rb", buffering=0) as joystick:
+            while True:
+                raw = joystick.read(EVENT.size)
+                if len(raw) != EVENT.size:
+                    break
+                _time, value, event_type, number = EVENT.unpack(raw)
+                event_type &= ~JS_EVENT_INIT
+                if event_type == JS_EVENT_BUTTON and value:
+                    if number == 3:
+                        open_keyboard()
+                    elif number in KEYS:
+                        emit_key(KEYS[number])
+                elif event_type == JS_EVENT_AXIS and number in AXIS_KEYS:
+                    key = key_for_axis(number, value)
+                    if key and last_axis.get(number) != key:
+                        emit_key(key)
+                    last_axis[number] = key
+    except PermissionError:
+        print(f"Snakey Gamepad: permission denied for {device}; check input-group access.", file=sys.stderr)
+        return 2
+    except KeyboardInterrupt:
+        pass
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())
