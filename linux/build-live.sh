@@ -42,7 +42,7 @@ if [[ "$(id -u)" -ne 0 ]]; then
   exit 2
 fi
 
-for command in git python3; do
+for command in git python3 rsync; do
   command -v "$command" >/dev/null 2>&1 || {
     echo "ERROR: missing required command: $command" >&2
     exit 2
@@ -57,6 +57,11 @@ import sys
 profile = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
 required = {
     "base": "Slackware",
+    "base_release": "15.0",
+    "base_channel": "stable",
+    "package_manager": "pkgtools",
+    "init_system": "SysVinit",
+    "slackware_repository": "slackware64-15.0",
     "builder": "liveslak",
     "architecture": "x86_64",
     "desktop": "XFCE",
@@ -88,7 +93,9 @@ if [[ ! -x "$BUILDER" ]]; then
 fi
 
 echo "Building Snakey Linux Desktop"
-echo "  Base: Slackware"
+echo "  Base: Slackware 15.0 (stable, x86_64)"
+echo "  Package manager: pkgtools"
+echo "  Init system: SysVinit"
 echo "  Desktop: XFCE (liveslak lightweight profile)"
 echo "  Architecture: $ARCH"
 echo "  Boot mode: graphical (runlevel 4)"
@@ -98,6 +105,7 @@ echo "NOTE: run this on a supported Slackware build host with liveslak prerequis
 echo "and access to a complete Slackware package repository."
 
 mkdir -p "$LIVESLAK_DIR/rootcopy"
+cp "$ROOT_DIR/linux/make_slackware_live.conf" "$LIVESLAK_DIR/make_slackware_live.conf"
 cp -a "$ROOT_DIR/linux/rootcopy/." "$LIVESLAK_DIR/rootcopy/"
 chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-gamepad"
 chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-virtual-keyboard"
