@@ -54,6 +54,7 @@ jobs:
           sh -n linux/packages/snakey-base/usr/bin/snakey-info
           sh -n linux/packages/snakey-base/install/doinst.sh
           bash -n linux/rootcopy/usr/bin/snakey-console-mode
+          bash -n linux/rootcopy/usr/bin/snakey-console-session
           bash -n linux/rootcopy/usr/bin/snakey-open-keyboard
           python3 -m unittest discover -s linux/tests -v
           python3 -m py_compile linux/rootcopy/usr/bin/snakey-big-picture
@@ -94,6 +95,9 @@ jobs:
               "linux/rootcopy/usr/bin/snakey-console-mode",
               "linux/rootcopy/usr/bin/snakey-open-keyboard",
               "linux/rootcopy/usr/bin/snakey-big-picture",
+              "linux/rootcopy/usr/bin/snakey-console-session",
+              "linux/rootcopy/etc/xdg/autostart/snakey-big-picture.desktop",
+              "linux/rootcopy/usr/share/applications/snakey-console-session.desktop",
               "linux/rootcopy/usr/share/applications/snakey-big-picture.desktop",
           ):
               assert Path(path).is_file(), path
