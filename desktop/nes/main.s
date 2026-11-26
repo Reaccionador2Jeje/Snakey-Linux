@@ -187,21 +187,19 @@ SetPalette:
     sta $2007
     lda $05
     beq @normal
-    lda #$0F
-    sta $2007
     lda #$16
     sta $2007
-    lda #$27
-    sta $2007
-    lda #$30
-    sta $2007
-    jmp @done
-@normal:
     lda #$30
     sta $2007
     lda #$21
     sta $2007
-    lda #$11
+    jmp @done
+@normal:
+    lda #$21
+    sta $2007
+    lda #$16
+    sta $2007
+    lda #$30
     sta $2007
 @done:
     rts
@@ -247,8 +245,8 @@ TextAt:
 DrawScreen:
     jsr ClearScreen
     ; Persistent title bar.
-    lda #$21
-    ldx #$CD
+    lda #$20
+    ldx #$2A
     jsr SetTextAddress
     lda #<Title
     sta $06
@@ -280,14 +278,29 @@ SetTextAddress:
     rts
 
 DrawLauncher:
-    lda #$21
-    ldx #$CD
+    lda #$20
+    ldx #$2A
     jsr SetTextAddress
     lda #<Title
     sta $06
     lda #>Title
     sta $07
     jsr DrawText
+    ; 16x16 multicolour snake emblem (four native CHR tiles).
+    lda #$20
+    ldx #$AE
+    jsr SetTextAddress
+    lda #$1A
+    sta $2007
+    lda #$1B
+    sta $2007
+    lda #$20
+    ldx #$CE
+    jsr SetTextAddress
+    lda #$1C
+    sta $2007
+    lda #$1D
+    sta $2007
     lda #$21
     ldx #$8A
     jsr SetTextAddress
@@ -659,4 +672,18 @@ CatalogHint:    .byte 3,0,13,7,5,18,0
 ; M (25)
 .byte $42,$66,$5A,$5A,$42,$42,$42,$00
 .res 8, $00
-.res $2000 - (26 * 16), $00
+; 16x16 Snakey emblem tiles. Plane 0 carries cyan/white detail;
+; plane 1 adds orange highlights using the NES four-colour background palette.
+; Tile 26: upper-left
+.byte $03,$0F,$1F,$3F,$3F,$1F,$0F,$03
+.byte $00,$00,$04,$0C,$1C,$0C,$00,$00
+; Tile 27: upper-right
+.byte $C0,$F0,$F8,$FC,$FC,$F8,$F0,$C0
+.byte $00,$00,$20,$30,$38,$30,$00,$00
+; Tile 28: lower-left
+.byte $03,$0F,$1F,$3F,$3F,$1F,$0F,$03
+.byte $00,$00,$00,$18,$18,$00,$00,$00
+; Tile 29: lower-right
+.byte $C0,$F0,$F8,$FC,$FC,$F8,$F0,$C0
+.byte $00,$00,$00,$18,$18,$00,$00,$00
+.res $2000 - (30 * 16), $00
