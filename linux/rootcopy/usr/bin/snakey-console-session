@@ -48,5 +48,5 @@ case "${1:-status}" in
   autostart-check) if [[ -e "$AUTOSTART_FILE" ]]; then start; fi ;;
   autostart-on) touch "$AUTOSTART_FILE"; echo "Big Picture will start at the next XFCE login." ;;
   autostart-off) rm -f "$AUTOSTART_FILE"; echo "Automatic Big Picture startup disabled." ;;
-  *) echo "Usage: snakey-console-session {start|stop|restart|status|autostart-on|autostart-off}" >&2; exit 2 ;;
+  *) echo "Usage: snakey-console-session {start|stop|restart|status|autostart-check|autostart-on|autostart-off}" >&2; exit 2 ;;
 esac
