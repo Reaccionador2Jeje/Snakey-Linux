@@ -42,9 +42,10 @@ def main() -> int:
         if not isinstance(source_id, str) or not source_id or source_id in seen:
             fail(f"{prefix}.id must be unique and non-empty")
         seen.add(source_id)
-        for field in ("project_url", "source_repository"):
-            if not isinstance(source[field], str) or not source[field].startswith("https://"):
-                fail(f"{prefix}.{field} must be an HTTPS URL")
+        if not isinstance(source["project_url"], str) or not source["project_url"].startswith("https://"):
+            fail(f"{prefix}.project_url must be an HTTPS URL")
+        if source["source_repository"] is not None and (not isinstance(source["source_repository"], str) or not source["source_repository"].startswith("https://")):
+            fail(f"{prefix}.source_repository must be an HTTPS URL or null")
         if source["build_status"] == "pinned-upstream-build":
             if not isinstance(source["revision"], str) or not HEX40.fullmatch(source["revision"]):
                 fail(f"{prefix} requires a full 40-character pinned commit")
