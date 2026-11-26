@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-ROOT_DIR="$(cd -- "$(dirname -- "\${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 SOURCE_DIR="$ROOT_DIR/linux/packages/snakey-base"
 VERSION="0.1.0"
-PACKAGE_NAME="snakey-base-\${VERSION}-noarch-1.txz"
-DEST_DIR="\${1:-$ROOT_DIR/dist/packages}"
+PACKAGE_NAME="snakey-base-${VERSION}-noarch-1.txz"
+DEST_DIR="${1:-$ROOT_DIR/dist/packages}"
 
 if [[ "$(id -u)" -ne 0 ]]; then
   echo "ERROR: Slackware makepkg must run as root." >&2
