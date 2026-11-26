@@ -1,0 +1,35 @@
+# Snakey Linux — PlayStation 3 kernel requirements overlay
+# Apply only on top of a PS3-capable kernel's ps3_defconfig.
+# This is NOT a complete .config and has not been built by Snakey CI.
+
+CONFIG_PPC64=y
+CONFIG_PPC_BOOK3S=y
+CONFIG_CPU_BIG_ENDIAN=y
+CONFIG_PPC_PS3=y
+
+# Boot-critical storage and display
+CONFIG_BLOCK=y
+CONFIG_PS3_DISK=y
+CONFIG_FB=y
+CONFIG_FB_PS3=y
+CONFIG_FRAMEBUFFER_CONSOLE=y
+CONFIG_VT=y
+CONFIG_VT_CONSOLE=y
+CONFIG_EXT4_FS=y
+
+# Wired network (preferred for first bring-up)
+CONFIG_GELIC_NET=y
+
+# USB keyboard/controller input; keep host controllers built in for initramfs
+CONFIG_USB=y
+CONFIG_USB_EHCI_HCD=y
+CONFIG_USB_OHCI_HCD=y
+CONFIG_HID=y
+CONFIG_USB_HID=y
+CONFIG_INPUT_EVDEV=y
+
+# Userspace prerequisites for a modern minimal init
+CONFIG_DEVTMPFS=y
+CONFIG_DEVTMPFS_MOUNT=y
+CONFIG_CGROUPS=y
+CONFIG_NAMESPACES=y
