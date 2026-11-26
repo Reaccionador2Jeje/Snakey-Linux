@@ -31,7 +31,7 @@ These are registered paths, not a claim that every cartridge, firmware version o
     python3 tools/snakey.py boot-plan --target game-boy
     python3 tools/snakey.py boot-plan --target nintendo-ds --method homebrew-loader
 
-See docs/boot-system.md for prerequisites and limitations. The current physical-console compatibility status and repeatable test procedure are tracked in [docs/hardware-test-matrix.md](docs/hardware-test-matrix.md); use [the report template](docs/hardware-test-report-template.md) to record real-device results.
+See [experimental SNES/GBA/DS ROM builders](docs/experimental-rom-builders.md) for current image formats, build commands and compatibility limitations. See docs/boot-system.md for boot prerequisites and limitations. The current physical-console compatibility status and repeatable test procedure are tracked in [docs/hardware-test-matrix.md](docs/hardware-test-matrix.md); use [the report template](docs/hardware-test-report-template.md) to record real-device results.
 
 ## Snakey Linux Desktop
 
