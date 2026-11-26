@@ -15,7 +15,7 @@ usage() {
 command -v python3 >/dev/null 2>&1 || { echo "ERROR: python3 required" >&2; exit 2; }
 command -v sha256sum >/dev/null 2>&1 || { echo "ERROR: sha256sum required" >&2; exit 2; }
 
-MANIFEST="$ROOT_DIR/linux/rootfs/$TARGET.packages"
+MANIFEST="${SNAKEY_PACKAGE_MANIFEST:-$ROOT_DIR/linux/rootfs/$TARGET.packages}"
 OUT_DIR="${OUT_ARG:-$ROOT_DIR/dist/rootfs-$TARGET}"
 [[ -f "$MANIFEST" ]] || { echo "ERROR: missing manifest $MANIFEST" >&2; exit 2; }
 [[ ! -e "$OUT_DIR" ]] || { echo "ERROR: output already exists: $OUT_DIR (remove it explicitly to rebuild)" >&2; exit 2; }
