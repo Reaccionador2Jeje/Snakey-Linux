@@ -40,6 +40,7 @@ jobs:
           bash -n linux/packages/build-snakey-base.sh
           bash -n linux/packages/build-snakey-theme.sh
           bash -n linux/packages/build-snakey-control-center.sh
+          bash -n linux/packages/build-snakey-browser.sh
           sh -n linux/packages/snakey-base/usr/bin/snakey-info
           sh -n linux/packages/snakey-base/install/doinst.sh
           bash -n linux/rootcopy/usr/bin/snakey-console-mode
@@ -48,6 +49,7 @@ jobs:
           python3 -m py_compile linux/rootcopy/usr/bin/snakey-big-picture
           python3 -m py_compile linux/rootcopy/usr/bin/snakey-gamepad linux/rootcopy/usr/bin/snakey-controller-center
           python3 -m py_compile linux/packages/snakey-control-center/usr/bin/snakey-control-center
+          python3 -m py_compile linux/packages/snakey-browser/usr/bin/snakey-browser
           python3 -m json.tool linux/profile.json >/dev/null
           python3 - <<'PY'
           import json
@@ -56,8 +58,8 @@ jobs:
           assert profile["base"] == "Slackware"
           assert profile["live_variant"] == "SNAKEY"
           assert profile["custom_package"] == "snakey-base"
-          assert profile["custom_packages"] == ["snakey-base", "snakey-theme", "snakey-control-center"]
-          assert profile["custom_package_sequence"] == "min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme local:snakey-control-center"
+          assert profile["custom_packages"] == ["snakey-base", "snakey-theme", "snakey-control-center", "snakey-browser"]
+          assert profile["custom_package_sequence"] == "min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme local:snakey-control-center local:snakey-browser"
           assert profile["live_user"] == "snakey"
           assert profile["base_release"] == "15.0"
           assert profile["base_channel"] == "stable"
@@ -86,7 +88,7 @@ jobs:
           ):
               assert Path(path).is_file(), path
           liveslak = Path("linux/make_slackware_live.conf").read_text()
-          for setting in ('SL_VERSION="15.0"', 'SL_ARCH="x86_64"', 'LIVEDE="SNAKEY"', 'SEQ_CUSTOM="min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme local:snakey-control-center"', 'RUNLEVEL=4', 'DISTRO="snakey"'):
+          for setting in ('SL_VERSION="15.0"', 'SL_ARCH="x86_64"', 'LIVEDE="SNAKEY"', 'SEQ_CUSTOM="min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme local:snakey-control-center local:snakey-browser"', 'RUNLEVEL=4', 'DISTRO="snakey"'):
               assert setting in liveslak, setting
           for path in ("linux/packages/build-snakey-base.sh", "linux/packages/snakey-base/etc/snakey-release", "linux/packages/snakey-base/usr/bin/snakey-info", "linux/packages/snakey-base/install/doinst.sh", "linux/packages/snakey-base/slack-desc", "linux/packages/build-snakey-theme.sh", "linux/packages/snakey-theme/slack-desc", "linux/packages/snakey-theme/usr/share/themes/Snakey-Dark/index.theme", "linux/packages/snakey-theme/usr/share/themes/Snakey-Dark/gtk-3.0/gtk.css", "linux/packages/snakey-theme/usr/share/themes/Snakey-Dark/gtk-2.0/gtkrc", "linux/packages/build-snakey-control-center.sh", "linux/packages/snakey-control-center/slack-desc", "linux/packages/snakey-control-center/usr/bin/snakey-control-center", "linux/packages/snakey-control-center/usr/share/applications/snakey-control-center.desktop", "linux/packages/snakey-control-center/etc/skel/Desktop/Snakey-Control-Center.desktop"):
               assert Path(path).is_file(), path
@@ -98,6 +100,8 @@ jobs:
           assert "build-snakey-theme.sh" in builder
           assert "build-snakey-control-center.sh" in builder
           assert "local64/snakey-control-center" in builder
+          assert "build-snakey-browser.sh" in builder
+          assert "local64/snakey-browser" in builder
           print("Snakey Linux Slackware 15.0 desktop, Control Center and package assets: OK")
           PY
       - name: Build and verify a real NROM-256 ROM
