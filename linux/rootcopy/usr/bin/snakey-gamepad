@@ -6,7 +6,7 @@ from typing import Optional
 EVENT = struct.Struct("IhBB")
 JS_EVENT_BUTTON, JS_EVENT_AXIS, JS_EVENT_INIT = 0x01, 0x02, 0x80
 KEYS = {0: "Return", 1: "Escape", 2: "Tab", 4: "shift+Tab", 5: "Tab", 6: "Return"}
-AXIS_KEYS = {0: ("Left", "Right"), 1: ("Up", "Down")}
+AXIS_KEYS = {0: ("Left", "Right"), 1: ("Up", "Down"), 6: ("Left", "Right"), 7: ("Up", "Down")}
 DEADZONE = 16000
 
 def key_for_axis(axis: int, value: int) -> Optional[str]:
@@ -36,36 +36,40 @@ def main() -> int:
     if not shutil.which("xdotool"):
         print("Snakey Gamepad: xdotool is required.", file=sys.stderr)
         return 2
-    device = find_device()
-    if not device:
-        print("Snakey Gamepad: no /dev/input/js* device found.", file=sys.stderr)
-        return 1
-    print(f"Snakey Gamepad: reading {device}")
-    last_axis: dict[int, Optional[str]] = {}
-    try:
-        with open(device, "rb", buffering=0) as joystick:
-            while True:
-                raw = joystick.read(EVENT.size)
-                if len(raw) != EVENT.size:
-                    break
-                _time, value, event_type, number = EVENT.unpack(raw)
-                event_type &= ~JS_EVENT_INIT
-                if event_type == JS_EVENT_BUTTON and value:
-                    if number == 3:
-                        open_keyboard()
-                    elif number in KEYS:
-                        emit_key(KEYS[number])
-                elif event_type == JS_EVENT_AXIS and number in AXIS_KEYS:
-                    key = key_for_axis(number, value)
-                    if key and last_axis.get(number) != key:
-                        emit_key(key)
-                    last_axis[number] = key
-    except PermissionError:
-        print(f"Snakey Gamepad: permission denied for {device}; check input-group access.", file=sys.stderr)
-        return 2
-    except KeyboardInterrupt:
-        pass
-    return 0
+    print("Snakey Gamepad: waiting for a controller...")
+    while True:
+        device = find_device()
+        if not device:
+            import time
+            time.sleep(2)
+            continue
+        print(f"Snakey Gamepad: reading {device}")
+        last_axis: dict[int, Optional[str]] = {}
+        try:
+            with open(device, "rb", buffering=0) as joystick:
+                while True:
+                    raw = joystick.read(EVENT.size)
+                    if len(raw) != EVENT.size:
+                        break
+                    _time, value, event_type, number = EVENT.unpack(raw)
+                    event_type &= ~JS_EVENT_INIT
+                    if event_type == JS_EVENT_BUTTON and value:
+                        if number == 3:
+                            open_keyboard()
+                        elif number in KEYS:
+                            emit_key(KEYS[number])
+                    elif event_type == JS_EVENT_AXIS and number in AXIS_KEYS:
+                        key = key_for_axis(number, value)
+                        if key and last_axis.get(number) != key:
+                            emit_key(key)
+                        last_axis[number] = key
+        except PermissionError:
+            print(f"Snakey Gamepad: permission denied for {device}; check input-group access.", file=sys.stderr)
+            return 2
+        except FileNotFoundError:
+            continue
+        except KeyboardInterrupt:
+            return 0
 
 if __name__ == "__main__":
     raise SystemExit(main())
