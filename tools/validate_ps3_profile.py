@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 profile = json.loads((ROOT / "platforms/linux-targets.json").read_text())
-target = next(item for item in profile["targets"] if item["id"] == "playstation-3")
+target = next(item for item in profile["targets"] if item["id"] == "ps3")
 fragment = ROOT / "linux/targets/ps3/kernel.fragment"
 settings = {}
 for raw in fragment.read_text().splitlines():
@@ -34,8 +34,8 @@ required = {
 missing = [key for key, value in required.items() if settings.get(key) != value]
 if missing:
     raise SystemExit("Missing PS3 kernel requirements: " + ", ".join(missing))
-if target["system_ram_mb"] != 256 or target["video_ram_counts_as_system_ram"]:
-    raise SystemExit("PS3 memory accounting must keep VRAM separate from system RAM")
-if target["status"] != "research-candidate" or target["snakey_tested"]:
-    raise SystemExit("PS3 must remain explicitly untested until hardware evidence exists")
+if target["system_ram_mb"] != 256:
+    raise SystemExit("PS3 system RAM must remain 256 MiB; do not add video RAM to this value")
+if target["status"] != "source-audit-required" or target["snakey_kernel_built"] or target["snakey_hardware_tested"]:
+    raise SystemExit("PS3 must remain explicitly unbuilt and untested until evidence exists")
 print("Snakey PS3 profile and kernel requirements: OK (configuration not built)")
