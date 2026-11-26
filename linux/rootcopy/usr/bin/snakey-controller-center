@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+"""Small curses-based configuration center for Snakey Gamepad UI."""
+import curses
+import glob
+import json
+import os
+from pathlib import Path
+import struct
+import time
+
+CONFIG = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "snakey" / "gamepad.json"
+EVENT = struct.Struct("IhBB")
+ACTIONS = ["Return", "Escape", "Tab", "shift+Tab", "space", "none"]
+DEFAULT = {
+    "device": "auto",
+    "deadzone": 16000,
+    "buttons": {"0": "Return", "1": "Escape", "2": "Tab", "4": "shift+Tab", "5": "Tab", "6": "Return"},
+    "keyboard_button": 3
+}
+ROWS = ["Device", "Deadzone", "A / button 0", "B / button 1", "X / button 2", "LB / button 4", "RB / button 5", "Start / button 6", "Keyboard / button 3", "Controller test", "Save and exit"]
+
+def load_config():
+    data = dict(DEFAULT)
+    data["buttons"] = dict(DEFAULT["buttons"])
+    try:
+        saved = json.loads(CONFIG.read_text())
+        data.update(saved)
+        data["buttons"].update(saved.get("buttons", {}))
+    except (OSError, ValueError):
+        pass
+    return data
+
+def device_path(cfg):
+    selected = cfg.get("device", "auto")
+    if selected != "auto" and os.path.exists(selected):
+        return selected
+    devices = sorted(glob.glob("/dev/input/js*"))
+    return devices[0] if devices else None
+
+def test_controller(stdscr, cfg):
+    path = device_path(cfg)
+    if not path:
+        stdscr.clear()
+        stdscr.addstr(1, 2, "No controller found under /dev/input/js*.")
+        stdscr.addstr(3, 2, "Connect a controller. Press any key to return.")
+        stdscr.refresh()
+        stdscr.getch()
+        return
+    try:
+        js = open(path, "rb", buffering=0)
+    except OSError as exc:
+        stdscr.clear()
+        stdscr.addstr(1, 2, "Cannot open " + path + ": " + str(exc)[:60])
+        stdscr.addstr(3, 2, "Press any key to return.")
+        stdscr.refresh()
+        stdscr.getch()
+        return
+    js_fd = js.fileno()
+    import select
+    stdscr.nodelay(True)
+    last = "Waiting for input..."
+    try:
+        while True:
+            stdscr.erase()
+            stdscr.addstr(0, 2, "SNAKEY CONTROLLER TEST")
+            stdscr.addstr(2, 2, "Device: " + path)
+            stdscr.addstr(4, 2, last[:max(1, curses.COLS - 5)])
+            stdscr.addstr(7, 2, "Press B / ESC to return.")
+            stdscr.refresh()
+            key = stdscr.getch()
+            if key in (27, ord("q")):
+                break
+            ready, _, _ = select.select([js_fd], [], [], 0.12)
+            if ready:
+                raw = js.read(EVENT.size)
+                if len(raw) == EVENT.size:
+                    _ms, value, kind, number = EVENT.unpack(raw)
+                    kind &= 0x7f
+                    label = "BUTTON" if kind == 1 else "AXIS" if kind == 2 else "EVENT"
+                    last = f"{label} {number}: {value}"
+    finally:
+        js.close()
+        stdscr.nodelay(False)
+
+def run(stdscr):
+    cfg = load_config()
+    selected = 0
+    message = "UP/DOWN select | LEFT/RIGHT change | ENTER test | S save | Q quit"
+    rows = list(ROWS)
+    while True:
+        stdscr.erase()
+        stdscr.addstr(0, 2, "SNAKEY CONTROLLER CENTER", curses.A_BOLD)
+        stdscr.addstr(1, 2, "Gamepad profiles for Snakey Linux XFCE")
+        for i, row in enumerate(rows):
+            y = 3 + i
+            if y >= curses.LINES - 2:
+                break
+            if i == 0:
+                value = cfg.get("device", "auto")
+            elif i == 1:
+                value = str(cfg.get("deadzone", 16000))
+            elif 2 <= i <= 7:
+                button = str([0, 1, 2, 4, 5, 6][i - 2])
+                value = f"button {button} -> {cfg['buttons'].get(button, 'none')}"
+            elif i == 8:
+                value = "button " + str(cfg.get("keyboard_button", 3))
+            elif i == 9:
+                value = "Press ENTER to inspect live events"
+            else:
+                value = "Write profile to " + str(CONFIG)
+            attr = curses.A_REVERSE if i == selected else curses.A_NORMAL
+            stdscr.addnstr(3 + i, 2, f"{row:<23} {value}", max(1, curses.COLS - 4), attr)
+        stdscr.addnstr(curses.LINES - 2, 2, message, max(1, curses.COLS - 4))
+        stdscr.refresh()
+        key = stdscr.getch()
+        if key in (ord("q"), ord("Q")):
+            return
+        if key in (curses.KEY_UP, ord("k")):
+            selected = (selected - 1) % len(rows)
+        elif key in (curses.KEY_DOWN, ord("j")):
+            selected = (selected + 1) % len(rows)
+        elif key in (ord("s"), ord("S")) or (key in (10, 13) and selected == 10):
+            CONFIG.parent.mkdir(parents=True, exist_ok=True)
+            CONFIG.write_text(json.dumps(cfg, indent=2) + "\n")
+            message = "Saved profile: " + str(CONFIG)
+            if key in (10, 13):
+                return
+        elif key in (10, 13, curses.KEY_RIGHT, curses.KEY_LEFT):
+            direction = -1 if key == curses.KEY_LEFT else 1
+            if selected == 0:
+                devices = ["auto"] + sorted(glob.glob("/dev/input/js*"))
+                current = cfg.get("device", "auto")
+                cfg["device"] = devices[(devices.index(current) + direction) % len(devices)] if current in devices else "auto"
+            elif selected == 1:
+                cfg["deadzone"] = max(4000, min(30000, int(cfg.get("deadzone", 16000)) + direction * 1000))
+            elif 2 <= selected <= 7:
+                button = str([0, 1, 2, 4, 5, 6][selected - 2])
+                current = cfg["buttons"].get(button, "none")
+                cfg["buttons"][button] = ACTIONS[(ACTIONS.index(current) + direction) % len(ACTIONS)] if current in ACTIONS else ACTIONS[0]
+            elif selected == 8:
+                cfg["keyboard_button"] = max(0, min(31, int(cfg.get("keyboard_button", 3)) + direction))
+            elif selected == 9:
+                test_controller(stdscr, cfg)
+
+def main():
+    try:
+        curses.wrapper(run)
+    except (KeyboardInterrupt, curses.error):
+        return 1
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())
