@@ -47,6 +47,8 @@ jobs:
       - name: Validate Snakey Linux desktop profile
         run: |
           bash -n linux/build-live.sh
+          bash -n linux/rootfs/build-slackware-rootfs.sh
+          python3 linux/rootfs/test_rootfs_builder.py
           bash -n linux/packages/build-snakey-base.sh
           bash -n linux/packages/build-snakey-theme.sh
           bash -n linux/packages/build-snakey-control-center.sh
