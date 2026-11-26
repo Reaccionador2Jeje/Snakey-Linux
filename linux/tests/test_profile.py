@@ -52,7 +52,7 @@ class SnakeyLinuxProfileTests(unittest.TestCase):
         values = [node.attrib.get("value") for node in settings.iter("property")]
         self.assertIn("Snakey-Dark", values)
         package_builder = (LINUX / "packages/build-snakey-theme.sh").read_text(encoding="utf-8")
-        self.assertIn("snakey-theme-0.1.0-noarch-1.txz", package_builder)
+        self.assertIn('PACKAGE_NAME="snakey-theme-${VERSION}-noarch-1.txz"', package_builder)
 
     def test_panel_and_window_manager_defaults_are_valid(self):
         for path in (
