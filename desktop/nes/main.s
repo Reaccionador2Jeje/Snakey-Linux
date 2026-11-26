@@ -187,7 +187,13 @@ SetPalette:
     ; backdrop; palettes 1-3 provide distinct UI accents via attributes.
     lda #$0F
     sta $2007
+    lda $05
+    beq @palette_primary
+    lda #$16
+    bne @palette_write
+@palette_primary:
     lda #$21
+@palette_write:
     sta $2007
     lda #$16
     sta $2007
