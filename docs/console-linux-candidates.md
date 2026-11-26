@@ -11,7 +11,9 @@ reproducible build, and recorded boot evidence.
 | Nintendo 3DS | ARMv6K | 128 MB | Community Linux kernel project exists; current maintenance and graphics path need audit | Very unlikely |
 | Nintendo Wii | PowerPC 32-bit | 88 MB | Wii-Linux continuation project; framebuffer/Xorg reported, verify exact current support | Very unlikely; shell first |
 | Original Xbox | x86 | 64 MB | Historical Xbox-Linux project; legacy toolchain and drivers | Not a realistic XFCE4 target |
-| PlayStation 3 | PowerPC64 | 256 MB system + separate 256 MB video memory | Linux support is configuration/firmware dependent; deliberately deferred by owner | Experimental, not currently accessible |
+| PlayStation 3 | PowerPC64 | 256 MB system + separate 256 MB video memory | Historical OtherOS/OtherOS++ ecosystem; boot path and model/firmware compatibility vary. ArchPOWER itself does not claim direct PS3 support | Experimental; owner has deferred hardware work |
+| PlayStation 4 | x86-64 | 8 GB unified GDDR5 | Linux psX reports a tested PS4 Slim Baikal B1 with Linux 7.2.11 beta2; other southbridges and Pro remain unverified | XFCE/Xorg reported upstream on one tested Slim; Snakey untested |
+| PlayStation 5 | x86-64 | 16 GB unified GDDR6 | Active ps5-linux kernel patch/image projects; support varies by model and firmware | Desktop images exist upstream; Snakey untested |
 | Sega Dreamcast | SH-4 | 16 MB | Historical LinuxDC port; modern userspace and graphics path are major gaps | Not feasible |
 | PlayStation 2 | MIPS R5900 | 32 MB | Historical Linux kit/ports; very constrained memory and specialized CPU | Not feasible |
 | GameCube | PowerPC 32-bit | 24 MB | No current Snakey Linux path established | Not feasible |
@@ -31,7 +33,9 @@ model-specific specifications before any implementation decision.
 4. **3DS:** kernel research only; memory makes a full desktop unrealistic.
 5. **Original Xbox and Dreamcast:** preserve as historical port research, not
    primary desktop targets.
-6. **PS3:** deferred by owner. Do not ask for access or use it for testing.
+6. **PS4:** strongest PlayStation target for Snakey's x86-64 research lane; begin with source audit and host-side build reproduction.
+7. **PS5:** source-audit lane after PS4; separate patch set and hardware support matrix.
+8. **PS3:** deferred by owner. Do not ask for access or use it for testing.
 
 ## Acceptance gates
 
@@ -49,6 +53,9 @@ Sources for the initial research survey:
 - https://www.ppsspp.org/docs/development/porting/
 - https://wiki.batocera.org/systems
 - https://www.kernel.org/
+- https://linux.mrz.sh/compatibility/
+- https://github.com/ps5-linux/ps5-linux-patches
+- https://playstationdev.wiki/ps3/Distributions
 
 
 ## First reproducible build lane: PlayStation Vita

@@ -49,6 +49,30 @@
       "license": "Per upstream components; audit required",
       "build_workflow": null,
       "notes": "Keep as secondary research lane until the project's current source repository, revision and reproducible toolchain are verified."
+    },
+    {
+      "id": "linux-psx-ps4",
+      "name": "Linux psX — PlayStation 4 kernel",
+      "project_url": "https://linux.mrz.sh/",
+      "source_repository": "https://github.com/meerzulee/linux-psx",
+      "revision": null,
+      "architecture": "x86_64",
+      "build_status": "source-audit-required",
+      "license": "Audit repository and bundled kernel/Mesa components before build integration",
+      "build_workflow": null,
+      "notes": "Active PS4 kernel and hardware evidence project. Pin a commit and verify build scripts, source provenance, submodules and license before CI integration."
+    },
+    {
+      "id": "ps5-linux",
+      "name": "PS5 Linux kernel patches",
+      "project_url": "https://github.com/ps5-linux",
+      "source_repository": "https://github.com/ps5-linux/ps5-linux-patches",
+      "revision": null,
+      "architecture": "x86_64",
+      "build_status": "source-audit-required",
+      "license": "Audit kernel patch repository and upstream kernel licensing before build integration",
+      "build_workflow": null,
+      "notes": "Public PS5 kernel patch/configuration project with published kernel packages. Pin a patch revision and its exact stable-kernel base before reproducible CI."
     }
   ]
 }

@@ -28,6 +28,12 @@ The PlayStation 3 is deferred. The owner does not currently have compatible
 power or a display and has explicitly chosen not to use or modify it. Snakey
 must not require PS3 access for ongoing development.
 
+PlayStation 4 and PlayStation 5 are now separate x86-64 Linux research lanes.
+PS4 has upstream kernel and desktop evidence on one specific Slim/Baikal
+configuration; PS5 has an active kernel-patch and image ecosystem. Neither is
+Snakey-tested, and neither is universally compatible. See
+[PlayStation Linux research](playstation-linux-research.md).
+
 ## Three execution classes
 
 | Class | Meaning | Snakey direction |
@@ -75,9 +81,12 @@ unverified stretch goal; 88 MB main memory is a severe constraint.
 - [x] Document Linux capability and acceptance criteria.
 - [x] Create a reusable hardware evidence sheet for each proposed Class B console.
 - [x] Create a multi-console Linux research matrix; all candidates remain untested.
+- [ ] Audit PS4 Linux psX source, kernel base, toolchain, licenses and build steps.
+- [ ] Audit PS5 kernel patches, stable-kernel base, toolchain and licenses.
 - [ ] Audit Switch and Vita source projects, licenses, toolchains and drivers.
 - [ ] Audit Wii and 3DS kernel sources and compare reproducible build paths.
 - [x] Defer PlayStation 3 hardware work until the owner independently chooses to use it.
+- [x] Add separate PS4 and PS5 research candidates; no hardware testing planned.
 - [ ] Select a target after source/toolchain/driver audit.
 - [ ] Build a reproducible kernel artifact for that target; no hardware boot claim.
 - [ ] Reach a real Linux shell.
