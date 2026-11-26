@@ -1,0 +1,8 @@
+snakey-control-center: Snakey Linux Control Center
+snakey-control-center:
+snakey-control-center: A lightweight system control panel for Snakey Linux.
+snakey-control-center: Provides system overview and launchers for XFCE settings,
+snakey-control-center: display, appearance, network connections, Slackware pkgtool,
+snakey-control-center: and the dedicated Snakey Controller Center.
+snakey-control-center:
+snakey-control-center: Built for Snakey Linux on Slackware 15.0 x86_64.
