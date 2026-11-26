@@ -30,6 +30,7 @@ jobs:
         run: |
           bash -n linux/build-live.sh
           python3 -m unittest discover -s linux/tests -v
+          python3 -m py_compile linux/rootcopy/usr/bin/snakey-gamepad
           python3 -m json.tool linux/profile.json >/dev/null
           python3 - <<'PY'
           import json
@@ -46,6 +47,8 @@ jobs:
               "linux/rootcopy/etc/issue",
               "linux/rootcopy/etc/motd",
               "linux/rootcopy/usr/share/backgrounds/snakey/snakey.svg",
+              "linux/rootcopy/etc/xdg/autostart/snakey-gamepad.desktop",
+              "linux/rootcopy/usr/share/applications/snakey-virtual-keyboard.desktop",
           ):
               assert Path(path).is_file(), path
           print("Snakey Linux profile and identity assets: OK")
