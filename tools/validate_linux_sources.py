@@ -42,8 +42,8 @@ def main() -> int:
         if not isinstance(source_id, str) or not source_id or source_id in seen:
             fail(f"{prefix}.id must be unique and non-empty")
         seen.add(source_id)
-        if not isinstance(source["project_url"], str) or not source["project_url"].startswith("https://"):
-            fail(f"{prefix}.project_url must be an HTTPS URL")
+        if source["project_url"] is not None and (not isinstance(source["project_url"], str) or not source["project_url"].startswith("https://")):
+            fail(f"{prefix}.project_url must be an HTTPS URL or null")
         if source["source_repository"] is not None and (not isinstance(source["source_repository"], str) or not source["source_repository"].startswith("https://")):
             fail(f"{prefix}.source_repository must be an HTTPS URL or null")
         if source["build_status"] == "pinned-upstream-build":
