@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+"""Snakey Web launcher for the Snakey Linux XFCE desktop.
+
+This is a lightweight browser front-end: it delegates rendering, TLS, cookies,
+and web standards to an installed browser engine rather than shipping a fake
+HTML renderer.
+"""
+from __future__ import annotations
+
+import os
+import shutil
+import subprocess
+import sys
+from urllib.parse import urlparse
+
+BROWSERS = (
+    ("firefox", ["firefox", "--new-window"]),
+    ("chromium", ["chromium", "--new-window"]),
+    ("chromium-browser", ["chromium-browser", "--new-window"]),
+    ("google-chrome", ["google-chrome", "--new-window"]),
+    ("falkon", ["falkon", "--new-window"]),
+    ("seamonkey", ["seamonkey", "-new-window"]),
+)
+
+def main() -> int:
+    target = sys.argv[1] if len(sys.argv) > 1 else "https://start.duckduckgo.com/"
+    parsed = urlparse(target)
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        print("Snakey Web: enter a valid http:// or https:// address.", file=sys.stderr)
+        return 2
+
+    preferred = os.environ.get("SNAKEY_BROWSER", "").strip()
+    choices = list(BROWSERS)
+    if preferred:
+        choices.insert(0, (preferred, [preferred, "--new-window"]))
+
+    for executable, command in choices:
+        resolved = shutil.which(executable)
+        if resolved:
+            os.execv(resolved, [resolved, *command[1:], target])
+
+    print("Snakey Web could not find an installed browser engine.", file=sys.stderr)
+    print("Install Firefox, Chromium, Falkon or SeaMonkey on this Slackware system.", file=sys.stderr)
+    print("Then launch Snakey Web again. Snakey does not pretend to render modern web pages itself.", file=sys.stderr)
+    return 127
+
+if __name__ == "__main__":
+    raise SystemExit(main())
