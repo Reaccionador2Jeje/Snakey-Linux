@@ -65,3 +65,15 @@ results separately from image-build results.
   browser that is not actually present in the Slackware mirror.
 - Measure idle RAM, boot time and image size before making performance claims.
 - Keep a console-only recovery path.
+
+### Shared controller profiles
+
+Snakey Big Picture and the XFCE gamepad navigation service now read the same
+per-user profile at `~/.config/snakey/gamepad.json` (or
+`$XDG_CONFIG_HOME/snakey/gamepad.json`). The Controller Center controls the
+selected joystick, button-to-key actions and analog deadzone. Big Picture
+translates the configured `Return`, `Escape`, `Tab`, `shift+Tab` and
+`space` actions directly into menu navigation; it does not inject X11 keys.
+Invalid or missing profile files safely fall back to the standard Linux
+gamepad mapping. The keyboard remains available regardless of controller
+configuration.
