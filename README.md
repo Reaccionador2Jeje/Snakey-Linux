@@ -114,3 +114,8 @@ Hardware candidates must be evaluated with the [retro Linux hardware assessment 
 Snakey tracks ten independent Linux port lanes: PSP (MIPS), PS Vita (ARMv7), PS3 (PowerPC64), PS4 (x86-64), PS5 (x86-64), Original Xbox (i686), Wii (PowerPC32), Wii U (PowerPC32), Switch (AArch64) and Switch 2 (AArch64). Each has a separate architecture, toolchain and hardware evidence gate. See [the ten-console port program](docs/ten-console-port-program.md), [the platform matrix](platforms/linux-targets.json) and [upstream source provenance](platforms/linux-port-sources.json).
 
 GitHub Actions validates all ten records. Only the Vita currently has a pinned upstream build workflow; PS4 is priority one but its source must be audited and pinned before CI builds it. No Snakey kernel or console boot is claimed merely because a target is registered.
+
+
+## First-wave development: PSP + PS Vita
+
+PSP and PS Vita are the first active ports. PSP begins with an integrity-only audit of historical uClinux 0.22 archives; Vita uses a pinned ARMv7 upstream reproducibility build. PS4 and other console ports are deferred until these two lanes reach their first milestones. See [the PSP + Vita development plan](docs/psp-vita-first-wave.md).
