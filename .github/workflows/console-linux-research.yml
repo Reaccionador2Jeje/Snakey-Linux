@@ -26,6 +26,8 @@ on:
       - "platforms/linux-targets.json"
       - "tools/audit_psp_archives.py"
       - "tools/fetch_psp_archives.py"
+      - "tools/audit_ps3_rootfs.py"
+      - "tools/validate_ps3_xfce4_manifest.py"
       - "docs/ps3-linux-bringup.md"
       - "linux/rootfs/**"
 
