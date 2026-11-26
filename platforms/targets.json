@@ -41,8 +41,8 @@
         "emulator-file"
       ],
       "linux_capable": false,
-      "status": "planned",
-      "notes": "65C816 homebrew; cartridge mapping and header requirements are target-profile specific."
+      "status": "experimental-buildable",
+      "notes": "Snakey SDK emits a minimal experimental homebrew image with platform header and startup stub; emulator and physical-hardware compatibility still require validation."
     },
     {
       "id": "game-boy",
@@ -104,8 +104,8 @@
         "emulator-file"
       ],
       "linux_capable": false,
-      "status": "planned",
-      "notes": "ARM7TDMI homebrew image."
+      "status": "experimental-buildable",
+      "notes": "Snakey SDK emits a minimal experimental homebrew image with platform header and startup stub; emulator and physical-hardware compatibility still require validation."
     },
     {
       "id": "nintendo-ds",
@@ -125,8 +125,8 @@
         "emulator-file"
       ],
       "linux_capable": false,
-      "status": "planned",
-      "notes": "Dual-CPU homebrew; loader support depends on exact model and firmware."
+      "status": "experimental-buildable",
+      "notes": "Snakey SDK emits a minimal experimental homebrew image with platform header and startup stub; emulator and physical-hardware compatibility still require validation."
     }
   ]
 }
