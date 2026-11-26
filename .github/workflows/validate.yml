@@ -27,6 +27,15 @@ jobs:
           python3 tools/validate_targets.py
           python3 tools/validate_desktop_editions.py
           python3 tools/validate_desktop_core.py
+          python3 - <<'PY'
+          from pathlib import Path
+          source = Path("desktop/nes/main.s").read_text()
+          glyphs = source.split('.segment "CHARS"', 1)[1].split('; 16x16 Snakey emblem tiles.', 1)[0]
+          assert '.res 8, $00' not in glyphs, "CHR glyph IDs must remain contiguous"
+          assert "FooterLabel:" in source
+          assert "PaletteOne:" in source
+          print("NES Desktop 2.0 CHR glyph map and shared chrome: OK")
+          PY
           python3 tools/validate_linux_targets.py
           python3 tools/validate_linux_sources.py
           python3 tools/validate_ps3_profile.py
