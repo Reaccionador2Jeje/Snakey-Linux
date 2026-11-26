@@ -85,6 +85,7 @@ MainLoop:
     lda #$00
     sta $00
     sta $01
+    sta $08
     jsr DrawScreen
 @confirm:
     lda $04
@@ -375,6 +376,13 @@ DrawFiles:
     sta $07
 @file_detail:
     jsr DrawText
+    lda #$22
+    sta $2006
+    ldx $01
+    lda ConsoleCursorAddress,x
+    sta $2006
+    lda #$0F
+    sta $2007
     jmp EnableScreen
 
 DrawConsole:
@@ -541,7 +549,7 @@ PaletteLabel:   .byte 7,3,8,5,11,11,5,0
 PaletteZero:    .byte 13,18,0
 PaletteOne:     .byte 13,14,14,0
 HardwareLabel:  .byte 18,5,1,11,3,10,22,5,11,0
-CatalogHint:    .byte 3,0
+CatalogHint:    .byte 3,0,13,7,5,18,0
 
 .segment "VECTORS"
 .word Reset, Reset, Reset
