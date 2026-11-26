@@ -25,6 +25,7 @@ jobs:
       - name: Validate target registries
         run: |
           python3 tools/validate_targets.py
+          python3 tools/validate_desktop_editions.py
           python3 tools/validate_linux_targets.py
           python3 tools/validate_linux_sources.py
           python3 tools/validate_ps3_profile.py
