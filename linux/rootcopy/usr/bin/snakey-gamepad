@@ -2,13 +2,14 @@
 """Translate a Linux joystick (/dev/input/js*) into XFCE keyboard navigation."""
 from __future__ import annotations
 import glob, os, shutil, struct, subprocess, sys
+from typing import Optional
 EVENT = struct.Struct("IhBB")
 JS_EVENT_BUTTON, JS_EVENT_AXIS, JS_EVENT_INIT = 0x01, 0x02, 0x80
 KEYS = {0: "Return", 1: "Escape", 2: "Tab", 4: "shift+Tab", 5: "Tab", 6: "Return"}
 AXIS_KEYS = {0: ("Left", "Right"), 1: ("Up", "Down")}
 DEADZONE = 16000
 
-def key_for_axis(axis: int, value: int) -> str | None:
+def key_for_axis(axis: int, value: int) -> Optional[str]:
     if abs(value) < DEADZONE or axis not in AXIS_KEYS:
         return None
     return AXIS_KEYS[axis][1 if value > 0 else 0]
@@ -24,7 +25,7 @@ def open_keyboard() -> None:
             return
     print("Snakey: install Onboard or Matchbox Keyboard for on-screen typing.", file=sys.stderr)
 
-def find_device() -> str | None:
+def find_device() -> Optional[str]:
     configured = os.environ.get("SNAKEY_GAMEPAD_DEVICE")
     if configured and os.path.exists(configured):
         return configured
@@ -40,7 +41,7 @@ def main() -> int:
         print("Snakey Gamepad: no /dev/input/js* device found.", file=sys.stderr)
         return 1
     print(f"Snakey Gamepad: reading {device}")
-    last_axis: dict[int, str | None] = {}
+    last_axis: dict[int, Optional[str]] = {}
     try:
         with open(device, "rb", buffering=0) as joystick:
             while True:
