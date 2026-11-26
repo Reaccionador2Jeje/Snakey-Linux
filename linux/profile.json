@@ -11,5 +11,11 @@
   "hostname": "snakey",
   "image": "Snakey-Linux-XFCE-x86_64.iso",
   "purpose": "Ultra-light graphical live system for Limbo/QEMU testing",
-  "status": "build-profile"
+  "status": "build-profile",
+  "base_release": "15.0",
+  "base_channel": "stable",
+  "package_manager": "pkgtools",
+  "init_system": "SysVinit",
+  "slackware_repository": "slackware64-15.0",
+  "liveslak_config": "linux/make_slackware_live.conf"
 }
