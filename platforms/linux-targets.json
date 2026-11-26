@@ -57,6 +57,136 @@
       "snakey_tested": false,
       "requires_physical_hardware": true,
       "notes": "Preferred first research target because a maintained Wii-Linux continuation project reports current kernels and framebuffer/Xorg support. Snakey has not built, booted or tested anything on Wii hardware. Research and cross-build work only until compatible hardware is available."
+    },
+    {
+      "id": "nintendo-switch",
+      "name": "Nintendo Switch",
+      "family": "linux-system",
+      "architecture": "aarch64",
+      "cpu": "NVIDIA Tegra X1 ARM Cortex-A57/A53",
+      "system_ram_mb": 4096,
+      "video_ram_mb": 0,
+      "video_ram_counts_as_system_ram": false,
+      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
+      "boot_chain": [
+        "Research only; no physical boot procedure documented"
+      ],
+      "storage": [
+        "Research required; do not assume supported media"
+      ],
+      "graphics": "Tegra display/GPU; verify console-specific display and acceleration support",
+      "network": [
+        "Research required; verify device drivers"
+      ],
+      "desktop_goal": "Linux shell and graphical session; XFCE4 plausible only after driver validation",
+      "status": "research-candidate",
+      "snakey_tested": false,
+      "requires_physical_hardware": true,
+      "notes": "Community Linux ecosystem exists for compatible configurations; Snakey has no build or hardware test. No Snakey build, boot or hardware test."
+    },
+    {
+      "id": "nintendo-3ds",
+      "name": "Nintendo 3DS",
+      "family": "linux-system",
+      "architecture": "armv6k",
+      "cpu": "Dual-core ARM11 MPCore plus ARM9",
+      "system_ram_mb": 128,
+      "video_ram_mb": 6,
+      "video_ram_counts_as_system_ram": false,
+      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
+      "boot_chain": [
+        "Research only; no physical boot procedure documented"
+      ],
+      "storage": [
+        "Research required; do not assume supported media"
+      ],
+      "graphics": "3DS GPU; Linux framebuffer and driver path need project-specific verification",
+      "network": [
+        "Research required; verify device drivers"
+      ],
+      "desktop_goal": "Kernel and shell feasibility study; XFCE4 not assumed",
+      "status": "research-candidate",
+      "snakey_tested": false,
+      "requires_physical_hardware": true,
+      "notes": "Community kernel port is listed, but current maintenance, boot path and drivers need audit. No Snakey build, boot or hardware test."
+    },
+    {
+      "id": "playstation-vita",
+      "name": "PlayStation Vita",
+      "family": "linux-system",
+      "architecture": "armv7",
+      "cpu": "Quad-core ARM Cortex-A9",
+      "system_ram_mb": 512,
+      "video_ram_mb": 128,
+      "video_ram_counts_as_system_ram": false,
+      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
+      "boot_chain": [
+        "Research only; no physical boot procedure documented"
+      ],
+      "storage": [
+        "Research required; do not assume supported media"
+      ],
+      "graphics": "PowerVR SGX543MP4+; display and acceleration support require verification",
+      "network": [
+        "Research required; verify device drivers"
+      ],
+      "desktop_goal": "Kernel/userspace feasibility study; minimal graphical session first",
+      "status": "research-candidate",
+      "snakey_tested": false,
+      "requires_physical_hardware": true,
+      "notes": "Community Linux kernel port exists; maturity and compatibility require audit. No Snakey build, boot or hardware test."
+    },
+    {
+      "id": "original-xbox",
+      "name": "Original Xbox",
+      "family": "linux-system",
+      "architecture": "x86",
+      "cpu": "Intel Pentium III-class x86",
+      "system_ram_mb": 64,
+      "video_ram_mb": 0,
+      "video_ram_counts_as_system_ram": false,
+      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
+      "boot_chain": [
+        "Research only; no physical boot procedure documented"
+      ],
+      "storage": [
+        "Research required; do not assume supported media"
+      ],
+      "graphics": "NVIDIA NV2A; Linux graphics driver support needs verification",
+      "network": [
+        "Research required; verify device drivers"
+      ],
+      "desktop_goal": "Historical Linux port research; XFCE4 unlikely under 64 MB",
+      "status": "research-candidate",
+      "snakey_tested": false,
+      "requires_physical_hardware": true,
+      "notes": "Xbox-Linux is a historical project, not a current maintained Snakey target. No Snakey build, boot or hardware test."
+    },
+    {
+      "id": "sega-dreamcast",
+      "name": "Sega Dreamcast",
+      "family": "linux-system",
+      "architecture": "sh4",
+      "cpu": "Hitachi SH-4",
+      "system_ram_mb": 16,
+      "video_ram_mb": 8,
+      "video_ram_counts_as_system_ram": false,
+      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
+      "boot_chain": [
+        "Research only; no physical boot procedure documented"
+      ],
+      "storage": [
+        "Research required; do not assume supported media"
+      ],
+      "graphics": "PowerVR2; legacy Linux display support",
+      "network": [
+        "Research required; verify device drivers"
+      ],
+      "desktop_goal": "Historical kernel research only; no XFCE4 target",
+      "status": "research-candidate",
+      "snakey_tested": false,
+      "requires_physical_hardware": true,
+      "notes": "LinuxDC is historical; 16 MB RAM makes XFCE4 impractical. No Snakey build, boot or hardware test."
     }
   ]
 }
