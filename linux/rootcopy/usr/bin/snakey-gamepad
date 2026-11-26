@@ -42,7 +42,7 @@ def load_profile():
 
 
 def key_for_axis(axis: int, value: int, deadzone: int = DEFAULT_DEADZONE) -> Optional[str]:
-    if abs(value) < deadzone or axis not in AXIS_KEYS:
+    if abs(value) <= deadzone or axis not in AXIS_KEYS:
         return None
     return AXIS_KEYS[axis][1 if value > 0 else 0]
 
