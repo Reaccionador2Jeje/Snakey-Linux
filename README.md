@@ -86,3 +86,5 @@ The NES NROM-256 starter now initializes the PPU, draws a `SNAKEY` title and an 
 
 
 See [the Linux-on-retro-hardware roadmap](docs/linux-on-retro-hardware.md) for the long-term goal of booting a real Linux kernel and, where hardware permits, XFCE4 on retro consoles. ROM homebrew and native Linux targets are deliberately kept separate.
+
+Hardware candidates must be evaluated with the [retro Linux hardware assessment template](docs/hardware-assessment-template.md), including documented CPU/MMU, RAM, boot, storage and driver evidence.
