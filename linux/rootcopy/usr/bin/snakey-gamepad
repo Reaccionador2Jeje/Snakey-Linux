@@ -75,7 +75,7 @@ def main() -> int:
                         elif number in KEYS:
                             emit_key(KEYS[number])
                     elif event_type == JS_EVENT_AXIS and number in AXIS_KEYS:
-                        key = key_for_axis(number, value) if abs(value) >= deadzone else None
+                        key = key_for_axis(number, value, deadzone)
                         if key and last_axis.get(number) != key:
                             emit_key(key)
                         last_axis[number] = key
