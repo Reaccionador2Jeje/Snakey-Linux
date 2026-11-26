@@ -80,11 +80,11 @@ class SnakeySdkTests(unittest.TestCase):
     def test_create_nes_and_handheld_projects_for_all_targets(self):
         for target, expected_entry in [
             ("nes", "src/main.s"),
-            ("snes", "src/main.c"),
+            ("snes", "src/rom.json"),
             ("game-boy", "src/main.asm"),
             ("game-boy-color", "src/main.asm"),
-            ("game-boy-advance", "src/main.c"),
-            ("nintendo-ds", "src/main.c"),
+            ("game-boy-advance", "src/rom.json"),
+            ("nintendo-ds", "src/rom.json"),
         ]:
             with self.subTest(target=target), tempfile.TemporaryDirectory() as tmp:
                 project = Path(tmp) / "demo"
@@ -94,7 +94,7 @@ class SnakeySdkTests(unittest.TestCase):
                 self.assertEqual(snakey.command_new(args), 0)
                 manifest = json.loads((project / snakey.MANIFEST).read_text())
                 self.assertEqual(manifest["entry"], expected_entry)
-                self.assertTrue((project / expected_entry).is_file())
+                self.assertTrue((project / expected_entry).is_file())\n                if target in {"snes", "game-boy-advance", "nintendo-ds"}:\n                    descriptor = json.loads((project / expected_entry).read_text())\n                    self.assertEqual(descriptor["status"], "experimental-template")
                 self.assertEqual(snakey.command_validate(
                     type("Args", (), {"directory": project})()
                 ), 0)
