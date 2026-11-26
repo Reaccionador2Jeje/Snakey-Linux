@@ -81,3 +81,30 @@ Shared architecture and application contract:
 Current state: architecture defined only. Kernel/loader source selection,
 Snakey rootfs, native renderer, init integration and emulator boot remain
 pending. No Wii desktop build or boot is claimed.
+
+## Slackware base — PowerPC32 big-endian
+
+The Wii cannot use the official Slackware ARM or x86 package trees. Its
+Broadway CPU requires a **32-bit big-endian PowerPC** userspace. Snakey's
+distribution base will therefore be a Slackware-compatible PowerPC port,
+with the community BonSlack PowerPC port as a source/package reference and
+Slackware's package/build conventions as the compatibility contract.
+
+This is not an official Slackware PowerPC release. Every package must be
+rebuilt or verified for the Wii's PowerPC ABI and available kernel/userspace
+interfaces.
+
+Rootfs policy:
+- Build a minimal PowerPC32 big-endian package set.
+- Preserve Slackware-style package archives, package metadata and pkgtools
+  semantics.
+- Retain SysVinit and Slackware filesystem conventions.
+- Keep only essential shell, libc, core utilities, device handling and
+  hardware-support packages.
+- Add Wii-specific kernel, loader integration, SD/USB, framebuffer and
+  controller drivers as a separate platform layer.
+- Start Snakey Desktop only after the Slackware-compatible userspace boots.
+
+The 88 MiB memory class rules out a conventional full Slackware installation.
+The result must be a deliberately small Slackware-derived root filesystem,
+not a claim of official Slackware support or a working Wii image.
