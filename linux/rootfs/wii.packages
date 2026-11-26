@@ -1,0 +1,18 @@
+# Slackware-compatible PPC32 big-endian bootstrap package names
+# Populate only with locally built packages verified for the Wii ABI.
+aaa_base
+aaa_libraries
+bash
+bin
+coreutils
+glibc-solibs
+grep
+gzip
+sed
+tar
+util-linux
+e2fsprogs
+pkgtools
+sysvinit
+sysvinit-scripts
+shadow
