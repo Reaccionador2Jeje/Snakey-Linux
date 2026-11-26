@@ -68,3 +68,29 @@ The PSP target must not consume ordinary Slackware MIPS/glibc binaries. Its hist
 ## Desktop policy
 
 XFCE4 is the target desktop on all Linux console ports except PSP. PSP uses the native Snakey micro desktop. Xbox Original and Wii retain XFCE4 as experimental targets; their low memory budgets mean a successful build and runtime memory/driver measurements are mandatory before any image can claim XFCE4 support.
+
+## Console desktop package contracts
+
+The per-console desktop intent and package groups are recorded in
+[`desktop-profiles.json`](desktop-profiles.json). It defines shared XFCE4
+groups (desktop, X11/graphics/input, fonts) for Vita, PS3, PS4, PS5, Xbox
+Original, Wii, Wii U, Switch and Switch 2. PSP is deliberately excluded from
+XFCE4 and uses a separate Snakey native micro desktop target.
+
+These are **package-selection contracts**, not downloaded or built package
+sets. Package names and dependencies must be checked against the exact
+architecture-specific Slackware tree (or rebuilt port) before assembly. In
+particular, Xbox Original (64 MiB) and Wii (88 MiB) remain experimental: a
+successful package build is not enough; runtime memory, graphics and input
+must be measured. No console rootfs currently claims to contain a working
+XFCE4 session.
+
+Validate the contract with:
+
+```sh
+python3 tools/validate_desktop_profiles.py
+```
+
+The console matrix workflow runs this validator on pushes and pull requests.
+The runtime contract uses `xfce4-session` with no display manager by default
+and preserves a TTY fallback if X or XFCE fails.
