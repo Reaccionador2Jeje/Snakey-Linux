@@ -17,5 +17,9 @@
   "package_manager": "pkgtools",
   "init_system": "SysVinit",
   "slackware_repository": "slackware64-15.0",
-  "liveslak_config": "linux/make_slackware_live.conf"
+  "liveslak_config": "linux/make_slackware_live.conf",
+  "live_variant": "SNAKEY",
+  "custom_package": "snakey-base",
+  "custom_package_sequence": "min,xbase,xapbase,xfcebase local:snakey-base",
+  "live_user": "snakey"
 }
