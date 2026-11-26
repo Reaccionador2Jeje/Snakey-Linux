@@ -6,15 +6,15 @@ Snakey Linux now tracks ten independent console ports. A shared distribution ide
 
 | Platform | CPU architecture | Engineering lane | First milestone |
 |---|---|---|---|
-| PSP | MIPS Allegrex (MIPS little-endian) | Feasibility research | Establish whether a maintained Linux kernel/platform port exists |
-| PS Vita | ARMv7 Cortex-A9 | Pinned upstream reproduction | Reproduce Vita Linux Next build in hosted CI |
+| PSP | MIPS Allegrex (MIPS little-endian) | **Priority 1** | Audit historical uClinux 0.22 archives and toolchain |
+| PS Vita | ARMv7 Cortex-A9 | **Priority 2** | Reproduce pinned Vita Linux Next kernel build in hosted CI |
 | PS3 | PowerPC64 big-endian PPE | Mainline/platform research | Audit PS3 kernel config, memory and boot prerequisites |
-| PS4 | x86-64 AMD Jaguar | **Priority 1** | Audit Linux psX source and exact kernel build contract |
-| PS5 | x86-64 AMD Zen 2 | **Priority 2** | Audit patch set and exact upstream kernel base |
+| PS4 | x86-64 AMD Jaguar | Deferred | Audit Linux psX after first-wave handheld ports |
+| PS5 | x86-64 AMD Zen 2 | Deferred | Audit patch set after first-wave handheld ports |
 | Xbox Original | i686 x86 | Historical research | Identify maintained/reproducible source and driver status |
 | Wii | PowerPC32 big-endian | Historical research | Identify source tree and realistic shell-only target |
 | Wii U | PowerPC32 big-endian | Independent research | Identify a verifiable platform port; never assume Wii compatibility |
-| Nintendo Switch | AArch64 Tegra X1 | **Priority 3** | Audit L4T kernel, device tree, graphics and input support |
+| Nintendo Switch | AArch64 Tegra X1 | Deferred | Audit L4T kernel after first-wave handheld ports |
 | Nintendo Switch 2 | AArch64 (SoC-specific) | Feasibility research | Identify public kernel/platform enablement evidence before any build |
 
 The machine-readable source of truth is [platforms/linux-targets.json](../platforms/linux-targets.json). Upstream source provenance is tracked separately in [linux-port-sources.json](../platforms/linux-port-sources.json).
@@ -33,6 +33,10 @@ Status vocabulary: `source-audit-required`, `source-pinned`, `kernel-buildable`,
 
 A CI metadata pass is not a kernel build. A kernel build is not a boot. An emulator result is not physical-hardware evidence.
 
+## First-wave focus: PSP + PS Vita
+
+The active order is PSP first, then PS Vita. PSP starts with integrity-only auditing of archived uClinux source bundles because the historical port is not a maintained modern kernel tree. Vita starts with a pinned ARMv7 upstream build. See [psp-vita-first-wave.md](psp-vita-first-wave.md).
+
 ## GitHub Actions
 
 - `.github/workflows/linux-platform-matrix.yml` validates all ten platform records, architecture mappings, source provenance and repository tests.
@@ -48,5 +52,7 @@ CI performs repository validation and host-side builds only. It does not modify 
 - Ten requested platforms are registered in the machine-readable matrix.
 - Vita has a pinned upstream reproduction workflow.
 - PS4, PS5 and Switch have identified research references but remain unpinned.
-- PSP, Wii U, Xbox Original and Switch 2 remain source-discovery/feasibility work.
+- PSP has a documented historical uClinux 0.22 archive-audit lane; no Snakey kernel build is claimed.
+- PS Vita has a pinned upstream kernel reproduction lane; no Snakey kernel or hardware boot is claimed.
+- PS4, PS5, Switch and other platforms are deferred while PSP and Vita are first-wave targets.
 - No Snakey console kernel or physical console boot is claimed by this milestone.
