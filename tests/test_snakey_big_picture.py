@@ -1,13 +1,14 @@
+import importlib.machinery
 import importlib.util
 import pathlib
 import struct
 import unittest
 
 SCRIPT = pathlib.Path(__file__).resolve().parents[1] / "linux/rootcopy/usr/bin/snakey-big-picture"
-SPEC = importlib.util.spec_from_file_location("snakey_big_picture", SCRIPT)
+LOADER = importlib.machinery.SourceFileLoader("snakey_big_picture", str(SCRIPT))
+SPEC = importlib.util.spec_from_loader("snakey_big_picture", LOADER)
 MODULE = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
-SPEC.loader.exec_module(MODULE)
+LOADER.exec_module(MODULE)
 
 
 def event(value, kind, number):
