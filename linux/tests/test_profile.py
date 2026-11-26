@@ -41,7 +41,7 @@ class SnakeyLinuxProfileTests(unittest.TestCase):
                 ET.parse(LINUX / path)
 
     def test_snake_theme_is_complete_and_selected(self):
-        theme = LINUX / "rootcopy/usr/share/themes/Snakey-Dark"
+        theme = LINUX / "packages/snakey-theme/usr/share/themes/Snakey-Dark"
         required = ["index.theme", "gtk-2.0/gtkrc", "gtk-3.0/gtk.css"]
         for path in required:
             with self.subTest(path=path):
@@ -51,6 +51,8 @@ class SnakeyLinuxProfileTests(unittest.TestCase):
         )
         values = [node.attrib.get("value") for node in settings.iter("property")]
         self.assertIn("Snakey-Dark", values)
+        package_builder = (LINUX / "packages/build-snakey-theme.sh").read_text(encoding="utf-8")
+        self.assertIn("snakey-theme-0.1.0-noarch-1.txz", package_builder)
 
     def test_panel_and_window_manager_defaults_are_valid(self):
         for path in (
