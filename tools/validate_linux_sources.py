@@ -23,8 +23,8 @@ def main() -> int:
     except (OSError, json.JSONDecodeError) as exc:
         fail(f"cannot read source manifest: {exc}")
 
-    if data.get("schema_version") != 1:
-        fail("schema_version must be 1")
+    if data.get("schema_version") != 2:
+        fail("schema_version must be 2")
     sources = data.get("sources")
     if not isinstance(sources, list) or not sources:
         fail("sources must be a non-empty array")
