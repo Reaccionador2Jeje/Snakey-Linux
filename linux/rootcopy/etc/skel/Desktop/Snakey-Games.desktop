@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Games
+Comment=Open RetroArch if installed
+Exec=sh -c 'command -v retroarch >/dev/null 2>&1 && exec retroarch || (command -v notify-send >/dev/null 2>&1 && notify-send "Snakey Linux" "RetroArch is not installed in this image.")'
+Icon=applications-games
+Terminal=false
+Categories=Game;
