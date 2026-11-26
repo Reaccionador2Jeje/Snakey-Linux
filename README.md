@@ -52,7 +52,7 @@ Requires Python 3.10 or newer.
 
 ## Development status
 
-The SDK builds an NES NROM-256 (.nes) image with cc65 and Game Boy / Game Boy Color ROMs with RGBDS. The NES starter is a minimal reset-loop homebrew ROM, not a full OS. CI assembles it and checks the iNES header and expected 40 KiB file size. Boot profiles remain planning metadata; cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
+The SDK builds an NES NROM-256 (.nes) image with cc65 and Game Boy / Game Boy Color ROMs with RGBDS. The NES starter has an interactive controller-driven menu: Up/Down selects PLAY, CART or INFO; A opens the corresponding page; B returns. Cartridge hardware status remains unknown without a target-specific detection interface. CI assembles the ROM and checks the iNES header and expected 40 KiB file size. Cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
 
 ## License
 
@@ -61,4 +61,4 @@ Apache-2.0. See LICENSE.
 
 ## NES boot-screen milestone
 
-The NES NROM-256 starter now initializes the PPU, draws a `SNAKEY` title and a controller-driven `PLAY` / `CART` / `INFO` menu. Up/Down moves the cursor. Menu entries are navigation placeholders, not functional subsystems yet. CI assembles and validates the ROM; visual emulator verification remains a separate next step.
+The NES NROM-256 starter now initializes the PPU, draws a `SNAKEY` title and an interactive `PLAY` / `CART` / `INFO` menu. Up/Down moves the cursor, A opens a page, and B returns. The PLAY page is not yet an application runtime, and CART status is explicitly unknown until hardware-specific support exists. Visual emulator verification remains a separate next step.
