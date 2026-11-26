@@ -243,9 +243,9 @@ UpdateCursor:
     sta $2007
     ; Draw new cursor.
     ldx $00
-    lda CursorLow,x
-    sta $2006
     lda CursorHigh,x
+    sta $2006
+    lda CursorLow,x
     sta $2006
     lda #$0F
     sta $2007
