@@ -32,12 +32,12 @@ def main():
                 with gzip.open(path,"rb") as stream:
                     while stream.read(1024*1024): pass
                 names=[]
-            else: raise ValueError(f"unsupported format: {item["format"]}")
+            else: raise ValueError("unsupported format: {}".format(item["format"]))
             row["integrity"]="ok"
             row["entry_count"]=len(names)
             row["license_notice_candidates"]=[n for n in names if Path(n).name.lower() in {"license","copying","copyright","notice","licence"}]
         except (OSError,ValueError,zipfile.BadZipFile) as exc:
-            row["integrity"]="failed"; row["error"]=str(exc); failures.append(f"{item["id"]}: {exc}")
+            row["integrity"]="failed"; row["error"]=str(exc); failures.append("{}: {}".format(item["id"], exc))
         report["archives"].append(row)
     output=directory/"psp-archive-audit.json"
     output.parent.mkdir(parents=True,exist_ok=True)
@@ -45,6 +45,6 @@ def main():
     print(json.dumps(report,indent=2))
     if failures: print("AUDIT FAILED: "+"; ".join(failures),file=sys.stderr); return 1
     if len(report["archives"])!=len(source.get("archives",[])): return 1
-    print(f"PSP archive integrity audit: OK ({len(report["archives"])} archives; license review still required)")
+    print("PSP archive integrity audit: OK ({} archives; license review still required)".format(len(report["archives"])))
     return 0
 if __name__=="__main__": raise SystemExit(main())
