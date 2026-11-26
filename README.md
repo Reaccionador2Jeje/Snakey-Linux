@@ -43,7 +43,7 @@ The Cloudflare Worker in `worker/index.js` serves the static site and exposes:
 - `/api/releases`
 
 Local development: `npm install && npm test && npm run dev`.
-Deployment instructions: [docs/website-worker.md](docs/website-worker.md). A Cloudflare account token is required to deploy; CI performs tests and a Wrangler dry-run, but does not deploy to an account.
+Deployment instructions: [docs/website-worker.md](docs/website-worker.md). A Cloudflare account token is required to deploy; CI performs tests and a Wrangler dry-run, but does not deploy to an account. Tagged `nes-v*` releases automatically build and publish an experimental NES prerelease with the ROM and SHA-256 checksum.
 
 ## Repository layout
 
