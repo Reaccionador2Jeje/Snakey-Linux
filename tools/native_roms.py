@@ -35,11 +35,13 @@ def build_snes(path: Path, name: str) -> None:
     header[0:21] = title
     header[0x15:0x1B] = bytes([0x20, 0x00, 0x07, 0x00, 0x01, 0x00])
     # LoROM vectors: native/emulation NMI, reset and IRQ. Reset points to $8000.
-    struct.pack_into("<8H", header, 0x20, 0x8000, 0x8000, 0x8000, 0x8000,
-                     0x8000, 0x8000, 0x8000, 0x8000)
-    header[0x1C:0x20] = struct.pack("<HH", 0xFFFF, 0x0000)
-    header[0x3C:0x40] = struct.pack("<HH", 0x8000, 0x8000)
+    struct.pack_into("<6H", header, 0x20, *([0x8000] * 6))
+    struct.pack_into("<6H", header, 0x34, *([0x8000] * 6))
+    header[0x1C:0x20] = bytes(4)
     rom[0x7FC0:0x8000] = header
+    rom[0x7FDC:0x7FE0] = bytes(4)
+    checksum = sum(rom) & 0xFFFF
+    struct.pack_into("<HH", rom, 0x7FDC, checksum ^ 0xFFFF, checksum)
     _write(path, bytes(rom))
 
 def _arm_branch_to(offset: int) -> bytes:
