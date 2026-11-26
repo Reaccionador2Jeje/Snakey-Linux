@@ -1,10 +1,12 @@
 import importlib.util
 import pathlib
 import unittest
+from importlib.machinery import SourceFileLoader
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "linux/rootcopy/usr/bin/snakey-big-picture"
-SPEC = importlib.util.spec_from_file_location("snakey_big_picture", SCRIPT)
+LOADER = SourceFileLoader("snakey_big_picture", str(SCRIPT))
+SPEC = importlib.util.spec_from_loader("snakey_big_picture", LOADER)
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
