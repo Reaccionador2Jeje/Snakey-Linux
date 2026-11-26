@@ -21,7 +21,7 @@ class NativeRomTests(unittest.TestCase):
             self.assertEqual(len(data), 0x8000)
             self.assertEqual(data[0xAC:0xB0], b"SNKY")
             self.assertEqual(data[0xB2], 0x96)
-            self.assertEqual(data[0xC0:0xC4], b"\x00\x00\xa0\xe3")
+            self.assertEqual(data[0xC0:0xC4], b"\x30\x00\x9f\xe5")
 
     def test_nds_header_offsets_and_crcs(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -30,7 +30,8 @@ class NativeRomTests(unittest.TestCase):
             data = out.read_bytes()
             self.assertEqual(len(data), 0x10000)
             self.assertEqual(data[12:16], b"SNKY")
-            self.assertEqual(int.from_bytes(data[0x20:0x24], "little"), 0x4000)\n            self.assertEqual(int.from_bytes(data[0x80:0x84], "little"), len(data))
+            self.assertEqual(int.from_bytes(data[0x20:0x24], "little"), 0x4000)
+            self.assertEqual(int.from_bytes(data[0x80:0x84], "little"), len(data))
             self.assertEqual(int.from_bytes(data[0x15E:0x160], "little"),
                              __import__("tools.native_roms", fromlist=["_crc16"])._crc16(data[:0x15E]))
 
