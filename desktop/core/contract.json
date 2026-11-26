@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "family": "Snakey Desktop",
+  "runtime_module": "desktop/core/runtime.py",
+  "navigation": {
+    "default_screen": "launcher",
+    "single_active_app": true,
+    "back_button": "return-to-launcher",
+    "selection_wraps": true
+  },
+  "inputs": {
+    "up": "move-selection-up",
+    "down": "move-selection-down",
+    "confirm": "activate-selection",
+    "back": "return-or-close"
+  },
+  "applications": [
+    {
+      "id": "files",
+      "label": "Files",
+      "kind": "read-only-catalog",
+      "actions": ["list-bundled-items", "open-item-details"]
+    },
+    {
+      "id": "console",
+      "label": "Console",
+      "kind": "built-in-command-interpreter",
+      "actions": ["help", "about", "clear"]
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "persistent-runtime-settings",
+      "actions": ["toggle-palette"]
+    },
+    {
+      "id": "about",
+      "label": "About",
+      "kind": "system-information",
+      "actions": ["show-edition", "show-platform", "show-build-profile"]
+    }
+  ],
+  "security": {
+    "filesystem_access": "bundled-read-only-catalog-only",
+    "arbitrary_code_execution": false,
+    "external_storage_writes": false,
+    "unknown_commands": "show-error"
+  },
+  "platform_rules": {
+    "shared": ["application-ids", "navigation-semantics", "command-semantics", "settings-semantics"],
+    "platform_specific": ["graphics", "controller-mapping", "storage-adapter", "audio", "memory-budget"]
+  }
+}
