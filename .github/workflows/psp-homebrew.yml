@@ -1,0 +1,64 @@
+name: Snakey PSP Homebrew
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "psp/**"
+      - "tests/test_psp_homebrew.py"
+      - ".github/workflows/psp-homebrew.yml"
+  pull_request:
+    paths:
+      - "psp/**"
+      - "tests/test_psp_homebrew.py"
+      - ".github/workflows/psp-homebrew.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: snakey-psp-homebrew-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-psp:
+    name: Build PSP EBOOT.PBP
+    runs-on: ubuntu-24.04
+    container:
+      image: pspdev/pspdev:latest
+    steps:
+      - name: Checkout Snakey
+        uses: actions/checkout@v4
+
+      - name: Verify source contract
+        run: |
+          python3 tests/test_psp_homebrew.py
+
+      - name: Build native PSP homebrew
+        working-directory: psp
+        run: |
+          set -eu
+          make clean
+          make
+          test -s EBOOT.PBP
+          file EBOOT.PBP
+
+      - name: Stage distributable
+        run: |
+          mkdir -p dist/snakey-psp
+          cp psp/EBOOT.PBP dist/snakey-psp/EBOOT.PBP
+          cat > dist/snakey-psp/README.txt <<'EOF'
+          Snakey PSP - native PSP homebrew
+          Copy this folder to PSP/GAME/SNAKEY/ on the PPSSPP memory stick.
+          Launch Snakey PSP from Games.
+          Controls: D-pad move, Cross select, Circle back, Start exit.
+          EOF
+          (cd dist/snakey-psp && sha256sum EBOOT.PBP > SHA256SUMS)
+
+      - name: Upload PPSSPP-ready homebrew
+        uses: actions/upload-artifact@v4
+        with:
+          name: snakey-psp-homebrew
+          path: dist/snakey-psp/
+          if-no-files-found: error
+          retention-days: 30
