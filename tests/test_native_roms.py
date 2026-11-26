@@ -17,8 +17,8 @@ class NativeRomTests(unittest.TestCase):
             checksum = int.from_bytes(data[0x7FDE:0x7FE0], "little")
             self.assertEqual(complement ^ checksum, 0xFFFF)
             # The SNES boot backdrop is dark navy, not cyan.
-            self.assertEqual(data[0x20:0x22], bytes([0xA9, 0x84]))
-            self.assertEqual(data[0x26:0x28], bytes([0xA9, 0x10]))
+            self.assertEqual(data[0x10:0x12], bytes([0xA9, 0x84]))
+            self.assertEqual(data[0x15:0x17], bytes([0xA9, 0x10]))
 
     def test_gba_header_and_entry_branch(self):
         with tempfile.TemporaryDirectory() as tmp:
