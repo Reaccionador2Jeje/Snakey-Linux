@@ -26,6 +26,10 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: pspdev/pspdev:latest
+    env:
+      PSPDEV: /opt/pspdev
+      PSPSDK: /opt/pspdev/psp/sdk
+      PATH: /opt/pspdev/bin:/opt/pspdev/psp/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
       - name: Checkout Snakey
         uses: actions/checkout@v4
@@ -39,6 +43,14 @@ jobs:
           grep -q 'PSP_MODULE_INFO' psp/src/main.c
           grep -q 'sceCtrlReadBufferPositive' psp/src/main.c
           grep -q 'EBOOT.PBP' psp/Makefile
+
+      - name: Verify PSPSDK environment
+        run: |
+          set -eu
+          test -d "$PSPSDK"
+          test -f "$PSPSDK/lib/build.mak"
+          command -v psp-gcc
+          command -v make
 
       - name: Build native PSP homebrew
         working-directory: psp
