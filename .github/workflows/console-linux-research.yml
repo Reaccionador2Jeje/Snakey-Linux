@@ -47,6 +47,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Validate Snakey source and platform metadata
+        run: |
+          python3 tools/validate_linux_targets.py
+          python3 tools/validate_linux_sources.py
       - name: Download documented historical source archives
         run: |
           set -euo pipefail
