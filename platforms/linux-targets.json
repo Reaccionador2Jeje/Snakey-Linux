@@ -1,244 +1,165 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+  "policy": "Ten independent console ports. Metadata and CI validation never imply hardware compatibility. Source builds, kernel boot, userspace, graphics and physical hardware are separate evidence gates. CI performs host-side source builds only; no firmware modification, exploit execution, payload deployment or physical-console writes.",
   "targets": [
     {
-      "id": "playstation-3",
+      "id": "psp",
+      "name": "Sony PlayStation Portable",
+      "family": "linux-console",
+      "architecture": "mipsel",
+      "cpu": "MIPS Allegrex",
+      "system_ram_mb": 32,
+      "status": "source-audit-required",
+      "priority": "research-only",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "toolchain_strategy": "MIPS little-endian cross-toolchain; ABI and kernel config audit",
+      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
+      "notes": "Historical Linux feasibility research; no Snakey kernel, boot chain or usable desktop is established."
+    },
+    {
+      "id": "ps-vita",
+      "name": "Sony PlayStation Vita",
+      "family": "linux-console",
+      "architecture": "armv7",
+      "cpu": "ARM Cortex-A9",
+      "system_ram_mb": 480,
+      "status": "source-audit-required",
+      "priority": "upstream-build-pinned",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "toolchain_strategy": "ARM hard-float cross-toolchain; pinned upstream Vita build adapter",
+      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
+      "notes": "A pinned Vita Linux Next upstream build exists in CI; this is not a Snakey kernel or a hardware boot."
+    },
+    {
+      "id": "ps3",
       "name": "Sony PlayStation 3",
-      "family": "linux-system",
+      "family": "linux-console",
       "architecture": "powerpc64-big-endian",
-      "cpu": "Cell Broadband Engine (PowerPC 64-bit PPE)",
+      "cpu": "Cell Broadband Engine / PowerPC64 PPE",
       "system_ram_mb": 256,
-      "video_ram_mb": 256,
-      "video_ram_counts_as_system_ram": false,
-      "kernel_platform_option": "CONFIG_PPC_PS3",
-      "boot_chain": [
-        "legacy OtherOS on specifically compatible firmware/models",
-        "OtherOS++ with Petitboot on specifically compatible configurations"
-      ],
-      "storage": [
-        "internal HDD OtherOS region",
-        "USB transfer media"
-      ],
-      "graphics": "PS3 framebuffer; accelerated RSX access is not assumed",
-      "network": [
-        "GELIC wired Ethernet",
-        "model-dependent wireless"
-      ],
-      "desktop_goal": "XFCE4 experimental; lightweight desktop fallback required",
-      "status": "research-candidate",
-      "snakey_tested": false,
-      "requires_physical_hardware": true,
-      "notes": "Research-only record. Deliberately deferred: the owner does not currently have compatible power or a display and has explicitly chosen not to use or modify this console. No physical work, firmware changes or hardware assumptions are authorized."
+      "status": "source-audit-required",
+      "priority": "research-only",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "desktop_goal": "Kernel and shell feasibility first; XFCE is not assumed",
+      "notes": "PS3-specific Linux support exists in upstream kernel history; OtherOS availability and usable memory are model/configuration dependent."
     },
     {
-      "id": "nintendo-wii",
+      "id": "ps4",
+      "name": "Sony PlayStation 4",
+      "family": "linux-console",
+      "architecture": "x86_64",
+      "cpu": "AMD Jaguar APU",
+      "system_ram_mb": 8192,
+      "status": "source-audit-required",
+      "priority": "priority-1",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "toolchain_strategy": "Native x86-64 Linux toolchain",
+      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
+      "notes": "First integration target. Linux psX source and limited model-specific evidence; no Snakey kernel build or console boot is claimed."
+    },
+    {
+      "id": "ps5",
+      "name": "Sony PlayStation 5",
+      "family": "linux-console",
+      "architecture": "x86_64",
+      "cpu": "AMD Zen 2 APU",
+      "system_ram_mb": 16384,
+      "status": "source-audit-required",
+      "priority": "priority-2",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "toolchain_strategy": "Native x86-64 Linux toolchain",
+      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
+      "notes": "Separate PS5 patch ecosystem; exact kernel base, model and firmware compatibility require source audit."
+    },
+    {
+      "id": "xbox-original",
+      "name": "Microsoft Xbox Original",
+      "family": "linux-console",
+      "architecture": "i686",
+      "cpu": "Intel Pentium III-class x86",
+      "system_ram_mb": 64,
+      "status": "source-audit-required",
+      "priority": "research-only",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "toolchain_strategy": "i686 cross-toolchain; 32-bit kernel/userspace audit",
+      "desktop_goal": "Kernel and shell feasibility first; XFCE is not assumed",
+      "notes": "Historical Xbox Linux projects exist; legacy boot and graphics support require independent audit."
+    },
+    {
+      "id": "wii",
       "name": "Nintendo Wii",
-      "family": "linux-system",
+      "family": "linux-console",
       "architecture": "powerpc32-big-endian",
-      "cpu": "IBM Broadway PowerPC 729 MHz",
+      "cpu": "IBM Broadway PowerPC",
       "system_ram_mb": 88,
-      "video_ram_mb": 3,
-      "video_ram_counts_as_system_ram": false,
-      "kernel_platform_option": "Wii-Linux downstream PowerPC platform support; exact config to be pinned from upstream project",
-      "boot_chain": [
-        "existing Wii-Linux loader path (research only; no installation instructions in this registry)"
-      ],
-      "storage": [
-        "SD card",
-        "USB storage"
-      ],
-      "graphics": "Linux framebuffer; Xorg reported by Wii-Linux project; acceleration and Snakey driver path unverified",
-      "network": [
-        "onboard Wi-Fi (project support varies by loader/kernel)",
-        "USB networking"
-      ],
-      "desktop_goal": "Reach Linux shell first; test a minimal Xorg window manager; XFCE4 is not assumed feasible with 88 MB",
-      "status": "research-candidate",
-      "snakey_tested": false,
-      "requires_physical_hardware": true,
-      "notes": "Secondary research candidate: Wii-Linux project reports kernel, framebuffer and Xorg work. Snakey has not built, booted or tested this target."
+      "status": "source-audit-required",
+      "priority": "research-only",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "toolchain_strategy": "PowerPC 32-bit big-endian cross-toolchain",
+      "desktop_goal": "Kernel and shell feasibility first; XFCE is not assumed",
+      "notes": "Historical Wii Linux work; severe memory constraints make a conventional desktop unlikely."
     },
     {
-      "id": "nintendo-switch",
+      "id": "wii-u",
+      "name": "Nintendo Wii U",
+      "family": "linux-console",
+      "architecture": "powerpc32-big-endian",
+      "cpu": "IBM Espresso PowerPC",
+      "system_ram_mb": 2048,
+      "status": "source-audit-required",
+      "priority": "research-only",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "toolchain_strategy": "PowerPC 32-bit big-endian cross-toolchain",
+      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
+      "notes": "Independent platform port required; do not reuse Wii kernel assumptions."
+    },
+    {
+      "id": "switch",
       "name": "Nintendo Switch",
-      "family": "linux-system",
+      "family": "linux-console",
       "architecture": "aarch64",
       "cpu": "NVIDIA Tegra X1 ARM Cortex-A57/A53",
       "system_ram_mb": 4096,
-      "video_ram_mb": 0,
-      "video_ram_counts_as_system_ram": false,
-      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
-      "boot_chain": [
-        "Research only; no physical boot procedure documented"
-      ],
-      "storage": [
-        "Research required; do not assume supported media"
-      ],
-      "graphics": "Tegra display/GPU; verify console-specific display and acceleration support",
-      "network": [
-        "Research required; verify device drivers"
-      ],
-      "desktop_goal": "Linux shell and graphical session; XFCE4 plausible only after driver validation",
-      "status": "research-candidate",
-      "snakey_tested": false,
-      "requires_physical_hardware": true,
-      "notes": "Community Linux ecosystem exists for compatible configurations; Snakey has no build or hardware test. No Snakey build, boot or hardware test."
+      "status": "source-audit-required",
+      "priority": "priority-3",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "toolchain_strategy": "AArch64 cross-toolchain; SoC-specific kernel/device-tree audit",
+      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
+      "notes": "Community Linux ecosystem exists; device tree, GPU, display, input and network support must be audited."
     },
     {
-      "id": "nintendo-3ds",
-      "name": "Nintendo 3DS",
-      "family": "linux-system",
-      "architecture": "armv6k",
-      "cpu": "Dual-core ARM11 MPCore plus ARM9",
-      "system_ram_mb": 128,
-      "video_ram_mb": 6,
-      "video_ram_counts_as_system_ram": false,
-      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
-      "boot_chain": [
-        "Research only; no physical boot procedure documented"
-      ],
-      "storage": [
-        "Research required; do not assume supported media"
-      ],
-      "graphics": "3DS GPU; Linux framebuffer and driver path need project-specific verification",
-      "network": [
-        "Research required; verify device drivers"
-      ],
-      "desktop_goal": "Kernel and shell feasibility study; XFCE4 not assumed",
-      "status": "research-candidate",
-      "snakey_tested": false,
-      "requires_physical_hardware": true,
-      "notes": "Community kernel port is listed, but current maintenance, boot path and drivers need audit. No Snakey build, boot or hardware test."
-    },
-    {
-      "id": "playstation-vita",
-      "name": "PlayStation Vita",
-      "family": "linux-system",
-      "architecture": "armv7",
-      "cpu": "Quad-core ARM Cortex-A9",
-      "system_ram_mb": 480,
-      "video_ram_mb": 128,
-      "video_ram_counts_as_system_ram": false,
-      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
-      "boot_chain": [
-        "Research only; no physical boot procedure documented"
-      ],
-      "storage": [
-        "Research required; do not assume supported media"
-      ],
-      "graphics": "PowerVR SGX543MP4+; display and acceleration support require verification",
-      "network": [
-        "Research required; verify device drivers"
-      ],
-      "desktop_goal": "Kernel/userspace feasibility study; minimal graphical session first",
-      "status": "research-candidate",
-      "snakey_tested": false,
-      "requires_physical_hardware": true,
-      "notes": "Linux 6.12 upstream community port reaches a shell on Vita/PSTV with framebuffer and four Cortex-A9 cores. Snakey will first reproduce the upstream build; no Snakey hardware test."
-    },
-    {
-      "id": "original-xbox",
-      "name": "Original Xbox",
-      "family": "linux-system",
-      "architecture": "x86",
-      "cpu": "Intel Pentium III-class x86",
-      "system_ram_mb": 64,
-      "video_ram_mb": 0,
-      "video_ram_counts_as_system_ram": false,
-      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
-      "boot_chain": [
-        "Research only; no physical boot procedure documented"
-      ],
-      "storage": [
-        "Research required; do not assume supported media"
-      ],
-      "graphics": "NVIDIA NV2A; Linux graphics driver support needs verification",
-      "network": [
-        "Research required; verify device drivers"
-      ],
-      "desktop_goal": "Historical Linux port research; XFCE4 unlikely under 64 MB",
-      "status": "research-candidate",
-      "snakey_tested": false,
-      "requires_physical_hardware": true,
-      "notes": "Xbox-Linux is a historical project, not a current maintained Snakey target. No Snakey build, boot or hardware test."
-    },
-    {
-      "id": "sega-dreamcast",
-      "name": "Sega Dreamcast",
-      "family": "linux-system",
-      "architecture": "sh4",
-      "cpu": "Hitachi SH-4",
-      "system_ram_mb": 16,
-      "video_ram_mb": 8,
-      "video_ram_counts_as_system_ram": false,
-      "kernel_platform_option": "Research required; pin a maintained kernel configuration before implementation",
-      "boot_chain": [
-        "Research only; no physical boot procedure documented"
-      ],
-      "storage": [
-        "Research required; do not assume supported media"
-      ],
-      "graphics": "PowerVR2; legacy Linux display support",
-      "network": [
-        "Research required; verify device drivers"
-      ],
-      "desktop_goal": "Historical kernel research only; no XFCE4 target",
-      "status": "research-candidate",
-      "snakey_tested": false,
-      "requires_physical_hardware": true,
-      "notes": "LinuxDC is historical; 16 MB RAM makes XFCE4 impractical. No Snakey build, boot or hardware test."
-    },
-    {
-      "family": "linux-system",
-      "video_ram_mb": 0,
-      "video_ram_counts_as_system_ram": true,
-      "storage": [
-        "Research only; no Snakey storage or boot procedure established"
-      ],
-      "network": [
-        "Research only; validate drivers from source and test evidence"
-      ],
-      "status": "research-candidate",
-      "snakey_tested": false,
-      "requires_physical_hardware": true,
-      "id": "playstation-4",
-      "name": "Sony PlayStation 4",
-      "architecture": "x86_64",
-      "cpu": "AMD Jaguar 8-core APU with Radeon GCN-family GPU",
-      "system_ram_mb": 8192,
-      "kernel_platform_option": "Linux psX / PS4-specific downstream kernel; southbridge-specific configuration",
-      "boot_chain": [
-        "Research only; do not document or automate console firmware modification"
-      ],
-      "graphics": "AMD Liverpool/GCN; Linux psX reports tested graphics on one Baikal B1 PS4 Slim",
-      "desktop_goal": "Reproduce upstream kernel and userspace build; XFCE4 is an evidence-backed upstream reference on one Slim, not a Snakey result",
-      "notes": "Linux psX reports Linux 7.2.11 beta2 and XFCE/Xorg 1080p on one PS4 Slim with Baikal B1. Aeolia, Belize, Belize 2 and PS4 Pro remain unverified in that project's compatibility table. RAM is unified; actual Linux-available memory depends on hardware reservations."
-    },
-    {
-      "family": "linux-system",
-      "video_ram_mb": 0,
-      "video_ram_counts_as_system_ram": true,
-      "storage": [
-        "Research only; no Snakey storage or boot procedure established"
-      ],
-      "network": [
-        "Research only; validate drivers from source and test evidence"
-      ],
-      "status": "research-candidate",
-      "snakey_tested": false,
-      "requires_physical_hardware": true,
-      "id": "playstation-5",
-      "name": "Sony PlayStation 5",
-      "architecture": "x86_64",
-      "cpu": "AMD Zen 2 8-core APU with RDNA 2-class GPU",
-      "system_ram_mb": 16384,
-      "kernel_platform_option": "ps5-linux/ps5-linux-patches downstream kernel patches and configuration",
-      "boot_chain": [
-        "Research only; no Snakey boot path, firmware workflow or deployment automation"
-      ],
-      "graphics": "AMD RDNA 2-class GPU; upstream community patch set includes PS5-specific display/GPU support",
-      "desktop_goal": "Kernel source reproducibility and rootfs compatibility study; desktop is not a Snakey-tested result",
-      "notes": "The ps5-linux organization publishes kernel patches, image builder and releases; this is not proof of compatibility with every PS5 model or firmware. PS5 Slim and Pro support varies by upstream release. RAM is unified; available memory depends on reserved hardware regions."
+      "id": "switch-2",
+      "name": "Nintendo Switch 2",
+      "family": "linux-console",
+      "architecture": "aarch64",
+      "cpu": "NVIDIA custom ARM SoC (exact Linux enablement audit required)",
+      "system_ram_mb": 12288,
+      "status": "source-audit-required",
+      "priority": "research-only",
+      "snakey_kernel_built": false,
+      "snakey_hardware_tested": false,
+      "requires_physical_hardware_for_boot_validation": true,
+      "toolchain_strategy": "AArch64 cross-toolchain; SoC-specific kernel/device-tree audit",
+      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
+      "notes": "Research lane only. No verified Snakey upstream source, kernel build or Linux boot claim."
     }
   ]
 }
