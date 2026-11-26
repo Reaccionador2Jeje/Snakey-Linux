@@ -27,9 +27,9 @@ jobs:
     container:
       image: pspdev/pspdev:latest
     env:
-      PSPDEV: /opt/pspdev
-      PSPSDK: /opt/pspdev/psp/sdk
-      PATH: /opt/pspdev/bin:/opt/pspdev/psp/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      PSPDEV: /usr/local/pspdev
+      PSPSDK: /usr/local/pspdev/psp/sdk
+      PATH: /usr/local/pspdev/bin:/usr/local/pspdev/psp/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
       - name: Checkout Snakey
         uses: actions/checkout@v4
