@@ -21,7 +21,7 @@ A built NES image is written to `snakey-nes/build/SnakeyNES.nes`.
 
 ## NES adapter: NROM-256
 
-The NES template uses ca65 assembly and an ld65 linker configuration. It creates a standard iNES 1.0 image with mapper 0, 32 KiB PRG ROM and 8 KiB CHR ROM. The starter initializes basic CPU state and enters a stable reset loop; it is a bootable homebrew test image, not a full Snakey OS or game.
+The NES template uses ca65 assembly and an ld65 linker configuration. It creates a standard iNES 1.0 image with mapper 0, 32 KiB PRG ROM and 8 KiB CHR ROM. The starter initializes the CPU and PPU, clears the first nametable, loads a small palette and CHR glyph set, and draws a visible `SNAKEY` title. It then enters a stable loop. This is an early boot-screen demo, not a full Snakey OS or game.
 
 The build command checks that the image is exactly 40,976 bytes and validates the iNES magic and PRG/CHR bank counts. CI installs cc65, assembles the sample and performs the same checks.
 
