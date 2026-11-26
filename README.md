@@ -35,7 +35,7 @@ See [experimental SNES/GBA/DS ROM builders](docs/experimental-rom-builders.md) f
 
 ## Linux on modern consoles
 
-The Linux console program covers ten independent ports: PSP, PS Vita, PS3, PS4, PS5, Original Xbox, Wii, Wii U, Switch and Switch 2. Every port targets a Slackware-compatible base built for its own CPU architecture. The common graphical target is **Snakey Console Desktop (XFCE4)**, with a controller-first experience; PSP, Original Xbox and Wii are too constrained for XFCE4 and instead target a minimal native Snakey console interface. Vita is experimental and PS3 is conditional. No universal compatibility or Snakey hardware boot is claimed. See [the ten-console port program](docs/ten-console-port-program.md) and [the Linux hardware registry](platforms/linux-targets.json).
+The Linux console program covers ten independent ports: PSP, PS Vita, PS3, PS4, PS5, Original Xbox, Wii, Wii U, Switch and Switch 2. Each targets a Slackware-derived/compatible base built for its own CPU and ABI. **XFCE4 is the requested Snakey Console Desktop on every Linux-capable console except PSP**; PSP gets a tiny native Snakey interface because its 32 MiB/no-MMU environment cannot run a conventional XFCE4 desktop. Xbox and Wii keep XFCE4 as experimental targets subject to strict memory and driver tests. No universal compatibility or Snakey hardware boot is claimed. See [the ten-console port program](docs/ten-console-port-program.md) and [the Linux hardware registry](platforms/linux-targets.json).
 
 ## Snakey Linux Desktop
 
@@ -77,7 +77,7 @@ Requires Python 3.10 or newer.
 
 ## Development status
 
-The Linux distribution is the primary desktop product. The existing x86-64 Slackware/XFCE live profile is a generic development base, not yet a console-compatible image. All ten console lanes now declare a Slackware-compatible userspace target and the Snakey Console Desktop policy in `platforms/linux-targets.json`. XFCE4 is used where memory and drivers allow it; constrained systems get the same Snakey identity through a minimal native UI. No console image is called bootable until its kernel, rootfs, drivers and hardware evidence are separately validated. The retro SDK remains available for genuine native homebrew, but experimental flat-color ROM previews are not treated as Snakey Desktop releases.
+The Linux distribution is the primary desktop product. The existing x86-64 Slackware/XFCE live profile is a generic development base, not yet a console-compatible image. All ten console lanes declare a Slackware-derived/compatible userspace target in `platforms/linux-targets.json`. XFCE4 is the target desktop on Vita, PS3, PS4, PS5, Xbox Original, Wii, Wii U, Switch and Switch 2; Xbox and Wii are experimental due to tight memory. PSP uses a separate Slackware-style MIPSel no-MMU/uClinux adaptation and a tiny native UI, not standard XFCE4. No console image is called bootable until its kernel, rootfs, drivers and hardware evidence are separately validated. The retro SDK remains available for genuine native homebrew, but experimental flat-color ROM previews are not treated as Snakey Desktop releases.
 
 ## License
 
