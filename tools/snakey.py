@@ -127,7 +127,7 @@ MainLoop:
     jmp MainLoop
 @pageMode:
     lda $07
-    and #$01
+    and #$02
     beq @continue
     lda #$FF
     sta $04
@@ -194,7 +194,7 @@ HandleMenu:
     inc $00
 @select:
     lda $07
-    and #$02
+    and #$01
     beq @done
     lda $00
     sta $04
