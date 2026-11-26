@@ -26,6 +26,7 @@ jobs:
         run: |
           python3 tools/validate_targets.py
           python3 tools/validate_linux_targets.py
+          python3 tools/validate_ps3_profile.py
       - name: Run SDK tests
         run: |
           python3 -m unittest discover -s tests -v
