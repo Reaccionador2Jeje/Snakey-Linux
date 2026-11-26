@@ -1,0 +1,7 @@
+# Snakey Linux GTK2 theme
+gtk-color-scheme = "bg_color:#101a18\nfg_color:#e5f1e9\nbase_color:#0c1412\ntext_color:#e5f1e9\nselected_bg_color:#315a43\nselected_fg_color:#ffffff\ntooltip_bg_color:#07110f\ntooltip_fg_color:#e5f1e9"
+gtk-icon-sizes = "panel-menu=22,22:panel=24,24:gtk-menu=16,16:gtk-button=16,16"
+gtk-button-images = 0
+gtk-menu-images = 0
+gtk-toolbar-style = 0
+gtk-toolbar-icon-size = 3
