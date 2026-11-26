@@ -84,6 +84,10 @@ The SDK builds NES NROM-256 (.nes) with cc65 and Game Boy / Game Boy Color (.gb/
 Apache-2.0. See LICENSE.
 
 
+## Snakey Desktop 8 for NES
+
+The NES track is evolving into **Snakey Desktop 8**, a native 8-bit homebrew environment inspired by the Snakey Linux/XFCE desktop. The original NES cannot execute a Linux kernel or XFCE4; its edition uses a tile-based launcher and native applications instead. See [the NES Desktop 8 specification](docs/nes-desktop-8.md) for hardware limits, application scope, build steps and RetroArch test milestones.
+
 ## NES boot-screen milestone
 
 The NES NROM-256 starter now initializes the PPU, draws a `SNAKEY` title and an interactive `PLAY` / `CART` / `INFO` menu. Up/Down moves the cursor, A opens a page, and B returns. The PLAY page is not yet an application runtime, and CART status is explicitly unknown until hardware-specific support exists. Visual emulator verification remains a separate next step.
