@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""Integrity-only audit for archived PSP uClinux source bundles.
-
-Never extracts files to disk, executes archive content, or prepares a console payload.
-"""
+"""Integrity-only audit for archived PSP uClinux source bundles."""
 from __future__ import annotations
 import gzip
 import hashlib
@@ -21,11 +18,7 @@ def main() -> int:
     if source is None:
         raise SystemExit("PSP source record missing")
     directory = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("artifacts/psp-archives")
-    report = {
-        "source": source["project_url"],
-        "audit_type": "integrity-only; no extraction or execution",
-        "archives": [],
-    }
+    report = {"source": source["project_url"], "audit_type": "integrity-only; no extraction or execution", "archives": []}
     failures = []
     for item in source.get("archives", []):
         path = directory / item["id"]
@@ -36,14 +29,8 @@ def main() -> int:
         with path.open("rb") as stream:
             for chunk in iter(lambda: stream.read(1024 * 1024), b""):
                 digest.update(chunk)
-        row = {
-            "id": item["id"],
-            "filename": path.name,
-            "bytes": path.stat().st_size,
-            "sha256": digest.hexdigest(),
-            "format": item["format"],
-            "role": item["role"],
-        }
+        row = {"id": item["id"], "filename": path.name, "bytes": path.stat().st_size,
+               "sha256": digest.hexdigest(), "format": item["format"], "role": item["role"]}
         try:
             if item["format"] == "zip":
                 with zipfile.ZipFile(path) as archive:
@@ -66,10 +53,9 @@ def main() -> int:
                         unpacked_bytes += len(chunk)
                 row["decompressed_bytes"] = unpacked_bytes
                 row["decompressed_sha256"] = unpacked_hash.hexdigest()
-                row["integrity"] = "ok"
             else:
                 raise ValueError(f"unsupported format: {item['format']}")
-            row.setdefault("integrity", "ok")
+            row["integrity"] = "ok"
         except (OSError, ValueError, zipfile.BadZipFile) as exc:
             row["integrity"] = "failed"
             row["error"] = str(exc)
@@ -79,10 +65,8 @@ def main() -> int:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
-    if failures:
+    if failures or len(report["archives"]) != len(source.get("archives", [])):
         print("AUDIT FAILED: " + "; ".join(failures), file=sys.stderr)
-        return 1
-    if len(report["archives"]) != len(source.get("archives", [])):
         return 1
     print("PSP archive integrity audit: OK ({} archives; license review still required)".format(len(report["archives"])))
     return 0
