@@ -586,6 +586,7 @@ EnableScreen:
 
 ControllerMasks:
 .byte $01,$02,$04,$08,$10,$20,$40,$80
+.res 8, $00 ; second CHR bitplane (transparent)
 CursorAddress:
 .byte $88,$A8,$C8,$E8
 ConsoleCursorAddress:
@@ -621,54 +622,79 @@ FooterLabel:    .byte 19,0,13,7,5,18,0,20,19,9,4,0
 .res 16, $00
 ; S
 .byte $3C,$42,$40,$3C,$02,$42,$3C,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; N
 .byte $42,$62,$52,$4A,$46,$42,$42,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; A
 .byte $18,$24,$42,$7E,$42,$42,$42,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; K
 .byte $42,$44,$48,$70,$48,$44,$42,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; E
 .byte $7E,$40,$40,$7C,$40,$40,$7E,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; Y
 .byte $42,$42,$24,$18,$18,$18,$18,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; P
 .byte $7C,$42,$42,$7C,$40,$40,$40,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; L
 .byte $40,$40,$40,$40,$40,$40,$7E,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; C
 .byte $3C,$42,$40,$40,$40,$42,$3C,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; R
 .byte $7C,$42,$42,$7C,$48,$44,$42,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; T
 .byte $7E,$18,$18,$18,$18,$18,$18,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; I
 .byte $7E,$18,$18,$18,$18,$18,$7E,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; O
 .byte $3C,$42,$42,$42,$42,$42,$3C,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; F
 .byte $7E,$40,$40,$7C,$40,$40,$40,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; > cursor
 .byte $40,$20,$10,$08,$10,$20,$40,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; ? fallback
 .byte $3C,$42,$02,$0C,$10,$00,$10,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; E (17)
 .byte $7E,$40,$40,$7C,$40,$40,$7E,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; N (18)
 .byte $42,$62,$52,$4A,$46,$42,$42,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; A (19)
 .byte $18,$24,$42,$7E,$42,$42,$42,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; B (20)
 .byte $7C,$42,$42,$7C,$42,$42,$7C,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; U (21)
 .byte $42,$42,$42,$42,$42,$42,$3C,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; G (22)
 .byte $3C,$42,$40,$4E,$42,$42,$3C,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; H (23)
 .byte $42,$42,$42,$7E,$42,$42,$42,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; D (24)
 .byte $78,$44,$42,$42,$42,$44,$78,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; M (25)
 .byte $42,$66,$5A,$5A,$42,$42,$42,$00
+.res 8, $00 ; second CHR bitplane (transparent)
 ; 16x16 Snakey emblem tiles. Plane 0 carries cyan/white detail;
 ; plane 1 adds orange highlights using the NES four-colour background palette.
 ; Tile 26: upper-left
