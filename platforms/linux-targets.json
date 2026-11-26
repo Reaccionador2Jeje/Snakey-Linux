@@ -15,8 +15,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "MIPS little-endian cross-toolchain; ABI and kernel config audit",
-      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "First-wave legacy target. Historical uClinux-on-PSP 0.22 artifacts are documented; source archive, toolchain, kernel patch and licensing must be audited before any build. No current Snakey kernel or hardware boot is claimed."
+      "desktop_goal": "Slackware-compatible minimal userspace with Snakey native console UI; XFCE4 is not viable on this hardware class",
+      "notes": "First-wave legacy target. Historical uClinux-on-PSP 0.22 artifacts are documented; source archive, toolchain, kernel patch and licensing must be audited before any build. No current Snakey kernel or hardware boot is claimed.",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "not-feasible",
+      "xfce4_notes": "32 MiB class and historical no-MMU uClinux lineage; use a tiny native console UI, not XFCE4"
     },
     {
       "id": "ps-vita",
@@ -31,8 +36,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "ARM hard-float cross-toolchain; pinned upstream Vita build adapter",
-      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "First-wave ARM target. Vita Linux Next is pinned for upstream reproduction in CI; this is not a Snakey kernel or a hardware boot."
+      "desktop_goal": "Slackware-compatible userspace; XFCE4 experimental stretch target after kernel, memory and graphics/input validation",
+      "notes": "First-wave ARM target. Vita Linux Next is pinned for upstream reproduction in CI; this is not a Snakey kernel or a hardware boot.",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "experimental",
+      "xfce4_notes": "XFCE4 is a stretch target; first prove stable Slackware-compatible ARMv7 userspace, input/display and memory headroom"
     },
     {
       "id": "ps3",
@@ -46,9 +56,14 @@
       "snakey_kernel_built": false,
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
-      "desktop_goal": "Kernel and shell feasibility first; XFCE is not assumed",
+      "desktop_goal": "Slackware-compatible userspace; XFCE4 conditional on usable memory and graphics/input support",
       "notes": "PS3-specific Linux support exists in upstream kernel history; OtherOS availability and usable memory are model/configuration dependent.",
-      "toolchain_strategy": "PowerPC64 big-endian cross-toolchain; PS3-specific kernel configuration and boot-path audit"
+      "toolchain_strategy": "PowerPC64 big-endian cross-toolchain; PS3-specific kernel configuration and boot-path audit",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "conditional",
+      "xfce4_notes": "XFCE4 only if usable RAM, OtherOS/boot path and graphics drivers leave sufficient resources"
     },
     {
       "id": "ps4",
@@ -63,8 +78,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "Native x86-64 Linux toolchain",
-      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "Deferred while PSP and Vita are the active first-wave targets. Linux psX source audit remains future work; no Snakey kernel build or console boot is claimed."
+      "desktop_goal": "Slackware-compatible userspace with Snakey Console Desktop (XFCE4) as the standard graphical target, gated by kernel and driver support",
+      "notes": "Deferred while PSP and Vita are the active first-wave targets. Linux psX source audit remains future work; no Snakey kernel build or console boot is claimed.",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "planned",
+      "xfce4_notes": "target XFCE4 as the standard Snakey Console Desktop after kernel, GPU, display and controller support"
     },
     {
       "id": "ps5",
@@ -79,8 +99,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "Native x86-64 Linux toolchain",
-      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "Separate PS5 patch ecosystem; exact kernel base, model and firmware compatibility require source audit."
+      "desktop_goal": "Slackware-compatible userspace with Snakey Console Desktop (XFCE4) as the standard graphical target, gated by kernel and driver support",
+      "notes": "Separate PS5 patch ecosystem; exact kernel base, model and firmware compatibility require source audit.",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "planned",
+      "xfce4_notes": "target XFCE4 after independent kernel, GPU, display and controller support is proven"
     },
     {
       "id": "xbox-original",
@@ -95,8 +120,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "i686 cross-toolchain; 32-bit kernel/userspace audit",
-      "desktop_goal": "Kernel and shell feasibility first; XFCE is not assumed",
-      "notes": "Historical Xbox Linux projects exist; legacy boot and graphics support require independent audit."
+      "desktop_goal": "Slackware-compatible minimal userspace with Snakey native console UI; XFCE4 is not viable on this hardware class",
+      "notes": "Historical Xbox Linux projects exist; legacy boot and graphics support require independent audit.",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "not-feasible",
+      "xfce4_notes": "64 MiB class; use a minimal native console UI or shell, not XFCE4"
     },
     {
       "id": "wii",
@@ -111,8 +141,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "PowerPC 32-bit big-endian cross-toolchain",
-      "desktop_goal": "Kernel and shell feasibility first; XFCE is not assumed",
-      "notes": "Historical Wii Linux work; severe memory constraints make a conventional desktop unlikely."
+      "desktop_goal": "Slackware-compatible minimal userspace with Snakey native console UI; XFCE4 is not viable on this hardware class",
+      "notes": "Historical Wii Linux work; severe memory constraints make a conventional desktop unlikely.",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "not-feasible",
+      "xfce4_notes": "88 MiB class; use a minimal native console UI or shell, not XFCE4"
     },
     {
       "id": "wii-u",
@@ -127,8 +162,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "PowerPC 32-bit big-endian cross-toolchain",
-      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "Independent platform port required; do not reuse Wii kernel assumptions."
+      "desktop_goal": "Slackware-compatible userspace with Snakey Console Desktop (XFCE4) as the standard graphical target, gated by kernel and driver support",
+      "notes": "Independent platform port required; do not reuse Wii kernel assumptions.",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "planned",
+      "xfce4_notes": "target XFCE4 after an independent PowerPC32 kernel, graphics and input port"
     },
     {
       "id": "switch",
@@ -143,8 +183,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "AArch64 cross-toolchain; SoC-specific kernel/device-tree audit",
-      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "Community Linux ecosystem exists; device tree, GPU, display, input and network support must be audited."
+      "desktop_goal": "Slackware-compatible userspace with Snakey Console Desktop (XFCE4) as the standard graphical target, gated by kernel and driver support",
+      "notes": "Community Linux ecosystem exists; device tree, GPU, display, input and network support must be audited.",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "planned",
+      "xfce4_notes": "target XFCE4 after Tegra kernel, GPU, display and controller support"
     },
     {
       "id": "switch-2",
@@ -159,8 +204,14 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "AArch64 cross-toolchain; SoC-specific kernel/device-tree audit",
-      "desktop_goal": "Kernel and minimal userspace first; graphical session only after display/input/GPU driver validation",
-      "notes": "Research lane only. No verified Snakey upstream source, kernel build or Linux boot claim."
+      "desktop_goal": "Slackware-compatible port research first; XFCE4 remains a future target",
+      "notes": "Research lane only. No verified Snakey upstream source, kernel build or Linux boot claim.",
+      "distribution_base": "Slackware",
+      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "research-only",
+      "xfce4_notes": "XFCE4 is a future target; first establish public kernel, boot and driver enablement"
     }
-  ]
+  ],
+  "desktop_policy": "One Snakey Console Desktop identity across the Linux console family. XFCE4 is the standard desktop target on capable consoles, not a promise that every console can run it: severe RAM/MMU/driver limits require a minimal native console UI on PSP, Original Xbox and Wii. Every Linux port targets a Slackware-compatible base, but architectures without maintained official Slackware support need a separately maintained port/adaptation."
 }
