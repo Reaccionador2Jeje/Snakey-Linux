@@ -35,7 +35,7 @@ See [experimental SNES/GBA/DS ROM builders](docs/experimental-rom-builders.md) f
 
 ## Linux on retro hardware
 
-The first active Linux-on-console research target is the **Nintendo Wii**. A maintained Wii-Linux project reports modern kernel work and framebuffer/Xorg support, but Snakey has not built or booted it. See [the Wii research plan](linux/targets/wii/README.md) and [Linux hardware registry](platforms/linux-targets.json). The PlayStation 3 remains documented as a deferred research target; it will not be powered, opened, modified or used for testing unless the owner later chooses to do so.
+Snakey is researching **Nintendo Switch, PlayStation Vita, Nintendo 3DS, Wii, original Xbox and Dreamcast**. These are research candidates with different levels of community support; none is a Snakey-tested Linux port. See the [console Linux candidate matrix](docs/console-linux-candidates.md), [Wii research plan](linux/targets/wii/README.md) and [Linux hardware registry](platforms/linux-targets.json). The PlayStation 3 remains documented as a deferred research target; it will not be powered, opened, modified or used for testing unless the owner later chooses to do so.
 
 ## Snakey Linux Desktop
 
