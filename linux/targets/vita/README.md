@@ -40,7 +40,7 @@ and is not required for the CI build.
 
 1. Reproduce the pinned upstream kernel build in GitHub Actions.
 2. Record artifact SHA-256 and source/submodule provenance.
-3. Design a Snakey-specific Buildroot rootfs only after kernel output is stable.
+3. Assemble a minimal Slackware ARM 15.0 rootfs from verified ARMv7 hard-float packages using `linux/rootfs/build-slackware-rootfs.sh` after the kernel output is stable.
 4. Keep GPU/SGX acceleration separate from framebuffer support.
 5. Evaluate XFCE4 only after a measured memory/display session; a working shell
    does not imply a complete desktop.
