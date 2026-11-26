@@ -10,7 +10,7 @@ The initial profile is defined in [profile.json](profile.json):
 
 - **Slackware 15.0 stable** (`slackware64-15.0`), x86_64
 - Native Slackware package management (`pkgtools`) and SysVinit
-- XFCE desktop using liveslak's stripped/basic XFCE variant
+- Snakey custom liveslak variant (`LIVEDE=SNAKEY`) using the lean XFCE package sequence
 - Graphical runlevel 4
 - XZ-compressed SquashFS modules
 - liveslak's `bloat` trimming option
@@ -24,11 +24,9 @@ See [Gamepad UI documentation](gamepad/README.md) for controls and dependencies,
 
 ## Build
 
-The base is pinned to **Slackware 15.0 stable**, not the moving `current` branch. The committed `make_slackware_live.conf` sets `SL_VERSION=15.0`, `SL_ARCH=x86_64`, and the Slackware rsync mirror. This keeps package selection reproducible at the release-branch level; package updates within 15.0 can still change over time.
+The base is pinned to **Slackware 15.0 stable**, not the moving `current` branch. The committed `make_slackware_live.conf` defines a custom liveslak variant named `SNAKEY` and a package sequence based on `min`, `xbase`, `xapbase`, and `xfcebase`. It also adds Snakey's own `snakey-base` package from liveslak's `local64` package mechanism. Package updates within Slackware 15.0 can still change over time.
 
-The image builder must run as root on a supported Slackware build host with
-the prerequisites documented by liveslak and access to a complete Slackware
-package repository. The build script fetches liveslak on first run.
+The image builder must run as root on a supported Slackware 15.0 x86_64 build host with the prerequisites documented by liveslak. It also needs a local mirror root containing `slackware64-15.0/`; by default this is `/var/cache/snakey/slackware/slackware64-15.0`. Set `SNAKEY_SLACKWARE_REPO` to use another mirror root. The build script fetches liveslak on first run and builds the native `snakey-base` `.txz` package with Slackware `makepkg`.
 
 ```bash
 sudo linux/build-live.sh
@@ -39,6 +37,10 @@ The output is:
 - `dist/Snakey-Linux-XFCE-x86_64.iso`
 - `dist/Snakey-Linux-XFCE-x86_64.iso.sha256`
 
+### Native package
+
+The first Snakey-owned Slackware package is `snakey-base`. It installs `/etc/snakey-release` and `/usr/bin/snakey-info`. Package sources and the `makepkg` builder are in [packages/](packages/README.md). This package is added to liveslak's custom sequence as `local:snakey-base`.
+
 Optional environment variables:
 
 | Variable | Default |
@@ -47,6 +49,7 @@ Optional environment variables:
 | `SNAKEY_OUTPUT_DIR` | `./dist` |
 | `SNAKEY_LIVESLAK_DIR` | `./.build/liveslak` |
 | `SNAKEY_LIVESLAK_REPO` | `https://git.slackware.nl/liveslak` |
+| `SNAKEY_SLACKWARE_REPO` | `/var/cache/snakey/slackware` |
 
 ## Limbo test target
 
@@ -77,6 +80,6 @@ must be recorded separately from build results.
 
 ## Current status
 
-The Slackware 15.0 profile, liveslak configuration and build entrypoint are now in the repository. The ISO has not
+The Slackware 15.0 profile, custom liveslak variant, native `snakey-base` package source and build entrypoint are now in the repository. The ISO has not
 yet been generated or boot-tested. The builder expects a Slackware build host;
 the Debian/Ubuntu GitHub runner is not treated as a valid liveslak build host.
