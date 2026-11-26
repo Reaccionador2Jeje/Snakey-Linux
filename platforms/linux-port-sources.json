@@ -42,13 +42,13 @@
       "id": "wii-linux",
       "name": "Wii-Linux",
       "project_url": "https://wii-linux.org/",
-      "source_repository": "https://github.com/Techflash/wii-linux",
+      "source_repository": "https://wii-linux.org/",
       "revision": null,
       "architecture": "powerpc",
       "build_status": "source-audit-required",
       "license": "Per upstream components; audit required",
       "build_workflow": null,
-      "notes": "Keep as secondary research lane until a maintained source repository and reproducible toolchain are verified."
+      "notes": "Keep as secondary research lane until the project's current source repository, revision and reproducible toolchain are verified."
     }
   ]
 }

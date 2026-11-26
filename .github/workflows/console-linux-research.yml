@@ -89,32 +89,29 @@ jobs:
 
       - name: Run upstream build contract
         working-directory: upstream-vita
-        env:
-          PATH: ${{ github.workspace }}/.toolchains/${{ env.BOOTLIN_DIR }}/bin:${{ env.PATH }}
-        run: make test CART_CROSS_CC=arm-linux-gcc
+        run: |
+          export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
+          make test CART_CROSS_CC=arm-linux-gcc
 
       - name: Configure Vita kernel
         working-directory: upstream-vita/linux_vita
-        env:
-          PATH: ${{ github.workspace }}/.toolchains/${{ env.BOOTLIN_DIR }}/bin:${{ env.PATH }}
         run: |
+          export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
           make ARCH=arm CROSS_COMPILE=arm-linux- vita_defconfig
           sed -i 's|^CONFIG_INITRAMFS_SOURCE=.*|CONFIG_INITRAMFS_SOURCE=""|' .config
           make ARCH=arm CROSS_COMPILE=arm-linux- olddefconfig
 
       - name: Build and verify device trees
         working-directory: upstream-vita
-        env:
-          PATH: ${{ github.workspace }}/.toolchains/${{ env.BOOTLIN_DIR }}/bin:${{ env.PATH }}
         run: |
+          export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
           make dtb CROSS_COMPILE=arm-linux-
           make verify-dtb
 
       - name: Build kernel and stage artifacts
         working-directory: upstream-vita
-        env:
-          PATH: ${{ github.workspace }}/.toolchains/${{ env.BOOTLIN_DIR }}/bin:${{ env.PATH }}
         run: |
+          export PATH="${GITHUB_WORKSPACE}/.toolchains/${BOOTLIN_DIR}/bin:$PATH"
           make build CROSS_COMPILE=arm-linux-
           make stage CROSS_COMPILE=arm-linux-
           cp ../vita-build-provenance.txt dist/ci/
