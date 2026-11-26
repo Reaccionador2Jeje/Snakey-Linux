@@ -97,6 +97,9 @@ echo
 echo "NOTE: run this on a supported Slackware build host with liveslak prerequisites"
 echo "and access to a complete Slackware package repository."
 
+mkdir -p "$LIVESLAK_DIR/rootcopy"
+cp -a "$ROOT_DIR/linux/rootcopy/." "$LIVESLAK_DIR/rootcopy/"
+
 cd "$LIVESLAK_DIR"
 ./make_slackware_live.sh \
   -a "$ARCH" \
