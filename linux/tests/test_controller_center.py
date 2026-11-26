@@ -1,11 +1,13 @@
 import importlib.util
 import pathlib
 import unittest
+from importlib.machinery import SourceFileLoader
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 LINUX = ROOT / "linux"
 SCRIPT = LINUX / "rootcopy/usr/bin/snakey-controller-center"
-SPEC = importlib.util.spec_from_file_location("snakey_controller_center", SCRIPT)
+LOADER = SourceFileLoader("snakey_controller_center", str(SCRIPT))
+SPEC = importlib.util.spec_from_loader("snakey_controller_center", LOADER)
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
@@ -21,7 +23,12 @@ class ControllerCenterTests(unittest.TestCase):
         self.assertTrue(launcher.is_file())
         self.assertIn("snakey-controller-center", launcher.read_text())
 
-    def test_desktop_shortcut_exists(self):\n        shortcut = LINUX / "rootcopy/etc/skel/Desktop/Snakey-Controller-Center.desktop"\n        self.assertTrue(shortcut.is_file())\n        self.assertIn("snakey-controller-center", shortcut.read_text())\n\n    def test_gamepad_reads_saved_profile(self):
+    def test_desktop_shortcut_exists(self):
+        shortcut = LINUX / "rootcopy/etc/skel/Desktop/Snakey-Controller-Center.desktop"
+        self.assertTrue(shortcut.is_file())
+        self.assertIn("snakey-controller-center", shortcut.read_text())
+
+    def test_gamepad_reads_saved_profile(self):
         gamepad = (LINUX / "rootcopy/usr/bin/snakey-gamepad").read_text()
         self.assertIn("load_profile()", gamepad)
         self.assertIn("gamepad.json", gamepad)
