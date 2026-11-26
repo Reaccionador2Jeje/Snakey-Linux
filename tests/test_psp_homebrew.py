@@ -23,6 +23,11 @@ def main() -> None:
     assert "sceCtrlReadBufferPositive" in source
     assert "PSP_CTRL_CROSS" in source
     assert "PSP_CTRL_CIRCLE" in source
+    assert "VIEW_DESKTOP" in source
+    assert "VIEW_TERMINAL" in source
+    assert "execute_command" in source
+    for command in ("help", "clear", "uname", "version", "mem", "pwd", "ls", "echo ", "exit"):
+        assert command in source, f"missing built-in command: {command}"
     assert "pspdev/pspdev" in workflow
     assert "EBOOT.PBP" in workflow
     print("Snakey PSP homebrew contract: OK")
