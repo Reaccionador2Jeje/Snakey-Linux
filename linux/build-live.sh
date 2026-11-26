@@ -103,6 +103,7 @@ chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-gamepad"
 chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-virtual-keyboard"
 chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-console-mode"
 chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-open-keyboard"
+chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-controller-center"
 
 cd "$LIVESLAK_DIR"
 ./make_slackware_live.sh \
