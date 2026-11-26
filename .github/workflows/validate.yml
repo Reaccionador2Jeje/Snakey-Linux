@@ -25,13 +25,15 @@ jobs:
       - name: Validate target registry
         run: python3 tools/validate_targets.py
       - name: Run SDK tests
-        run: python3 -m unittest discover -s tests -v\n          python3 -m py_compile tools/native_roms.py tools/snakey.py
+        run: python3 -m unittest discover -s tests -v
+          python3 -m py_compile tools/native_roms.py tools/snakey.py
       - name: Validate Snakey Linux desktop profile
         run: |
           bash -n linux/build-live.sh
           bash -n linux/rootcopy/usr/bin/snakey-console-mode
           bash -n linux/rootcopy/usr/bin/snakey-open-keyboard
-          python3 -m unittest discover -s linux/tests -v\n          python3 -m py_compile linux/rootcopy/usr/bin/snakey-big-picture
+          python3 -m unittest discover -s linux/tests -v
+          python3 -m py_compile linux/rootcopy/usr/bin/snakey-big-picture
           python3 -m py_compile linux/rootcopy/usr/bin/snakey-gamepad linux/rootcopy/usr/bin/snakey-controller-center
           python3 -m json.tool linux/profile.json >/dev/null
           python3 - <<'PY'
@@ -55,7 +57,9 @@ jobs:
               "linux/rootcopy/usr/bin/snakey-controller-center",
               "linux/rootcopy/etc/xdg/autostart/snakey-console-mode.desktop",
               "linux/rootcopy/usr/bin/snakey-console-mode",
-              "linux/rootcopy/usr/bin/snakey-open-keyboard",\n              "linux/rootcopy/usr/bin/snakey-big-picture",\n              "linux/rootcopy/usr/share/applications/snakey-big-picture.desktop",
+              "linux/rootcopy/usr/bin/snakey-open-keyboard",
+              "linux/rootcopy/usr/bin/snakey-big-picture",
+              "linux/rootcopy/usr/share/applications/snakey-big-picture.desktop",
           ):
               assert Path(path).is_file(), path
           print("Snakey Linux profile and identity assets: OK")
