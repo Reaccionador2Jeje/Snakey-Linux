@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "family": "Snakey Desktop",
+  "description": "Shared UX contract with native platform-specific homebrew implementations; not Linux/XFCE4.",
+  "shared_features": [
+    "launcher",
+    "single-active-app-navigation",
+    "read-only-bundled-files-catalog",
+    "built-in-command-console",
+    "settings",
+    "about",
+    "controller-help"
+  ],
+  "editions": [
+    {
+      "id": "snakey-desktop-nes",
+      "target": "nes",
+      "name": "Snakey Desktop 8 NES",
+      "output": ".nes",
+      "renderer": "nes-ppu-tiles",
+      "input": "nes-controller",
+      "profile": "nrom-256",
+      "status": "design"
+    },
+    {
+      "id": "snakey-desktop-snes",
+      "target": "snes",
+      "name": "Snakey Desktop 8 SNES",
+      "output": ".sfc",
+      "renderer": "snes-ppu",
+      "input": "snes-controller",
+      "profile": "lorom",
+      "status": "planned"
+    },
+    {
+      "id": "snakey-desktop-gb",
+      "target": "game-boy",
+      "name": "Snakey Desktop Pocket",
+      "output": ".gb",
+      "renderer": "dmg-tilemap",
+      "input": "game-boy-buttons",
+      "profile": "dmg",
+      "status": "planned"
+    },
+    {
+      "id": "snakey-desktop-gbc",
+      "target": "game-boy-color",
+      "name": "Snakey Desktop Color",
+      "output": ".gbc",
+      "renderer": "cgb-tilemap",
+      "input": "game-boy-buttons",
+      "profile": "cgb",
+      "status": "planned"
+    },
+    {
+      "id": "snakey-desktop-gba",
+      "target": "game-boy-advance",
+      "name": "Snakey Desktop Advance",
+      "output": ".gba",
+      "renderer": "gba-video",
+      "input": "gba-buttons",
+      "profile": "arm7tdmi",
+      "status": "planned"
+    },
+    {
+      "id": "snakey-desktop-nds",
+      "target": "nintendo-ds",
+      "name": "Snakey Desktop Dual",
+      "output": ".nds",
+      "renderer": "nds-dual-screen",
+      "input": "nds-buttons-touch",
+      "profile": "arm9-arm7",
+      "status": "planned"
+    }
+  ]
+}
