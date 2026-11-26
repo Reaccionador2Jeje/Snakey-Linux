@@ -61,6 +61,8 @@ required = {
     "base": "Slackware",
     "live_variant": "SNAKEY",
     "custom_package": "snakey-base",
+    "custom_package_sequence": "min,xbase,xapbase,xfcebase local:snakey-base",
+    "live_user": "snakey",
     "base_release": "15.0",
     "base_channel": "stable",
     "package_manager": "pkgtools",
