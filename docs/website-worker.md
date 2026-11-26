@@ -33,7 +33,7 @@ The Worker name is `snakey-linux`; the default workers.dev subdomain is enabled.
 
 ## NES preview releases
 
-Pushing a tag matching `nes-v*` starts the dedicated NES release workflow. It installs cc65, generates a fresh NROM-256 ROM from the tagged source, validates the project, checks the 40,976-byte image, calculates SHA-256, and publishes a **GitHub prerelease** containing `SnakeyNES.nes` and `SHA256SUMS.txt`.
+Pushing a tag matching `nes-v*` or manually running **Publish Snakey NES preview** from the Actions tab starts the dedicated NES release workflow. For a manual run, leave the tag input blank to create a unique `nes-preview-<run number>` tag, or supply a tag such as `nes-v0.1.0`. It installs cc65, generates a fresh NROM-256 ROM from the tagged source, validates the project, checks the 40,976-byte image, calculates SHA-256, and publishes a **GitHub prerelease** containing `SnakeyNES.nes` and `SHA256SUMS.txt`.
 
 Example (after reviewing the commit you want to publish):
 
