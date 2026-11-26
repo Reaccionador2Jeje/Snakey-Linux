@@ -126,6 +126,7 @@ MainLoop:
 @noCursor:
     jmp MainLoop
 @pageMode:
+    ; B returns from a page to the main menu.
     lda $07
     and #$02
     beq @continue
@@ -193,6 +194,7 @@ HandleMenu:
     bcs @select
     inc $00
 @select:
+    ; A opens the selected page.
     lda $07
     and #$01
     beq @done
