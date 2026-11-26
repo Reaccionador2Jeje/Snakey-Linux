@@ -1,0 +1,36 @@
+name: Snakey web and Worker CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "worker/**"
+      - "tests/worker.test.js"
+      - "wrangler.toml"
+      - "package.json"
+      - ".github/workflows/web-worker.yml"
+  pull_request:
+    paths:
+      - "site/**"
+      - "worker/**"
+      - "tests/worker.test.js"
+      - "wrangler.toml"
+      - "package.json"
+      - ".github/workflows/web-worker.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install --ignore-scripts
+      - run: npm test
+      - run: npx wrangler deploy --dry-run
