@@ -19,14 +19,14 @@ The initial profile is defined in [profile.json](profile.json):
 This is deliberately a real XFCE desktop, not a mockup or a ROM menu.
 Applications and services will be trimmed further only after boot testing.
 The rootcopy also installs Snakey's release identity, login banner, SVG wallpaper,
-default XFCE wallpaper/GTK settings, and the Snakey Gamepad UI autostart/launcher.
+default XFCE wallpaper/GTK settings, the packaged Snakey Dark theme, and the Snakey Gamepad UI autostart/launcher.
 See [Gamepad UI documentation](gamepad/README.md) for controls and dependencies, [Console Mode documentation](console/README.md) for the TV-friendly desktop, and [Big Picture documentation](big-picture/README.md) for the fullscreen controller-first launcher. The [Controller Center](gamepad/README.md#controller-center) configures and tests controller profiles.
 
 ## Build
 
-The base is pinned to **Slackware 15.0 stable**, not the moving `current` branch. The committed `make_slackware_live.conf` defines a custom liveslak variant named `SNAKEY` and a package sequence based on `min`, `xbase`, `xapbase`, and `xfcebase`. It also adds Snakey's own `snakey-base` package from liveslak's `local64` package mechanism. Package updates within Slackware 15.0 can still change over time.
+The base is pinned to **Slackware 15.0 stable**, not the moving `current` branch. The committed `make_slackware_live.conf` defines a custom liveslak variant named `SNAKEY` and a package sequence based on `min`, `xbase`, `xapbase`, and `xfcebase`. Snakey adds two native packages through liveslak's `local64` mechanism: `snakey-base` (release identity and system information) and `snakey-theme` (GTK2/GTK3 Snakey Dark theme). Package updates within Slackware 15.0 can still change over time.
 
-The image builder must run as root on a supported Slackware 15.0 x86_64 build host with the prerequisites documented by liveslak. It also needs a local mirror root containing `slackware64-15.0/`; by default this is `/var/cache/snakey/slackware/slackware64-15.0`. Set `SNAKEY_SLACKWARE_REPO` to use another mirror root. The build script fetches liveslak on first run and builds the native `snakey-base` `.txz` package with Slackware `makepkg`.
+The image builder must run as root on a supported Slackware 15.0 x86_64 build host with the prerequisites documented by liveslak. It also needs a local mirror root containing `slackware64-15.0/`; by default this is `/var/cache/snakey/slackware/slackware64-15.0`. Set `SNAKEY_SLACKWARE_REPO` to use another mirror root. The build script fetches liveslak on first run and builds both native `.txz` packages with Slackware `makepkg`.
 
 ```bash
 sudo linux/build-live.sh
@@ -39,7 +39,7 @@ The output is:
 
 ### Native package
 
-The first Snakey-owned Slackware package is `snakey-base`. It installs `/etc/snakey-release` and `/usr/bin/snakey-info`. Package sources and the `makepkg` builder are in [packages/](packages/README.md). This package is added to liveslak's custom sequence as `local:snakey-base`.
+Snakey ships two native packages: `snakey-base` installs `/etc/snakey-release` and `/usr/bin/snakey-info`; `snakey-theme` installs the GTK2/GTK3 theme under `/usr/share/themes/Snakey-Dark`. XFCE's default settings select Snakey Dark, while the window manager and icon theme use Slackware's installed Adwaita assets. Package sources and `makepkg` builders are in [packages/](packages/README.md).
 
 Optional environment variables:
 
@@ -80,6 +80,6 @@ must be recorded separately from build results.
 
 ## Current status
 
-The Slackware 15.0 profile, custom liveslak variant, native `snakey-base` package source and build entrypoint are now in the repository. The ISO has not
+The Slackware 15.0 profile, custom liveslak variant, native `snakey-base` and `snakey-theme` package sources, and build entrypoint are now in the repository. The ISO has not
 yet been generated or boot-tested. The builder expects a Slackware build host;
 the Debian/Ubuntu GitHub runner is not treated as a valid liveslak build host.
