@@ -34,7 +34,8 @@ def build_snes(path: Path, name: str) -> None:
         0xA9, 0x0F,
         0x8D, 0x00, 0x21, # INIDISP: enable display, full brightness
         0x80, 0xFE        # BRA forever
-    ])    rom[:len(code)] = code
+    ])
+    rom[:len(code)] = code
     header = bytearray(0x40)
     title = (name.upper().encode("ascii", "ignore")[:21]).ljust(21, b" ")
     header[0:21] = title
