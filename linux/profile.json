@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "distribution": "Snakey Linux",
+  "base": "Slackware",
+  "builder": "liveslak",
+  "architecture": "x86_64",
+  "desktop": "XFCE",
+  "runlevel": 4,
+  "compression": "xz",
+  "trim": "bloat",
+  "hostname": "snakey",
+  "image": "Snakey-Linux-XFCE-x86_64.iso",
+  "purpose": "Ultra-light graphical live system for Limbo/QEMU testing",
+  "status": "build-profile"
+}
