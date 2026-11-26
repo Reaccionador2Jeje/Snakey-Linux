@@ -6,6 +6,10 @@ import pathlib
 import struct
 import tempfile
 import unittest
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
 
 from audit_ps3_rootfs import audit, inspect_header
 
