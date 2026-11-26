@@ -29,7 +29,7 @@ Open the local URL printed by Wrangler.
        npm run check
        npm run deploy
 
-The Worker name is `snakey-linux`; the default workers.dev subdomain is enabled. Connect a custom domain in Cloudflare after the first deployment.
+The Worker name is `snakey-linux`; the default workers.dev subdomain is enabled. The GitHub Actions workflow also deploys automatically on pushes to `main` once both repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are configured. Without those secrets, CI still runs the tests and Wrangler dry-run, and skips deployment. Connect a custom domain in Cloudflare after the first deployment.
 
 ## ROM testing
 
