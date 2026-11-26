@@ -1,22 +1,29 @@
 # Snakey Desktop 8 — NES adapter
 
-This is the first native console implementation of the shared Snakey Desktop
-application model. It is a real 6502 program: the ROM polls the NES controller,
-updates application state, writes tile IDs to the PPU nametable, and changes
-the PPU palette in Settings.
+This is a native 6502 application for the NES PPU and controller. It is not
+Linux, XFCE, a browser engine, or a host-side simulation.
 
 ## Applications
 
-- **Files**: navigable ROM-bundled catalog entries (README, configuration,
-  license). Cartridge filesystem access is not claimed.
-- **Console**: built-in fixed command selector (HELP, ABOUT, CLEAR). It is not
-  a Unix shell and does not execute arbitrary code.
-- **Settings**: changes the actual PPU background palette.
-- **About**: identifies the native NES edition and hardware target.
+- **Files**: ROM-bundled read-only catalog (README, configuration, license).
+- **Console**: fixed HELP, ABOUT and CLEAR actions; no arbitrary shell.
+- **Settings**: changes the real PPU background palette.
+- **About**: identifies the NES homebrew edition and target.
 
-A opens the selected item/action. B returns to the launcher. Up/Down changes
-the selection. Controller input is edge-triggered to avoid repeating actions
-while a button remains held.
+Up/Down changes selection, A confirms, and B returns to the launcher.
+
+## Graphics
+
+The renderer uses native 8x8 CHR tiles, nametable drawing and a four-colour
+background palette. The launcher includes a 16x16 multi-colour Snakey emblem;
+its tile pixels use both NES bitplanes and the palette includes cyan, orange
+and white accents over a dark background. The palette toggle changes those
+colours rather than switching to a monochrome-only text display.
+
+If RetroArch still shows grayscale, check that the selected NES core has not
+enabled its grayscale/monochrome video option and that the ROM is loaded with
+its iNES header intact. This code change still requires interactive testing
+in RetroArch; a successful build alone does not prove the displayed result.
 
 ## Build
 
@@ -26,5 +33,4 @@ ld65 -C desktop/nes/nes.cfg -o /tmp/snakey-desktop.nes /tmp/snakey-nes.o
 ```
 
 Expected output: 40,976-byte iNES NROM-256 image (16-byte header, 32 KiB PRG,
-8 KiB CHR). Successful assembly is not equivalent to emulator verification;
-interactive testing remains required.
+8 KiB CHR).
