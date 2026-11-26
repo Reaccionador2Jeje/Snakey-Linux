@@ -32,7 +32,7 @@ ITEMS = (
     ("Terminal", ("xfce4-terminal",), "Open a terminal"),
     ("Controller Center", ("snakey-controller-center",), "Configure your gamepad"),
     ("Settings", ("xfce4-settings-manager",), "Configure Snakey Linux"),
-    ("XFCE Desktop", ("snakey-console-mode", "desktop"), "Return to the XFCE4 desktop"),
+    ("Desktop Mode", ("snakey-console-mode", "off"), "Restore standard XFCE4 panel sizing"),
     ("Power", ("xfce4-session-logout",), "Log out or shut down"),
 )
 
