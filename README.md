@@ -83,3 +83,6 @@ Apache-2.0. See LICENSE.
 ## NES boot-screen milestone
 
 The NES NROM-256 starter now initializes the PPU, draws a `SNAKEY` title and an interactive `PLAY` / `CART` / `INFO` menu. Up/Down moves the cursor, A opens a page, and B returns. The PLAY page is not yet an application runtime, and CART status is explicitly unknown until hardware-specific support exists. Visual emulator verification remains a separate next step.
+
+
+See [the Linux-on-retro-hardware roadmap](docs/linux-on-retro-hardware.md) for the long-term goal of booting a real Linux kernel and, where hardware permits, XFCE4 on retro consoles. ROM homebrew and native Linux targets are deliberately kept separate.
