@@ -61,4 +61,4 @@ Apache-2.0. See LICENSE.
 
 ## NES boot-screen milestone
 
-The NES NROM-256 starter now initializes the PPU and draws a visible `SNAKEY` title screen using built-in CHR tiles. CI assembles and validates the ROM; visual emulator verification remains a separate next step.
+The NES NROM-256 starter now initializes the PPU, draws a `SNAKEY` title and a controller-driven `PLAY` / `CART` / `INFO` menu. Up/Down moves the cursor. Menu entries are navigation placeholders, not functional subsystems yet. CI assembles and validates the ROM; visual emulator verification remains a separate next step.
