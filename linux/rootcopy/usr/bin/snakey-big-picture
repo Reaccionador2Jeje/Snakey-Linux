@@ -1,79 +1,182 @@
 #!/usr/bin/env python3
-"""Controller-first, fullscreen-friendly launcher for Snakey Linux XFCE."""
+"""Snakey Console Desktop launcher for XFCE4 and controller-first sessions.
+
+The launcher uses Linux joystick events directly. It does not depend on
+xdotool, a particular controller brand, or a background key-injection daemon.
+"""
+from __future__ import annotations
+
 import curses
+import glob
+import os
+import select
 import shutil
+import struct
 import subprocess
+import time
+from pathlib import Path
+from typing import Optional
 
-ITEMS = [
-    ("Games", "retroarch", "Launch RetroArch"),
-    ("Applications", "xfce4-appfinder", "Browse installed applications"),
-    ("Files", "thunar", "Open the file manager"),
-    ("Terminal", "xfce4-terminal", "Open a terminal"),
-    ("Controller Center", "snakey-controller-center", "Configure and test your gamepad"),
-    ("Settings", "xfce4-settings-manager", "Configure Snakey Linux"),
-    ("Desktop / Console Mode", "snakey-console-mode", "Toggle large-control desktop mode"),
-]
+JS_EVENT = struct.Struct("IhBB")
+JS_EVENT_BUTTON = 0x01
+JS_EVENT_AXIS = 0x02
+JS_EVENT_INIT = 0x80
+DEADZONE = 16000
 
-def launch(command, stdscr):
+# Standard Linux gamepad mapping: south face button = confirm,
+# east face button = back. Keyboard navigation always remains available.
+ITEMS = (
+    ("Games", ("retroarch",), "Launch RetroArch"),
+    ("Applications", ("xfce4-appfinder",), "Browse installed applications"),
+    ("Files", ("thunar",), "Open the file manager"),
+    ("Terminal", ("xfce4-terminal",), "Open a terminal"),
+    ("Controller Center", ("snakey-controller-center",), "Configure your gamepad"),
+    ("Settings", ("xfce4-settings-manager",), "Configure Snakey Linux"),
+    ("XFCE Desktop", ("snakey-console-mode", "desktop"), "Return to the XFCE4 desktop"),
+    ("Power", ("xfce4-session-logout",), "Log out or shut down"),
+)
+
+
+def find_gamepad() -> Optional[str]:
+    configured = os.environ.get("SNAKEY_GAMEPAD_DEVICE")
+    if configured and os.path.exists(configured):
+        return configured
+    devices = sorted(glob.glob("/dev/input/js*"))
+    return devices[0] if devices else None
+
+
+def decode_gamepad_event(raw: bytes, selected: int, count: int) -> tuple[int, str | None]:
+    """Return the selected item and an optional action from one joystick event."""
+    if len(raw) != JS_EVENT.size:
+        return selected, None
+    _timestamp, value, event_type, number = JS_EVENT.unpack(raw)
+    event_type &= ~JS_EVENT_INIT
+    if event_type == JS_EVENT_BUTTON and value:
+        if number == 0:
+            return selected, "confirm"
+        if number == 1:
+            return selected, "back"
+        if number == 4:
+            return (selected - 1) % count, None
+        if number == 5:
+            return (selected + 1) % count, None
+    if event_type == JS_EVENT_AXIS and abs(value) > DEADZONE:
+        if number == 1:
+            return (selected + (1 if value > 0 else -1)) % count, None
+        if number == 0:
+            return selected, "confirm" if value > 0 else "back"
+    return selected, None
+
+
+def launch(command: tuple[str, ...], stdscr) -> bool:
     executable = command[0]
     if not shutil.which(executable):
-        stdscr.addstr(curses.LINES - 2, 2, f"Not installed: {executable}"[:curses.COLS - 4])
-        stdscr.refresh()
-        stdscr.getch()
-        return
+        message(stdscr, f"Not installed: {executable}")
+        return False
+    curses.def_prog_mode()
     curses.endwin()
     try:
-        subprocess.Popen(command, start_new_session=True)
+        subprocess.run(command, check=False)
     except OSError as exc:
-        print(f"Snakey Big Picture: {exc}")
-        input("Press Enter to return...")
-    raise SystemExit(0)
+        print(f"Snakey: could not launch {executable}: {exc}")
+        input("Press Enter to return to Snakey...")
+    curses.reset_prog_mode()
+    stdscr.clear()
+    stdscr.refresh()
+    return True
 
-def draw(stdscr):
+
+def message(stdscr, text: str) -> None:
+    height, width = stdscr.getmaxyx()
+    stdscr.addnstr(max(0, height - 2), 2, text, max(1, width - 4), curses.A_BOLD)
+    stdscr.refresh()
+    stdscr.timeout(-1)
+    stdscr.getch()
+    stdscr.timeout(50)
+
+
+def draw(stdscr) -> int:
     curses.curs_set(0)
+    stdscr.keypad(True)
+    stdscr.timeout(50)
     selected = 0
-    while True:
-        stdscr.erase()
-        height, width = stdscr.getmaxyx()
-        title = "SNAKEY"
-        subtitle = "BIG PICTURE"
-        stdscr.attron(curses.A_BOLD)
-        stdscr.addstr(1, max(2, (width - len(title)) // 2), title)
-        stdscr.attroff(curses.A_BOLD)
-        stdscr.addstr(2, max(2, (width - len(subtitle)) // 2), subtitle)
-        stdscr.addstr(4, 3, "Navigate with your controller or keyboard")
-        start_y = 6
-        for index, (label, _command, description) in enumerate(ITEMS):
-            y = start_y + index * 2
-            if y >= height - 3:
-                break
-            attr = curses.A_REVERSE | curses.A_BOLD if index == selected else curses.A_NORMAL
-            stdscr.addnstr(y, 4, f"  {label}  ", max(1, width - 8), attr)
-            stdscr.addnstr(y + 1, 7, description, max(1, width - 12), curses.A_DIM)
-        footer = "A / ENTER: open     B / ESC: exit     UP / DOWN: navigate"
-        stdscr.addnstr(height - 2, 2, footer, max(1, width - 4), curses.A_DIM)
-        stdscr.refresh()
-        key = stdscr.getch()
-        if key in (curses.KEY_UP, ord("w"), ord("k")):
-            selected = (selected - 1) % len(ITEMS)
-        elif key in (curses.KEY_DOWN, ord("s"), ord("j")):
-            selected = (selected + 1) % len(ITEMS)
-        elif key in (10, 13, curses.KEY_ENTER, ord(" ")):
-            label, command, _description = ITEMS[selected]
-            if label == "Desktop / Console Mode":
-                curses.endwin()
-                subprocess.run([command, "toggle"], check=False)
-                raise SystemExit(0)
-            launch([command], stdscr)
-        elif key in (27, ord("q"), ord("Q")):
-            return
+    device_path = find_gamepad()
+    gamepad = None
+    if device_path:
+        try:
+            gamepad = open(device_path, "rb", buffering=0)
+        except OSError:
+            gamepad = None
+    poller = select.poll()
+    if gamepad:
+        poller.register(gamepad, select.POLLIN | select.POLLHUP | select.POLLERR)
 
-def main():
     try:
-        curses.wrapper(draw)
+        while True:
+            stdscr.erase()
+            height, width = stdscr.getmaxyx()
+            title = "SNAKEY"
+            subtitle = "CONSOLE DESKTOP"
+            stdscr.attron(curses.A_BOLD)
+            stdscr.addnstr(1, max(1, (width - len(title)) // 2), title, max(1, width - 2))
+            stdscr.attroff(curses.A_BOLD)
+            stdscr.addnstr(2, max(1, (width - len(subtitle)) // 2), subtitle, max(1, width - 2))
+            stdscr.addnstr(4, 3, "XFCE4 • Slackware • Controller-first interface", max(1, width - 6))
+            start_y = 6
+            visible = max(1, (height - 10) // 2)
+            first = min(max(0, selected - visible + 1), max(0, len(ITEMS) - visible))
+            for index in range(first, min(len(ITEMS), first + visible)):
+                y = start_y + (index - first) * 2
+                label, _command, description = ITEMS[index]
+                attr = curses.A_REVERSE | curses.A_BOLD if index == selected else curses.A_NORMAL
+                stdscr.addnstr(y, 4, f"  {label}  ", max(1, width - 8), attr)
+                if y + 1 < height - 3:
+                    stdscr.addnstr(y + 1, 7, description, max(1, width - 12), curses.A_DIM)
+            status = f"Controller: {device_path}" if gamepad else "Controller not detected • keyboard available"
+            stdscr.addnstr(height - 3, 2, status, max(1, width - 4), curses.A_DIM)
+            stdscr.addnstr(height - 2, 2, "A / ENTER: open   B / ESC: back   D-pad / arrows: move   Q: exit", max(1, width - 4), curses.A_DIM)
+            stdscr.refresh()
+
+            if gamepad:
+                for _fd, event in poller.poll(0):
+                    if event & (select.POLLHUP | select.POLLERR):
+                        poller.unregister(gamepad)
+                        gamepad.close()
+                        gamepad = None
+                        device_path = None
+                        break
+                    try:
+                        raw = os.read(gamepad.fileno(), JS_EVENT.size)
+                    except OSError:
+                        raw = b""
+                    selected, action = decode_gamepad_event(raw, selected, len(ITEMS))
+                    if action == "back":
+                        return 0
+                    if action == "confirm":
+                        launch(ITEMS[selected][1], stdscr)
+
+            key = stdscr.getch()
+            if key in (curses.KEY_UP, ord("w"), ord("k")):
+                selected = (selected - 1) % len(ITEMS)
+            elif key in (curses.KEY_DOWN, ord("s"), ord("j")):
+                selected = (selected + 1) % len(ITEMS)
+            elif key in (10, 13, curses.KEY_ENTER, ord(" ")):
+                launch(ITEMS[selected][1], stdscr)
+            elif key in (27, ord("q"), ord("Q")):
+                return 0
+            elif key == curses.KEY_RESIZE:
+                stdscr.clear()
+    finally:
+        if gamepad:
+            gamepad.close()
+
+
+def main() -> int:
+    try:
+        return curses.wrapper(draw)
     except (KeyboardInterrupt, curses.error):
-        return 1
-    return 0
+        return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
