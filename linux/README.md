@@ -8,7 +8,8 @@ builder. It is separate from the console homebrew ROMs under the SDK.
 
 The initial profile is defined in [profile.json](profile.json):
 
-- Slackware base, x86_64
+- **Slackware 15.0 stable** (`slackware64-15.0`), x86_64
+- Native Slackware package management (`pkgtools`) and SysVinit
 - XFCE desktop using liveslak's stripped/basic XFCE variant
 - Graphical runlevel 4
 - XZ-compressed SquashFS modules
@@ -22,6 +23,8 @@ default XFCE wallpaper/GTK settings, and the Snakey Gamepad UI autostart/launche
 See [Gamepad UI documentation](gamepad/README.md) for controls and dependencies, [Console Mode documentation](console/README.md) for the TV-friendly desktop, and [Big Picture documentation](big-picture/README.md) for the fullscreen controller-first launcher. The [Controller Center](gamepad/README.md#controller-center) configures and tests controller profiles.
 
 ## Build
+
+The base is pinned to **Slackware 15.0 stable**, not the moving `current` branch. The committed `make_slackware_live.conf` sets `SL_VERSION=15.0`, `SL_ARCH=x86_64`, and the Slackware rsync mirror. This keeps package selection reproducible at the release-branch level; package updates within 15.0 can still change over time.
 
 The image builder must run as root on a supported Slackware build host with
 the prerequisites documented by liveslak and access to a complete Slackware
@@ -74,6 +77,6 @@ must be recorded separately from build results.
 
 ## Current status
 
-The profile and build entrypoint are now in the repository. The ISO has not
+The Slackware 15.0 profile, liveslak configuration and build entrypoint are now in the repository. The ISO has not
 yet been generated or boot-tested. The builder expects a Slackware build host;
 the Debian/Ubuntu GitHub runner is not treated as a valid liveslak build host.
