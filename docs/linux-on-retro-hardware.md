@@ -18,6 +18,15 @@ The Nintendo DS has ARM CPUs but very limited memory and no general-purpose
 desktop-class memory-management environment. Its current homebrew target is
 not a Linux port and must not be presented as one.
 
+The Nintendo Wii is now the preferred first research target. An independent
+Wii-Linux continuation project reports maintained kernels, framebuffer output
+and optional Xorg. Its 88 MB main-memory budget makes XFCE4 highly uncertain;
+a shell and a minimal window manager are the first meaningful milestones.
+
+The PlayStation 3 is deferred. The owner does not currently have compatible
+power or a display and has explicitly chosen not to use or modify it. Snakey
+must not require PS3 access for ongoing development.
+
 ## Three execution classes
 
 | Class | Meaning | Snakey direction |
@@ -56,15 +65,18 @@ XFCE4 is a later milestone, not the first boot target. The sequence is:
    native graphical shell and document the limitation.
 
 The XFCE4 live image currently built through liveslak is x86_64. It is not a
-universal image for every console architecture.
+universal image for every console architecture. Wii XFCE4 remains an
+unverified stretch goal; 88 MB main memory is a severe constraint.
 
 ## Development roadmap
 
 - [x] Separate native ROM targets from the Linux distribution track.
 - [x] Document Linux capability and acceptance criteria.
 - [x] Create a reusable hardware evidence sheet for each proposed Class B console.
-- [x] Select PlayStation 3 as the first Linux research candidate; physical boot compatibility remains model/firmware-dependent.
-- [ ] Build a reproducible kernel and boot test for that target.
+- [x] Select Nintendo Wii as the first active Linux research candidate; upstream Wii-Linux work exists, but Snakey has not tested it.
+- [x] Defer PlayStation 3 hardware work until the owner independently chooses to use it.
+- [ ] Pin a Wii-Linux kernel/toolchain revision and create a reproducible cross-build environment.
+- [ ] Build a reproducible kernel artifact; no hardware boot claim.
 - [ ] Reach a real Linux shell.
 - [ ] Add display and controller support.
 - [ ] Evaluate XFCE4 memory and performance requirements.
