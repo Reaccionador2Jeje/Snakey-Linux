@@ -36,6 +36,7 @@ jobs:
         run: |
           bash -n linux/build-live.sh
           bash -n linux/packages/build-snakey-base.sh
+          bash -n linux/packages/build-snakey-theme.sh
           sh -n linux/packages/snakey-base/usr/bin/snakey-info
           sh -n linux/packages/snakey-base/install/doinst.sh
           bash -n linux/rootcopy/usr/bin/snakey-console-mode
@@ -51,7 +52,8 @@ jobs:
           assert profile["base"] == "Slackware"
           assert profile["live_variant"] == "SNAKEY"
           assert profile["custom_package"] == "snakey-base"
-          assert profile["custom_package_sequence"] == "min,xbase,xapbase,xfcebase local:snakey-base"
+          assert profile["custom_packages"] == ["snakey-base", "snakey-theme"]
+          assert profile["custom_package_sequence"] == "min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme"
           assert profile["live_user"] == "snakey"
           assert profile["base_release"] == "15.0"
           assert profile["base_channel"] == "stable"
@@ -80,14 +82,16 @@ jobs:
           ):
               assert Path(path).is_file(), path
           liveslak = Path("linux/make_slackware_live.conf").read_text()
-          for setting in ('SL_VERSION="15.0"', 'SL_ARCH="x86_64"', 'LIVEDE="SNAKEY"', 'SEQ_CUSTOM="min,xbase,xapbase,xfcebase local:snakey-base"', 'RUNLEVEL=4', 'DISTRO="snakey"'):
+          for setting in ('SL_VERSION="15.0"', 'SL_ARCH="x86_64"', 'LIVEDE="SNAKEY"', 'SEQ_CUSTOM="min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme"', 'RUNLEVEL=4', 'DISTRO="snakey"'):
               assert setting in liveslak, setting
-          for path in ("linux/packages/build-snakey-base.sh", "linux/packages/snakey-base/etc/snakey-release", "linux/packages/snakey-base/usr/bin/snakey-info", "linux/packages/snakey-base/install/doinst.sh", "linux/packages/snakey-base/slack-desc"):
+          for path in ("linux/packages/build-snakey-base.sh", "linux/packages/snakey-base/etc/snakey-release", "linux/packages/snakey-base/usr/bin/snakey-info", "linux/packages/snakey-base/install/doinst.sh", "linux/packages/snakey-base/slack-desc", "linux/packages/build-snakey-theme.sh", "linux/packages/snakey-theme/slack-desc", "linux/packages/snakey-theme/usr/share/themes/Snakey-Dark/index.theme", "linux/packages/snakey-theme/usr/share/themes/Snakey-Dark/gtk-3.0/gtk.css", "linux/packages/snakey-theme/usr/share/themes/Snakey-Dark/gtk-2.0/gtkrc"):
               assert Path(path).is_file(), path
           builder = Path("linux/build-live.sh").read_text()
           assert "-d SNAKEY" in builder
           assert "-z 15.0" in builder
           assert "local64/snakey-base" in builder
+          assert "local64/snakey-theme" in builder
+          assert "build-snakey-theme.sh" in builder
           print("Snakey Linux Slackware 15.0 custom variant and package assets: OK")
           PY
       - name: Build and verify a real NROM-256 ROM
