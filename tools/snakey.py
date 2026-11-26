@@ -67,7 +67,7 @@ Entry:
     di
     ld sp, $FFFE
     xor a
-    ldh [$40], a
+    ld [$FF40], a
 MainLoop:
     halt
     jr MainLoop
