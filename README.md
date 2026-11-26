@@ -1,6 +1,6 @@
 # Snakey Linux 🐍
 
-**An independent retro-console operating-system and homebrew ecosystem inspired by Slackware Linux.**
+**A Slackware-derived Linux distribution for capable modern hardware, with a separate retro-console homebrew SDK.**
 
 Snakey is not one universal Linux image. It is a shared ecosystem for building console-specific ROMs and, where hardware genuinely supports it, Linux-based systems.
 
@@ -33,9 +33,9 @@ These are registered paths, not a claim that every cartridge, firmware version o
 
 See [experimental SNES/GBA/DS ROM builders](docs/experimental-rom-builders.md) for current image formats, build commands and compatibility limitations. See docs/boot-system.md for boot prerequisites and limitations. The current physical-console compatibility status and repeatable test procedure are tracked in [docs/hardware-test-matrix.md](docs/hardware-test-matrix.md); use [the report template](docs/hardware-test-report-template.md) to record real-device results.
 
-## Linux on retro hardware
+## Linux on modern consoles
 
-Snakey is researching **Nintendo Switch, PlayStation Vita, Nintendo 3DS, Wii, original Xbox and Dreamcast**. These are research candidates with different levels of community support; none is a Snakey-tested Linux port. See the [console Linux candidate matrix](docs/console-linux-candidates.md), [Wii research plan](linux/targets/wii/README.md) and [Linux hardware registry](platforms/linux-targets.json). The PlayStation 3 remains documented as a deferred research target; it will not be powered, opened, modified or used for testing unless the owner later chooses to do so.
+The Linux-on-console direction now prioritizes **PlayStation 4 first**, then **PlayStation 5 and Nintendo Switch**. These use real Linux kernels and userspaces; they are not ROM-based desktop simulations. PS4 is the first engineering lane because it is x86-64 and can reuse Snakey's existing Slackware userspace work, subject to the exact console southbridge, kernel and driver support. PS5 and Switch remain separate research lanes. No universal compatibility or Snakey hardware boot is claimed. See [the modern-console Linux plan](docs/modern-console-linux.md), [PlayStation Linux research](docs/playstation-linux-research.md) and [the Linux hardware registry](platforms/linux-targets.json).
 
 ## Snakey Linux Desktop
 
@@ -77,7 +77,7 @@ Requires Python 3.10 or newer.
 
 ## Development status
 
-The SDK builds NES NROM-256 (.nes) with cc65 and Game Boy / Game Boy Color (.gb/.gbc) with RGBDS. SNES (.sfc), Game Boy Advance (.gba) and Nintendo DS (.nds) now have experimental native image writers that emit platform headers and minimal startup code; the GBA image paints a simple Mode 3 framebuffer, while SNES and DS remain startup-stub previews. These three are not yet certified on real hardware or every emulator, and DS logo/firmware compatibility remains unverified. The NES starter has an interactive controller-driven menu: Up/Down selects PLAY, CART or INFO; A opens the corresponding page; B returns. Cartridge hardware status remains unknown without a target-specific detection interface. CI assembles the ROM and checks the iNES header and expected 40 KiB file size. Cartridge flashing, physical-device detection, emulator automation and Linux disk-image generation are not implemented yet.
+The Linux distribution is the primary desktop product. The existing x86-64 Slackware/XFCE live profile is a generic development base, not yet a console-compatible image. PS4 is the first modern-console Linux integration target; its upstream kernel source, exact revision, southbridge compatibility and reproducible build still need to be pinned and verified. PS5 and Switch follow as independent ports. No console image is called bootable until kernel, rootfs, drivers and boot evidence are separately validated. The retro SDK remains available for genuine native homebrew, but experimental flat-color ROM previews are not treated as Snakey Desktop releases.
 
 ## License
 
