@@ -512,7 +512,7 @@ def command_doctor(_):
     for label, executable in checks.items():
         print(f"{'FOUND' if executable else 'MISSING':<8} {label}" +
               (f" — {executable}" if executable else ""))
-    print("\nBuild adapters: NES requires cc65 (ca65/ld65); Game Boy requires RGBDS.")
+    print("\nBuild adapters: NES requires cc65 (ca65/ld65); Game Boy and Game Boy Color require RGBDS. SNES/GBA/DS adapters are not implemented yet.")
     return 0
 
 
@@ -565,7 +565,7 @@ def command_build(args):
     build = path / "build"
     build.mkdir(exist_ok=True)
     obj = build / "main.o"
-    rom = build / (data["name"] + ".gb")
+    rom = build / (data["name"] + (".gbc" if data["target"] == "game-boy-color" else ".gb"))
     commands = [
         ["rgbasm", "-o", str(obj), str(source)],
         ["rgblink", "-o", str(rom), str(obj)],
