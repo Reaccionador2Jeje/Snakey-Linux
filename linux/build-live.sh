@@ -99,6 +99,8 @@ echo "and access to a complete Slackware package repository."
 
 mkdir -p "$LIVESLAK_DIR/rootcopy"
 cp -a "$ROOT_DIR/linux/rootcopy/." "$LIVESLAK_DIR/rootcopy/"
+chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-gamepad"
+chmod 0755 "$LIVESLAK_DIR/rootcopy/usr/bin/snakey-virtual-keyboard"
 
 cd "$LIVESLAK_DIR"
 ./make_slackware_live.sh \
