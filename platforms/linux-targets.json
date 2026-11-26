@@ -15,13 +15,14 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "MIPS little-endian cross-toolchain; ABI and kernel config audit",
-      "desktop_goal": "Slackware-compatible minimal userspace with Snakey native console UI; XFCE4 is not viable on this hardware class",
+      "desktop_goal": "Slackware-derived no-MMU userspace with a tiny native Snakey console UI; standard XFCE4 is not viable on the PSP memory/MMU constraints.",
       "notes": "First-wave legacy target. Historical uClinux-on-PSP 0.22 artifacts are documented; source archive, toolchain, kernel patch and licensing must be audited before any build. No current Snakey kernel or hardware boot is claimed.",
-      "distribution_base": "Slackware",
-      "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
-      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "distribution_base": "Slackware-derived MIPSel no-MMU userspace",
+      "distribution_strategy": "Build a Slackware-compatible MIPS little-endian package/userland adaptation around the historical uClinux no-MMU execution model. Preserve Slackware-style package archives, metadata and pkgtools conventions where they can be ported; standard Slackware/glibc binaries are not ABI-compatible and must not be assumed to run. This is a separate port, not an official Slackware PSP release.",
+      "console_desktop": "Snakey Native Micro Desktop",
       "xfce4_status": "not-feasible",
-      "xfce4_notes": "32 MiB class and historical no-MMU uClinux lineage; use a tiny native console UI, not XFCE4"
+      "xfce4_notes": "PSP's 32 MiB class and no-MMU uClinux lineage rule out a conventional XFCE4/Xorg desktop; use the native micro desktop while retaining Snakey visual identity.",
+      "rootfs_strategy": "Separate MIPSel no-MMU/uClinux adaptation. Do not feed standard Slackware MIPS/glibc packages into the PSP rootfs; define and validate the ABI/toolchain and package metadata before building a rootfs."
     },
     {
       "id": "ps-vita",
@@ -36,13 +37,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "ARM hard-float cross-toolchain; pinned upstream Vita build adapter",
-      "desktop_goal": "Boot Snakey Linux userspace, then start the shared Snakey Desktop session over framebuffer and evdev; XFCE4 remains a later measured option.",
+      "desktop_goal": "Boot the Slackware-compatible userspace and start Snakey Console Desktop based on XFCE4 when the platform graphics, input and memory budget are validated.",
       "notes": "First-wave ARM target. Vita Linux Next is pinned for upstream reproduction in CI; this is not a Snakey kernel or a hardware boot.",
       "distribution_base": "Slackware",
       "distribution_strategy": "Slackware ARM 15.0 ARMv7-A hard-float minimal rootfs; preserve pkgtools, Slackware package metadata, filesystem layout and SysVinit. 32-bit ARM development ended upstream, so treat this as a compatibility baseline with independent maintenance and Vita-specific rebuilt packages.",
-      "console_desktop": "Snakey Linux Desktop (framebuffer session)",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
       "xfce4_status": "experimental",
-      "xfce4_notes": "Shared Snakey framebuffer desktop is the initial session; XFCE4 is considered only after memory, graphics and input measurements.",
+      "xfce4_notes": "XFCE4 is the requested desktop, but must be measured on the Vita-specific graphics/input stack before inclusion in an image.",
       "rootfs_strategy": "Minimal Slackware-derived root filesystem; kernel/bootloader and console drivers are separate platform layers; Snakey Desktop starts only after Slackware userspace reaches a stable init shell."
     },
     {
@@ -57,14 +58,14 @@
       "snakey_kernel_built": false,
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
-      "desktop_goal": "Slackware-compatible userspace; XFCE4 conditional on usable memory and graphics/input support",
+      "desktop_goal": "Boot the Slackware-compatible userspace and start Snakey Console Desktop based on XFCE4 when the platform graphics, input and memory budget are validated.",
       "notes": "PS3-specific Linux support exists in upstream kernel history; OtherOS availability and usable memory are model/configuration dependent.",
       "toolchain_strategy": "PowerPC64 big-endian cross-toolchain; PS3-specific kernel configuration and boot-path audit",
       "distribution_base": "Slackware",
       "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
       "console_desktop": "Snakey Console Desktop (XFCE4)",
       "xfce4_status": "conditional",
-      "xfce4_notes": "XFCE4 only if usable RAM, OtherOS/boot path and graphics drivers leave sufficient resources"
+      "xfce4_notes": "XFCE4 is the target; usable memory, boot method, GPU/display support and input drivers must be proven on the exact model."
     },
     {
       "id": "ps4",
@@ -79,13 +80,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "Native x86-64 Linux toolchain",
-      "desktop_goal": "Slackware-compatible userspace with Snakey Console Desktop (XFCE4) as the standard graphical target, gated by kernel and driver support",
+      "desktop_goal": "Boot the Slackware-compatible userspace and start Snakey Console Desktop based on XFCE4 when the platform graphics, input and memory budget are validated.",
       "notes": "Deferred while PSP and Vita are the active first-wave targets. Linux psX source audit remains future work; no Snakey kernel build or console boot is claimed.",
       "distribution_base": "Slackware",
       "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
       "console_desktop": "Snakey Console Desktop (XFCE4)",
       "xfce4_status": "planned",
-      "xfce4_notes": "target XFCE4 as the standard Snakey Console Desktop after kernel, GPU, display and controller support"
+      "xfce4_notes": "XFCE4 is the standard target after the platform kernel, GPU/display and controller stack are validated."
     },
     {
       "id": "ps5",
@@ -100,13 +101,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "Native x86-64 Linux toolchain",
-      "desktop_goal": "Slackware-compatible userspace with Snakey Console Desktop (XFCE4) as the standard graphical target, gated by kernel and driver support",
+      "desktop_goal": "Boot the Slackware-compatible userspace and start Snakey Console Desktop based on XFCE4 when the platform graphics, input and memory budget are validated.",
       "notes": "Separate PS5 patch ecosystem; exact kernel base, model and firmware compatibility require source audit.",
       "distribution_base": "Slackware",
       "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
       "console_desktop": "Snakey Console Desktop (XFCE4)",
       "xfce4_status": "planned",
-      "xfce4_notes": "target XFCE4 after independent kernel, GPU, display and controller support is proven"
+      "xfce4_notes": "XFCE4 is the standard target after the platform kernel, GPU/display and controller stack are validated."
     },
     {
       "id": "xbox-original",
@@ -121,13 +122,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "i686 cross-toolchain; 32-bit kernel/userspace audit",
-      "desktop_goal": "Boot Snakey Linux userspace, then start the ultra-light shared Snakey Desktop framebuffer session; no XFCE4.",
+      "desktop_goal": "Boot the Slackware-compatible userspace and start Snakey Console Desktop based on XFCE4 when the platform graphics, input and memory budget are validated.",
       "notes": "Historical Xbox Linux projects exist; legacy boot and graphics support require independent audit.",
       "distribution_base": "Slackware",
       "distribution_strategy": "Slackware 15.0 32-bit x86 package tree as the base, reduced to a minimal i686 rootfs for the 64 MiB memory class. Preserve pkgtools, Slackware package format/layout and SysVinit; rebuild/verify the ABI and console drivers.",
-      "console_desktop": "Snakey Linux Desktop (ultralight framebuffer session)",
-      "xfce4_status": "not-feasible",
-      "xfce4_notes": "64 MiB class; use the shared ultra-light Snakey Linux userspace desktop, not XFCE4.",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "experimental",
+      "xfce4_notes": "XFCE4 is the requested target, but 64 MiB RAM is an extreme constraint; only a measured minimal build can establish feasibility. Keep a native fallback during bring-up.",
       "rootfs_strategy": "Minimal Slackware-derived root filesystem; kernel/bootloader and console drivers are separate platform layers; Snakey Desktop starts only after Slackware userspace reaches a stable init shell."
     },
     {
@@ -143,13 +144,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "PowerPC 32-bit big-endian cross-toolchain",
-      "desktop_goal": "Boot Snakey Linux userspace, then start the ultra-light shared Snakey Desktop framebuffer session; no XFCE4.",
+      "desktop_goal": "Boot the Slackware-compatible userspace and start Snakey Console Desktop based on XFCE4 when the platform graphics, input and memory budget are validated.",
       "notes": "Historical Wii Linux work; severe memory constraints make a conventional desktop unlikely.",
       "distribution_base": "Slackware",
       "distribution_strategy": "Unofficial Slackware-compatible PowerPC32 big-endian port. Use BonSlack PowerPC as a community source/package reference, rebuild a minimal Wii-specific package set, and preserve Slackware package conventions, pkgtools semantics, filesystem layout and SysVinit. Not an official Slackware port.",
-      "console_desktop": "Snakey Linux Desktop (ultralight framebuffer session)",
-      "xfce4_status": "not-feasible",
-      "xfce4_notes": "88 MiB class; use the shared ultra-light Snakey Linux userspace desktop, not XFCE4.",
+      "console_desktop": "Snakey Console Desktop (XFCE4)",
+      "xfce4_status": "experimental",
+      "xfce4_notes": "XFCE4 is the requested target, but 88 MiB RAM and PowerPC graphics/input support are severe constraints; only a measured minimal build can establish feasibility. Keep a native fallback during bring-up.",
       "rootfs_strategy": "Minimal Slackware-derived root filesystem; kernel/bootloader and console drivers are separate platform layers; Snakey Desktop starts only after Slackware userspace reaches a stable init shell."
     },
     {
@@ -165,13 +166,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "PowerPC 32-bit big-endian cross-toolchain",
-      "desktop_goal": "Slackware-compatible userspace with Snakey Console Desktop (XFCE4) as the standard graphical target, gated by kernel and driver support",
+      "desktop_goal": "Boot the Slackware-compatible userspace and start Snakey Console Desktop based on XFCE4 when the platform graphics, input and memory budget are validated.",
       "notes": "Independent platform port required; do not reuse Wii kernel assumptions.",
       "distribution_base": "Slackware",
       "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
       "console_desktop": "Snakey Console Desktop (XFCE4)",
       "xfce4_status": "planned",
-      "xfce4_notes": "target XFCE4 after an independent PowerPC32 kernel, graphics and input port"
+      "xfce4_notes": "XFCE4 is the standard target after an independent Wii U kernel, graphics and input port is proven."
     },
     {
       "id": "switch",
@@ -186,13 +187,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "AArch64 cross-toolchain; SoC-specific kernel/device-tree audit",
-      "desktop_goal": "Slackware-compatible userspace with Snakey Console Desktop (XFCE4) as the standard graphical target, gated by kernel and driver support",
+      "desktop_goal": "Boot the Slackware-compatible userspace and start Snakey Console Desktop based on XFCE4 when the platform graphics, input and memory budget are validated.",
       "notes": "Community Linux ecosystem exists; device tree, GPU, display, input and network support must be audited.",
       "distribution_base": "Slackware",
       "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
       "console_desktop": "Snakey Console Desktop (XFCE4)",
       "xfce4_status": "planned",
-      "xfce4_notes": "target XFCE4 after Tegra kernel, GPU, display and controller support"
+      "xfce4_notes": "XFCE4 is the standard target after the SoC-specific kernel, GPU/display and controller stack are validated."
     },
     {
       "id": "switch-2",
@@ -207,13 +208,13 @@
       "snakey_hardware_tested": false,
       "requires_physical_hardware_for_boot_validation": true,
       "toolchain_strategy": "AArch64 cross-toolchain; SoC-specific kernel/device-tree audit",
-      "desktop_goal": "Slackware-compatible port research first; XFCE4 remains a future target",
+      "desktop_goal": "Boot the Slackware-compatible userspace and start Snakey Console Desktop based on XFCE4 when the platform graphics, input and memory budget are validated.",
       "notes": "Research lane only. No verified Snakey upstream source, kernel build or Linux boot claim.",
       "distribution_base": "Slackware",
       "distribution_strategy": "Slackware-compatible port for this CPU architecture; preserve pkgtools-style package management and Slackware system conventions where upstream support permits",
       "console_desktop": "Snakey Console Desktop (XFCE4)",
-      "xfce4_status": "research-only",
-      "xfce4_notes": "XFCE4 is a future target; first establish public kernel, boot and driver enablement"
+      "xfce4_status": "planned",
+      "xfce4_notes": "XFCE4 is the standard target after public platform enablement, kernel, GPU/display and controller support are proven."
     }
   ],
   "desktop_policy": "For PS Vita, Original Xbox and Wii, Snakey Desktop is a Linux userspace session started by the target's Linux init system after the Snakey kernel and root filesystem boot. The initial common backend is a fullscreen software renderer on Linux framebuffer with controller input via evdev; it does not require Xorg or Wayland. Vita may evaluate XFCE4 only after measured resources and drivers. Original Xbox and Wii use the ultra-light Snakey Desktop profile. This is an architecture target, not a claim that these Linux ports or desktops currently boot.",
