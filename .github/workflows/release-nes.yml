@@ -1,0 +1,51 @@
+name: Publish Snakey NES preview
+
+on:
+  push:
+    tags:
+      - "nes-v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snakey-nes-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    name: Build and publish NES ROM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install cc65
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cc65
+      - name: Create and validate NES project
+        run: |
+          python3 tools/snakey.py new "$RUNNER_TEMP/snakey-nes-release" --target nes --name SnakeyNES
+          python3 tools/snakey.py validate "$RUNNER_TEMP/snakey-nes-release"
+          python3 tools/snakey.py build "$RUNNER_TEMP/snakey-nes-release"
+      - name: Verify ROM and generate checksum
+        run: |
+          ROM="$RUNNER_TEMP/snakey-nes-release/build/SnakeyNES.nes"
+          test -s "$ROM"
+          test "$(stat -c %s "$ROM")" -eq 40976
+          printf '%s  %s\n' "$(sha256sum "$ROM" | cut -d ' ' -f 1)" "SnakeyNES.nes" > "$RUNNER_TEMP/SHA256SUMS.txt"
+          cp "$ROM" "$RUNNER_TEMP/SnakeyNES.nes"
+      - name: Publish experimental GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Snakey NES Preview ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          prerelease: true
+          generate_release_notes: true
+          files: |
+            ${{ runner.temp }}/SnakeyNES.nes
+            ${{ runner.temp }}/SHA256SUMS.txt
