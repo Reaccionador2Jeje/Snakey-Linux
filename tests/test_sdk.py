@@ -60,7 +60,7 @@ class SnakeySdkTests(unittest.TestCase):
             source = (project / "src/main.s").read_text()
             self.assertIn('.byte "NES", $1A', source)
             self.assertIn('.segment "VECTORS"', source)
-            self.assertIn('Draw SNAKEY at row 14, column 13.', source)
+            self.assertIn('Title: SNAKEY.', source)
             self.assertIn('sta $2007', source)
             self.assertIn('Tiles 1..6 spell SNAKEY', source)
             self.assertIn('ReadController:', source)
