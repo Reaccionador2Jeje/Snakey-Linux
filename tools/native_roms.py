@@ -67,9 +67,10 @@ def build_gba(path: Path, name: str) -> None:
     rom[0xBF] = 0
     # ARM code at 0xC0: Mode 3 framebuffer filled with a teal field, then loop.
     # Use a conservative, visibly colored screen fill loop (38400 pixels).
-    code = struct.pack("<13I",
+    code = struct.pack("<15I",
         0xE59F0030, # ldr r0,[pc,#48] -> DISPCNT literal
         0xE3A01003, # mov r1,#3 (Mode 3)
+        0xE3811B01, # orr r1,r1,#0x400 (enable BG2)
         0xE5801000, # str r1,[r0]
         0xE59F3018, # ldr r3,[pc,#24] -> VRAM literal
         0xE59F2018, # ldr r2,[pc,#24] -> pixel count literal
