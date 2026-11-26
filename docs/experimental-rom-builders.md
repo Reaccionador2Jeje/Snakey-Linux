@@ -23,7 +23,7 @@ into GitHub Actions.
 ## What is implemented
 
 - **SNES:** 32 KiB LoROM image, internal header, reset vector and checksum pair.
-  Current CPU program is only an initialization/idle stub.
+  Current CPU program initializes the display backdrop and then idles; no menu or game logic yet.
 - **GBA:** 32 KiB image, entry branch, cartridge header and complement checksum.
   Startup code selects bitmap Mode 3 and fills the framebuffer with a solid
   color. The Nintendo logo area is intentionally blank, so this is not
