@@ -262,12 +262,16 @@ int main(void)
                 if (key_row == 4 && key_col > 6) key_col = 6;
                 draw_terminal();
             } else if (pressed & PSP_CTRL_LEFT) {
-                key_col = (key_col + KEY_COLS - 1) % KEY_COLS;
-                if (key_row == 4 && key_col != 0 && key_col != 6) key_col = 0;
+                if (key_row == 4)
+                    key_col = (key_col == 0) ? 6 : 0;
+                else
+                    key_col = (key_col + KEY_COLS - 1) % KEY_COLS;
                 draw_terminal();
             } else if (pressed & PSP_CTRL_RIGHT) {
-                key_col = (key_col + 1) % KEY_COLS;
-                if (key_row == 4 && key_col != 0 && key_col != 6) key_col = 6;
+                if (key_row == 4)
+                    key_col = (key_col == 0) ? 6 : 0;
+                else
+                    key_col = (key_col + 1) % KEY_COLS;
                 draw_terminal();
             } else if (pressed & PSP_CTRL_CROSS) {
                 insert_key();
