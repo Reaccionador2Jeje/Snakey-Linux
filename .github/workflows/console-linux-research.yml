@@ -28,7 +28,7 @@ permissions:
 
 concurrency:
   group: console-linux-research-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   VITA_UPSTREAM: acgh213/vita-linux-next
