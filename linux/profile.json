@@ -20,10 +20,11 @@
   "liveslak_config": "linux/make_slackware_live.conf",
   "live_variant": "SNAKEY",
   "custom_package": "snakey-base",
-  "custom_package_sequence": "min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme",
+  "custom_package_sequence": "min,xbase,xapbase,xfcebase local:snakey-base local:snakey-theme local:snakey-control-center",
   "live_user": "snakey",
   "custom_packages": [
     "snakey-base",
-    "snakey-theme"
+    "snakey-theme",
+    "snakey-control-center"
   ]
 }
