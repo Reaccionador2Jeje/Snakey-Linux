@@ -24,5 +24,16 @@ class ConsoleSessionTests(unittest.TestCase):
         self.assertIn("Name=Snakey Console Session", source)
         self.assertIn("snakey-console-session", source)
 
+    def test_snakeys_xfce_panel_defaults_are_present(self):
+        import xml.etree.ElementTree as ET
+        panel = ROOT / "rootcopy/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml"
+        tree = ET.parse(panel)
+        channel = tree.getroot()
+        self.assertEqual(channel.attrib.get("name"), "xfce4-panel")
+        text = panel.read_text()
+        for plugin in ("applicationsmenu", "tasklist", "systray", "clock"):
+            self.assertIn(plugin, text)
+        self.assertIn('name="size" type="uint" value="36"', text)
+
 if __name__ == "__main__":
     unittest.main()
