@@ -76,6 +76,29 @@ class SnakeySdkTests(unittest.TestCase):
                 type("Args", (), {"directory": project})()
             ), 0)
 
+
+    def test_create_nes_and_handheld_projects_for_all_targets(self):
+        for target, expected_entry in [
+            ("nes", "src/main.s"),
+            ("snes", "src/main.c"),
+            ("game-boy", "src/main.asm"),
+            ("game-boy-color", "src/main.asm"),
+            ("game-boy-advance", "src/main.c"),
+            ("nintendo-ds", "src/main.c"),
+        ]:
+            with self.subTest(target=target), tempfile.TemporaryDirectory() as tmp:
+                project = Path(tmp) / "demo"
+                args = type("Args", (), {
+                    "directory": project, "target": target, "name": "Demo"
+                })()
+                self.assertEqual(snakey.command_new(args), 0)
+                manifest = json.loads((project / snakey.MANIFEST).read_text())
+                self.assertEqual(manifest["entry"], expected_entry)
+                self.assertTrue((project / expected_entry).is_file())
+                self.assertEqual(snakey.command_validate(
+                    type("Args", (), {"directory": project})()
+                ), 0)
+
     def test_refuses_unknown_target(self):
         with tempfile.TemporaryDirectory() as tmp:
             args = type("Args", (), {"directory": Path(tmp) / "demo",
